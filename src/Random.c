@@ -12,15 +12,19 @@ int uniforme(int a, int b)
     return (rand() % (b - a + 1)) + a;
 }
 
+/*------------------------------------------------------------*/
+
 double uniformeD(double a, double b)
 {
     double x = (double) rand()/RAND_MAX;
     return (x * (b - a)) + a;
 }
 
-/*
+/*------------------------------------------------------------*
+ *
  *  O código a seguir foi inspirado na biblioteca
  *  StdRandom (em java) de Sedgewick & Wayne.
+ *
  */
 double normal(double media, double desvpadr)
 {

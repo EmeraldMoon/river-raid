@@ -21,6 +21,9 @@
 #define BALA_DANO  5  /* dano padrão */
 #define BALA_RAIO  3  /* para testes, projéteis esféricos */
 
+/*
+ *  Representa um projétil causador de dano.
+ */
 typedef struct projetil Projetil;
 struct projetil
 {

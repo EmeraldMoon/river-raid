@@ -21,6 +21,8 @@ void criaNave()
     nave.hp = NAVE_HP;
 }
 
+/*------------------------------------------------------------*/
+
 void moveNave()
 {
     nave.x += nave.velocidade * tan(nave.horizontal);

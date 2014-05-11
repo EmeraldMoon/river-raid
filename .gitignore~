@@ -1,0 +1,6 @@
+# Arquivos a serem ignorados pelo git
+bin/*
+obj/*
+*.pdf
+*.tar
+

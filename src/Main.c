@@ -26,12 +26,14 @@
  *-------------------*/
 
 /*
- *  Recebe um timestep, limpa a tela e imprime informação a respeito de
- *  todos os elementos do jogo neste timestep. É aguardado que o usuário
- *  pressione [Enter] e então espera-se até a próxima chamada da função.
+ *  Recebe um timestep, limpa a tela e imprime informação a 
+ *  respeito de todos os elementos do jogo neste timestep.
+ *  É aguardado que o usuário pressione [Enter] e então 
+ *  espera-se até a próxima chamada da função.
  *
- *  Para efeitos de clareza, todas as componentes Z, exceto a da nave,
- *  são relativas à nave em si (e não absolutas).
+ *  Para efeitos de clareza, todas as componentes Z, exceto
+ *  a da nave, são relativas à nave em si (e não absolutas).
+ *
  */
 void imprimeElementos(int timestep)
 {
@@ -67,13 +69,15 @@ void imprimeElementos(int timestep)
             bullet->x, bullet->y, (bullet->z - nave.z),
             bullet->vel.x, bullet->vel.y, bullet->vel.z);
     }
+    
     getchar();
 }
 
-/*
+/*------------------------------------------------------------*
+ *
  *  == MAIN ==
- *  Tudo começa por aqui.
- *  Tudo também termina por aqui (geralmente).
+ *  Onde tudo começa e tudo (geralmente) termina.
+ *
  */
 int main(int argc, char **argv)
 {

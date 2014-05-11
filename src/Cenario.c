@@ -20,6 +20,8 @@ void inicializa()
     projeteis = criaLista();
 }
 
+/*------------------------------------------------------------*/
+
 void atualizaCenario()
 {
     Celula *p;
@@ -48,9 +50,11 @@ void atualizaCenario()
     }
 }
 
-/*  
+/*------------------------------------------------------------*
+ *  
  *  Esta função é um modelo de testes. No futuro, a 
  *  geração de inimigos deve ser feita de forma pré-determinada.
+ *
  */
 void geraInimigo()
 {
@@ -68,6 +72,8 @@ void geraInimigo()
 
     criaInimigo(foe);
 }
+
+/*------------------------------------------------------------*/
 
 void liberaCenario()
 {

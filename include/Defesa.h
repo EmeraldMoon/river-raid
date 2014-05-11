@@ -18,6 +18,9 @@
 /* Energia total padrão */
 #define FOE_HP 100
 
+/*
+ *  Representa um inimigo (elemento de defesa).
+ */
 typedef struct inimigo Inimigo;
 struct inimigo
 {

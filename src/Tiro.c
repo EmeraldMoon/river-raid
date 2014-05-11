@@ -24,6 +24,8 @@ void criaProjetil(Projetil bullet)
     insere(projeteis, &bullet, sizeof bullet);
 }
 
+/*------------------------------------------------------------*/
+
 void miraProjetil(Projetil *bullet)
 {
     int dx = nave.x - bullet->x;
@@ -39,12 +41,14 @@ void miraProjetil(Projetil *bullet)
     bullet->vel.z = k*dz;
 }
 
-/*  
+/*------------------------------------------------------------*
+ *  
  *  Os desvios são calculados segundo uma distribuição Normal.
  *  Enquanto a trajetória é alterada, o módulo da velocidade
  *  permanece constante.
  *
  *  Observe que o desvio mínimo é 0° e o máximo 90°.
+ *
  */
 void aplicaPrecisao(Projetil *bullet, double precisao)
 {
@@ -64,6 +68,8 @@ void aplicaPrecisao(Projetil *bullet, double precisao)
     vz = -cos(ang) * hip;
 }
 
+/*------------------------------------------------------------*/
+
 void moveProjetil(Projetil *bullet)
 {
     bullet->x += bullet->vel.x;
@@ -71,10 +77,12 @@ void moveProjetil(Projetil *bullet)
     bullet->z += bullet->vel.z;
 }
 
-/*
+/*------------------------------------------------------------*
+ *
  *  Para efeito de testes, considera-se que o projétil
  *  acertou a nave caso a distância entre os dois 
  *  seja MENOR que a soma dos raios de ambos (d < r + R).
+ *
  */
 bool projetilAcertou(Projetil *bullet)
 {
@@ -87,11 +95,13 @@ bool projetilAcertou(Projetil *bullet)
     return (d < (NAVE_RAIO + BALA_RAIO));
 }
 
-/*
+/*------------------------------------------------------------*
+ *
  *  O projétil passou INTEIRAMENTE pela nave?
  *  O projétil saiu pelo limite superior ou inferior?
  *  O projétil saiu por um dos lados da tela?
  *  Caso uma das respostas seja sim, o projétil saiu do jogo.
+ *
  */
 bool projetilSaiu(Projetil *bullet)
 {

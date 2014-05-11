@@ -13,6 +13,7 @@ BIN:= River
 SRC:= $(wildcard $(SRCDIR)/*.c)
 OBJ:= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
 CLIBS:= -I$(INCDIR)
+TAR:= $(BIN).tar
 
 .PHONY: clean distclean dump
 
@@ -39,3 +40,16 @@ distclean: clean
 dump:
 	@echo "src:" $(SRC)
 	@echo "obj:" $(OBJ)
+
+tar:
+	mkdir River/
+	cp -r include/ src/ Makefile River/
+	tar -czf $(TAR) River/
+	rm -rf River/	
+	@echo "Arquivo\033[1;32m" $(TAR) "\033[0mcriado com sucesso"
+
+tarclean:
+	rm -r $(TAR)
+
+count:
+	wc -l src/* include/*

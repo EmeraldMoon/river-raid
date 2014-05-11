@@ -11,6 +11,8 @@ void criaInimigo(Inimigo foe)
     insere(inimigos, &foe, sizeof foe);
 }
 
+/*------------------------------------------------------------*/
+
 void dispara(Inimigo *foe)
 {
     Projetil bullet;
@@ -26,6 +28,8 @@ void dispara(Inimigo *foe)
 
     foe->espera = foe->cooldown;
 }
+
+/*------------------------------------------------------------*/
 
 bool inimigoSaiu(Inimigo *foe)
 {

@@ -18,9 +18,11 @@ Lista * criaLista()
     return ini;
 }
 
-/*
+/*------------------------------------------------------------*
+ *
  *  É necessário que a função receba o tamanho em bytes a ser
  *  alocado e copiado, pois sizeof não funciona com (void *).
+ *
  */
 void insere(Celula *ini, void *item, size_t nbytes)
 {
@@ -31,6 +33,8 @@ void insere(Celula *ini, void *item, size_t nbytes)
     ini->prox = nova;   
 }
 
+/*------------------------------------------------------------*/
+
 void exclui(Celula *cel)
 {
     Celula *morta = cel->prox;
@@ -39,9 +43,11 @@ void exclui(Celula *cel)
     free(morta); morta = NULL;
 }
 
-/*
+/*------------------------------------------------------------*
+ *
  *  Por questões de segurança (e paranoia), todos os
  *  ponteiros pós-liberação são apontados para NULL.
+ *
  */
 void liberaLista(Celula *ini)
 {
@@ -56,10 +62,12 @@ static void liberaListaR(Celula *cel) {
     free(cel); cel = NULL;
 }
 
-/*
+/*------------------------------------------------------------*
+ *
  *  Versão segura de malloc().
  *  Caso não haja memória disponível, exibe uma
  *  mensagem de erro e encerra o programa.
+ *
  */
 static void * mallocSafe(size_t nbytes)
 {

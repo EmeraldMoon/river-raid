@@ -18,6 +18,9 @@
 /* Tipo para representar radianos */
 typedef double Rad;
 
+/*
+ *  Representa a nave do jogador.
+ */
 typedef struct nave Nave;
 struct nave
 {
