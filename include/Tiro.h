@@ -27,20 +27,15 @@
 typedef struct projetil Projetil;
 struct projetil
 {
-    /* Usamos (double) nas variáveis pois, caso contrário,
-       podem ocorrer erros severos na atualização de posição. */
-
     /* Posição do projétil (x,y,z) */
     double x;
     double y;
     double z;
 
     /* Componentes da velocidade para cada eixo */
-    struct {
-        double x;
-        double y;
-        double z;
-    } vel;
+    double vx;
+    double vy;
+    double vz;    
 
     /* Energia removida do elemento em caso de acerto */
     unsigned int dano;
@@ -56,12 +51,6 @@ extern Lista *projeteis;
  *  Insere um projétil na respectiva lista.
  */
 void criaProjetil(Projetil bullet);
-
-/*
- *  Mira o projéti no "bico" da nave, criando um vetor
- *  velocidade na referida direção e com módulo constante.
- */
-void miraProjetil(Projetil *bullet);
 
 /*  
  *  Aplica no respectivo projétil dois desvios em graus, um horizontal

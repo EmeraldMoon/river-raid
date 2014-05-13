@@ -11,12 +11,18 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
-#define VEL_INI     5  /* velocidade inicial */
-#define NAVE_RAIO  10  /* para testes, nave será esférica */
-#define NAVE_HP   100
+/* Atributos iniciais */
+#define NAVE_VEL     5
+#define NAVE_RAIO   10
+#define NAVE_HPMAX 100
+#define NAVE_COOL    5
 
-/* Tipo para representar radianos */
-typedef double Rad;
+/* Ângulo de inclinação máxima */
+#define ANG_MAX PI/4
+
+/* Taxas de alteração da direção a cada timestep */
+#define ANG_MANUAL ANG_MAX/20  /* por comando do usuário */
+#define ANG_AUTO   ANG_MAX/60  /* automático a cada timestep */
 
 /*
  *  Representa a nave do jogador.
@@ -24,19 +30,17 @@ typedef double Rad;
 typedef struct nave Nave;
 struct nave
 {
-    int x;  /* posição horizontal (centro == 0) */
-    int y;  /* altura da nave */
-    int z;  /* distância percorrida */
-     
+    Esqueleto base;
+
+    /* Número de chances do jogador */
+    unsigned int vidas;
+
     /* Inclinações em relação ao eixo Oz */
-    Rad horizontal;
-    Rad vertical;
+    double angX, angY;
 
-    /* Velocidade escalar ao longo do cenário */
-    int velocidade;
-
-    /* Se (hp <= 0), perde a vida */
-    int hp;
+    /* Velocidade da nave pelo cenário */
+    double vel;    /* ao longo do eixo 0z */
+    double vx, vy; /* para trabalhar com componentes */
 };
 
 extern Nave nave;
@@ -46,9 +50,10 @@ extern Nave nave;
  *-------------------------*/
 
 /*
- *  Inicializa atributos da nave.
+ *  Recebe a posição no eixo Oz da nave.
+ *  Inicializa os atributos da mesma.
  */
-void criaNave();
+void criaNave(int z);
 
 /*
  *  Atualiza a posição da nave em relação ao timestep anterior.
@@ -56,5 +61,11 @@ void criaNave();
  *  à velocidade escalar da nave ao longo do eixo Oz.
  */
 void moveNave();
+
+/*
+ *  Dispara um projétil na direção em que a nave estiver
+ *  apontando e atualiza o tempo de recarga.
+ */
+void naveDispara()
 
 #endif

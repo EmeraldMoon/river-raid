@@ -22,6 +22,9 @@
 #define Y_MAX  90
 #define Z_MAX 400
 
+/* Valor da aceleração da gravidade */
+#define ACEL_GRAV 0.5
+
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/

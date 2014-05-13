@@ -13,6 +13,7 @@
 #include <stdio.h>   /* printf, puts, getchar */
 #include <stdlib.h>  /* system, rand, srand */
 #include <time.h>    /* time */
+#include <ctype.h>   /* toupper */
 #include "Nave.h"
 #include "Defesa.h"
 #include "Tiro.h"
@@ -25,11 +26,29 @@
  |   F U N Ç Õ E S   |
  *-------------------*/
 
-/*
- *  Recebe um timestep, limpa a tela e imprime informação a 
- *  respeito de todos os elementos do jogo neste timestep.
- *  É aguardado que o usuário pressione [Enter] e então 
- *  espera-se até a próxima chamada da função.
+void executaComando(char tecla)
+{
+    tecla = toupper(tecla);
+
+    switch (tecla) {
+        case 'U': nave.angY += ANG_MANUAL; break;
+        case 'D': nave.angY -= ANG_MANUAL; break;
+        case 'L': nave.angX -= ANG_MANUAL; break;
+        case 'R': nave.angX += ANG_MANUAL; break;
+
+        case 'Z': naveDispara(); break;
+    }
+
+    /* Ângulos nunca serão maiores que ANG_MAX */ 
+    if (nave.angX > ANG_MAX) nave.angX = ANG_MAX;
+    if (nave.angY > ANG_MAX) nave.angY = ANG_MAX;
+}
+
+/*--------------------------------------------------------------------*
+ *
+ *  Recebe um timestep, limpa a tela e imprime informação a respeito de
+ *  todos os elementos do jogo neste timestep. É aguardado que o usuário
+ *  pressione [Enter] e então espera-se até a próxima chamada da função.
  *
  *  Para efeitos de clareza, todas as componentes Z, exceto
  *  a da nave, são relativas à nave em si (e não absolutas).
@@ -67,18 +86,18 @@ void imprimeElementos(int timestep)
         Projetil *bullet = p->prox->item;
         printf(" (%3.0f, %2.0f, %3.0f)      [%4.1f, %4.1f, %4.1f] \n",
             bullet->x, bullet->y, (bullet->z - nave.z),
-            bullet->vel.x, bullet->vel.y, bullet->vel.z);
+            bullet->vx, bullet->vy, bullet->vz);
     }
     
     getchar();
 }
 
-/*------------------------------------------------------------*
- *
- *  == MAIN ==
- *  Onde tudo começa e tudo (geralmente) termina.
- *
- */
+/*------------------------------------------------------------*/
+
+/*----------------*
+ |   M  A  I  N   |
+ *----------------*/
+
 int main(int argc, char **argv)
 {
     int semente;
@@ -93,7 +112,7 @@ int main(int argc, char **argv)
     hpAtual = nave.hp;    
 
     cont = TEMPO_INIMIGOS;
-    for (timestep = 1; nave.hp > 0; timestep++) {
+    for (timestep = 1; nave.vidas >= 0; timestep++) {
         atualizaCenario();
 
         if (cont == 0) {

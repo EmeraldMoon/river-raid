@@ -15,7 +15,7 @@ Lista *projeteis;
 
 void inicializa()
 {
-    criaNave();
+    criaNave(Z_INI);
     inimigos  = criaLista();
     projeteis = criaLista();
 }
@@ -26,6 +26,11 @@ void atualizaCenario()
 {
     Celula *p;
 
+    /* Verifica se nave perdeu vida */
+    if (nave.hp <= 0) {
+        (nave.vidas)--;
+        if (vidas >= 0) criaNave(nave.z);
+    }
     moveNave();
 
     /* Em ambos os laços, não há necessidade de avançar 'p'
@@ -33,7 +38,7 @@ void atualizaCenario()
     p = inimigos;
     while (p->prox != NULL) {
         Inimigo *foe = p->prox->item;
-        if ((foe->espera)-- == 0) dispara(foe);
+        if ((foe->espera)-- == 0) inimigoDispara(foe);
         if (inimigoSaiu(foe)) exclui(p);
         else p = p->prox;
     }
@@ -68,7 +73,7 @@ void geraInimigo()
     foe.precisao = uniformeD(0.5, 1.0);
     foe.hp       = FOE_HP;
     foe.cooldown = uniforme(10, 20);
-    foe.espera  = foe.cooldown;
+    foe.espera   = foe.cooldown;
 
     criaInimigo(foe);
 }
