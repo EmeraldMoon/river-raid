@@ -15,7 +15,7 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
-/* Energia total padrão */
+/* Atributos padrão */
 #define FOE_HP   100
 #define FOE_RAIO  30
 

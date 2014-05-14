@@ -11,11 +11,12 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
-/* Atributos iniciais */
-#define NAVE_VEL     5
-#define NAVE_RAIO   10
-#define NAVE_HPMAX 100
-#define NAVE_COOL    5
+/* Atributos iniciais e/ou fixos */
+#define NAVE_VEL      5
+#define NAVE_HPMAX  100
+#define NAVE_COOL     5
+#define NAVE_RAIO    10
+#define NAVE_ALTURA   5
 
 /* Ângulo de inclinação máxima */
 #define ANG_MAX PI/4
@@ -33,7 +34,7 @@ struct nave
     Esqueleto base;
 
     /* Número de chances do jogador */
-    unsigned int vidas;
+    int vidas;
 
     /* Inclinações em relação ao eixo Oz */
     double angX, angY;

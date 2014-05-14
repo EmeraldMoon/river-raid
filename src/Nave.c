@@ -24,6 +24,8 @@ void criaNave(int z)
     nave.hp       = NAVE_HPMAX;
     nave.cooldown = NAVE_COOL;
     nave.espera   = nave.cooldown;
+    nave.raio     = NAVE_RAIO;
+    nave.altura   = NAVE_ALTURA;
 }
 
 /*------------------------------------------------------------*/
@@ -50,7 +52,7 @@ void naveDispara()
 
     bullet.x = nave.x;
     bullet.y = nave.y;
-    bullet.z = nave.z + NAVE_RAIO;
+    bullet.z = nave.z + nave.raio + BALA_RAIO;
     bullet.dano = BALA_DANO;
 
     direcionaProjetil(&bullet);
@@ -73,7 +75,7 @@ static void atualizaDirecao(double *ang)
     }
     else if (*ang > 0) {
         *ang -= ANG_AUTO;
-        if (*ang > 0) *ang = 0;
+        if (*ang < 0) *ang = 0;
     }
 }
 

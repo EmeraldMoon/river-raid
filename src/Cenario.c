@@ -26,11 +26,6 @@ void atualizaCenario()
 {
     Celula *p;
 
-    /* Verifica se nave perdeu vida */
-    if (nave.hp <= 0) {
-        (nave.vidas)--;
-        if (vidas >= 0) criaNave(nave.z);
-    }
     moveNave();
 
     /* Em ambos os laços, não há necessidade de avançar 'p'
@@ -52,6 +47,12 @@ void atualizaCenario()
         }
         else if (projetilSaiu(bullet)) exclui(p);
         else p = p->prox;
+    }
+
+    /* Verifica se nave perdeu vida */
+    if (nave.hp <= 0) {
+        (nave.vidas)--;
+        if (vidas >= 0) criaNave(nave.z);
     }
 }
 

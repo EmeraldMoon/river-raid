@@ -21,7 +21,7 @@ void inimigoDispara(Inimigo *foe)
 
     bullet.x = foe->x;
     bullet.y = foe->y;
-    bullet.z = foe->z - FOE_RAIO;
+    bullet.z = foe->z - foe->raio - BALA_RAIO;
     bullet.dano = BALA_DANO;
 
     miraProjetil(&bullet);
@@ -48,7 +48,7 @@ static void miraProjetil(Projetil *bullet)
 {
     int dx = nave.x - bullet->x;
     int dy = nave.y - bullet->y;
-    int dz = (nave.z + NAVE_RAIO) - bullet->z;
+    int dz = (nave.z + nave.raio) - bullet->z;
 
     /* Fator 'k' é a razão entre velocidade e distância */
     double d = sqrt(sq(dx) + sq(dy) + sq(dz));

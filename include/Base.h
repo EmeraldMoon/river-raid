@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------*
  |                                                                  |
- |  Definições e estruturas comuns a serem usadas                   |
- |  em mais de um módulo do projeto.                                |
+ |  Definições de uso geral e estruturas comuns, a serem            |
+ |  usadas em mais de um módulo do projeto.                         |
  |                                                                  |
  *------------------------------------------------------------------*/
 
@@ -16,15 +16,16 @@
 #define sq(x) (pow((x), 2))
 
 /* Atalhos para acessar os atributos */
-#define base.x x
-#define base.y y
-#define base.z z
-#define base.hp hp
+#define base.x        x
+#define base.y        y
+#define base.z        z
+#define base.hp       hp
 #define base.cooldown cooldown
 #define base.espera   espera
 
 /*
- *  Atributos comuns entre nave e inimigos.
+ *  Estrutura básica de um elemento corporal do jogo.
+ *  A ser usada comumente entre nave e seus inimigos.
  */
 typedef struct esqueleto Esqueleto;
 struct esqueleto
@@ -39,4 +40,8 @@ struct esqueleto
     /* Timesteps de espera entre um tiro e outro */
     unsigned int cooldown;  /* valor máximo, fixo */
     unsigned int espera;    /* sofre decremento até chegar a 0 */
+
+    /* Representação de colisão é feita por um CILINDRO reto */
+    unsigned int raio;
+    unsigned int altura;
 };

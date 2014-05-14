@@ -5,6 +5,8 @@
 #include "Base.h"
 #include "Random.h"
 
+static bool projetilColidiu(Projetil *bullet, Esqueleto corpo);
+
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*/
@@ -62,14 +64,32 @@ void moveProjetil(Projetil *bullet)
  */
 bool projetilAcertou(Projetil *bullet)
 {
-    /* ALTERAR PARA FUNCIONAR COM OS TIROS DA NAVE NOS INIMIGOS TAMBÈM !!! */
-    int dx = bullet->x - nave.x;
-    int dy = bullet->y - nave.y;
-    int dz = bullet->z - nave.z;
-    
-    double d = sqrt(sq(dx) + sq(dy) + sq(dz));
+    /* Verificação de colisão com a nave */
+    if (projetilColidiu(bullet, nave.corpo)) return true;
 
-    if (d < (NAVE_RAIO + BALA_RAIO)) return true;
+    /* Verificação de colisão com algum inimigo */
+    for (p = inimigos; p->prox != NULL; p = p->prox) {
+        Inimigo *foe = p->prox->item;
+        if (projetilColidiu(bullet, foe->corpo)) return true;
+    }
+
+    return false;
+}
+
+static bool projetilColidiu(Projetil *bullet, Esqueleto corpo)
+{
+    int dx = bullet->x - corpo.x;
+    int dy = bullet->y - corpo.y;
+    int dz = bullet->z - corpo.z;
+    int somaRaios = corpo.raio + BALA_RAIO;
+
+    /* Esta parte visa evitar cálculos desnecessários */
+    if (dx >= somaRaios || dz >= somaRaios) return false;
+
+    double d = sqrt(sq(dx) + sq(dy) + sq(dz));
+    double dAlt = abs(dy) - (corpo.altura/2 + corpo.raio);
+
+    return (d < somaRaios && dAlt > 0);
 }
 
 /*------------------------------------------------------------*
@@ -82,7 +102,7 @@ bool projetilAcertou(Projetil *bullet)
  */
 bool projetilSaiu(Projetil *bullet)
 {
-    return (bullet->z < nave.z - NAVE_RAIO)
+    return (bullet->z < nave.z - nave.raio)
         || (bullet->y <= 0 || bullet->y >= Y_MAX)
         || (abs(bullet->x) >= X_MAX);
 }
