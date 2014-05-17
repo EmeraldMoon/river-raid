@@ -5,6 +5,9 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
+#ifndef BASE_H
+#define BASE_H
+
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
@@ -14,14 +17,6 @@
 
 /* Calcula quadrado de x */
 #define sq(x) (pow((x), 2))
-
-/* Atalhos para acessar os atributos */
-#define base.x        x
-#define base.y        y
-#define base.z        z
-#define base.hp       hp
-#define base.cooldown cooldown
-#define base.espera   espera
 
 /*
  *  Estrutura básica de um elemento corporal do jogo.
@@ -45,3 +40,5 @@ struct esqueleto
     unsigned int raio;
     unsigned int altura;
 };
+
+#endif

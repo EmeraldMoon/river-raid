@@ -1,6 +1,5 @@
-#include <math.h>    /* sqrt, log */
 #include <stdlib.h>  /* rand */
-#include <stdio.h>
+#include <math.h>    /* sqrt, log */
 
 /*-------------------*
  |   F U N Ç Õ E S   |

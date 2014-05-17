@@ -7,12 +7,15 @@
 #ifndef NAVE_H
 #define NAVE_H
 
+#include "Base.h"
+
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
 /* Atributos iniciais e/ou fixos */
 #define NAVE_VEL      5
+#define VIDAS_INI     3
 #define NAVE_HPMAX  100
 #define NAVE_COOL     5
 #define NAVE_RAIO    10
@@ -23,7 +26,7 @@
 
 /* Taxas de alteração da direção a cada timestep */
 #define ANG_MANUAL ANG_MAX/20  /* por comando do usuário */
-#define ANG_AUTO   ANG_MAX/60  /* automático a cada timestep */
+#define ANG_AUTO   ANG_MAX/60  /* automático */
 
 /*
  *  Representa a nave do jogador.
@@ -36,12 +39,11 @@ struct nave
     /* Número de chances do jogador */
     int vidas;
 
+    /* Componentes da velocidade da nave */
+    double vx, vy, vz;
+
     /* Inclinações em relação ao eixo Oz */
     double angX, angY;
-
-    /* Velocidade da nave pelo cenário */
-    double vel;    /* ao longo do eixo 0z */
-    double vx, vy; /* para trabalhar com componentes */
 };
 
 extern Nave nave;
@@ -51,10 +53,10 @@ extern Nave nave;
  *-------------------------*/
 
 /*
- *  Recebe a posição no eixo Oz da nave.
- *  Inicializa os atributos da mesma.
+ *  Recebe a posição no eixo Oz da nave e um número de vidas.
+ *  Inicializa os atributos da nave.
  */
-void criaNave(int z);
+void criaNave(int z, int nVidas);
 
 /*
  *  Atualiza a posição da nave em relação ao timestep anterior.
@@ -67,6 +69,6 @@ void moveNave();
  *  Dispara um projétil na direção em que a nave estiver
  *  apontando e atualiza o tempo de recarga.
  */
-void naveDispara()
+void naveDispara();
 
 #endif

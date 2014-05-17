@@ -1,0 +1,157 @@
+mkdir -p obj
+gcc -Wall -O3 -ansi -pedantic -Iinclude -m32 -c src/Cenario.c -o obj/Cenario.o
+In file included from /usr/include/stdlib.h:33:0,
+                 from include/Lista.h:12,
+                 from include/Defesa.h:12,
+                 from src/Cenario.c:2:
+/usr/lib/gcc/x86_64-linux-gnu/4.7/include/stddef.h: In function ‘naveDispara’:
+/usr/lib/gcc/x86_64-linux-gnu/4.7/include/stddef.h:213:23: error: storage class specified for parameter ‘size_t’
+/usr/lib/gcc/x86_64-linux-gnu/4.7/include/stddef.h:325:24: error: storage class specified for parameter ‘wchar_t’
+In file included from include/Lista.h:12:0,
+                 from include/Defesa.h:12,
+                 from src/Cenario.c:2:
+/usr/include/stdlib.h:102:5: error: storage class specified for parameter ‘div_t’
+/usr/include/stdlib.h:110:5: error: storage class specified for parameter ‘ldiv_t’
+/usr/include/stdlib.h:140:15: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘__ctype_get_mb_cur_max’
+/usr/include/stdlib.h:145:15: error: storage class specified for parameter ‘atof’
+/usr/include/stdlib.h:148:12: error: storage class specified for parameter ‘atoi’
+/usr/include/stdlib.h:151:17: error: storage class specified for parameter ‘atol’
+/usr/include/stdlib.h:165:15: error: storage class specified for parameter ‘strtod’
+/usr/include/stdlib.h:184:17: error: storage class specified for parameter ‘strtol’
+/usr/include/stdlib.h:188:26: error: storage class specified for parameter ‘strtoul’
+/usr/include/stdlib.h:280:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+/usr/include/stdlib.h:285:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+/usr/include/stdlib.h:290:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+/usr/include/stdlib.h:380:12: error: storage class specified for parameter ‘rand’
+/usr/include/stdlib.h:382:13: error: storage class specified for parameter ‘srand’
+/usr/include/stdlib.h:471:22: error: expected declaration specifiers or ‘...’ before ‘size_t’
+/usr/include/stdlib.h:473:22: error: expected declaration specifiers or ‘...’ before ‘size_t’
+/usr/include/stdlib.h:473:38: error: expected declaration specifiers or ‘...’ before ‘size_t’
+/usr/include/stdlib.h:485:36: error: expected declaration specifiers or ‘...’ before ‘size_t’
+/usr/include/stdlib.h:488:13: error: storage class specified for parameter ‘free’
+/usr/include/stdlib.h:514:13: error: storage class specified for parameter ‘abort’
+/usr/include/stdlib.h:518:12: error: storage class specified for parameter ‘atexit’
+/usr/include/stdlib.h:544:13: error: storage class specified for parameter ‘exit’
+/usr/include/stdlib.h:567:14: error: storage class specified for parameter ‘getenv’
+/usr/include/stdlib.h:572:14: error: storage class specified for parameter ‘__secure_getenv’
+/usr/include/stdlib.h:717:12: error: storage class specified for parameter ‘system’
+/usr/include/stdlib.h:742:15: error: storage class specified for parameter ‘__compar_fn_t’
+/usr/include/stdlib.h:756:9: error: expected declaration specifiers or ‘...’ before ‘size_t’
+/usr/include/stdlib.h:756:25: error: expected declaration specifiers or ‘...’ before ‘size_t’
+/usr/include/stdlib.h:756:40: error: expected declaration specifiers or ‘...’ before ‘__compar_fn_t’
+/usr/include/stdlib.h:761:34: error: expected declaration specifiers or ‘...’ before ‘size_t’
+/usr/include/stdlib.h:761:50: error: expected declaration specifiers or ‘...’ before ‘size_t’
+/usr/include/stdlib.h:762:6: error: expected declaration specifiers or ‘...’ before ‘__compar_fn_t’
+/usr/include/stdlib.h:771:12: error: storage class specified for parameter ‘abs’
+/usr/include/stdlib.h:772:17: error: storage class specified for parameter ‘labs’
+/usr/include/stdlib.h:785:14: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘div’
+/usr/include/stdlib.h:787:15: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘ldiv’
+/usr/include/stdlib.h:860:38: error: expected declaration specifiers or ‘...’ before ‘size_t’
+/usr/include/stdlib.h:863:20: error: expected declaration specifiers or ‘...’ before ‘wchar_t’
+/usr/include/stdlib.h:864:36: error: expected declaration specifiers or ‘...’ before ‘size_t’
+/usr/include/stdlib.h:867:31: error: expected declaration specifiers or ‘...’ before ‘wchar_t’
+/usr/include/stdlib.h:871:15: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘mbstowcs’
+/usr/include/stdlib.h:874:15: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘wcstombs’
+In file included from include/Defesa.h:12:0,
+                 from src/Cenario.c:2:
+include/Lista.h:21:23: error: storage class specified for parameter ‘Celula’
+include/Lista.h:25:5: error: expected specifier-qualifier-list before ‘Celula’
+include/Lista.h:22:1: warning: empty declaration [enabled by default]
+include/Lista.h:29:16: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘Lista’
+include/Lista.h:39:1: error: unknown type name ‘Lista’
+include/Lista.h:46:13: error: expected declaration specifiers or ‘...’ before ‘Celula’
+include/Lista.h:46:38: error: expected declaration specifiers or ‘...’ before ‘size_t’
+include/Lista.h:52:13: error: expected declaration specifiers or ‘...’ before ‘Celula’
+include/Lista.h:57:18: error: expected declaration specifiers or ‘...’ before ‘Celula’
+In file included from include/Defesa.h:13:0,
+                 from src/Cenario.c:2:
+include/Base.h:22:26: error: storage class specified for parameter ‘Esqueleto’
+include/Base.h:23:1: warning: empty declaration [enabled by default]
+In file included from src/Cenario.c:2:0:
+include/Defesa.h:26:24: error: storage class specified for parameter ‘Inimigo’
+include/Defesa.h:29:5: error: expected specifier-qualifier-list before ‘Esqueleto’
+include/Defesa.h:27:8: warning: struct has no members [-pedantic]
+include/Defesa.h:27:1: warning: empty declaration [enabled by default]
+include/Defesa.h:35:1: error: unknown type name ‘Lista’
+include/Defesa.h:35:15: error: storage class specified for parameter ‘inimigos’
+include/Defesa.h:44:18: error: expected declaration specifiers or ‘...’ before ‘Inimigo’
+include/Defesa.h:50:21: error: expected declaration specifiers or ‘...’ before ‘Inimigo’
+include/Defesa.h:56:18: error: expected declaration specifiers or ‘...’ before ‘Inimigo’
+In file included from src/Cenario.c:3:0:
+include/Tiro.h:27:25: error: storage class specified for parameter ‘Projetil’
+include/Tiro.h:28:1: warning: empty declaration [enabled by default]
+include/Tiro.h:40:1: error: unknown type name ‘Lista’
+include/Tiro.h:40:15: error: storage class specified for parameter ‘projeteis’
+include/Tiro.h:49:19: error: expected declaration specifiers or ‘...’ before ‘Projetil’
+include/Tiro.h:55:21: error: expected declaration specifiers or ‘...’ before ‘Projetil’
+include/Tiro.h:60:19: error: expected declaration specifiers or ‘...’ before ‘Projetil’
+include/Tiro.h:65:22: error: expected declaration specifiers or ‘...’ before ‘Projetil’
+include/Tiro.h:71:19: error: expected declaration specifiers or ‘...’ before ‘Projetil’
+src/Cenario.c:9:1: error: unknown type name ‘Lista’
+src/Cenario.c:9:8: error: redefinition of parameter ‘inimigos’
+In file included from src/Cenario.c:2:0:
+include/Defesa.h:35:15: note: previous definition of ‘inimigos’ was here
+src/Cenario.c:10:1: error: unknown type name ‘Lista’
+src/Cenario.c:10:8: error: redefinition of parameter ‘projeteis’
+In file included from src/Cenario.c:3:0:
+include/Tiro.h:40:15: note: previous definition of ‘projeteis’ was here
+src/Cenario.c:17:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+src/Cenario.c:26:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+src/Cenario.c:66:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+src/Cenario.c:85:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+src/Cenario.c:10:8: error: declaration for parameter ‘projeteis’ but no such parameter
+src/Cenario.c:9:8: error: declaration for parameter ‘inimigos’ but no such parameter
+src/Cenario.c:8:6: error: declaration for parameter ‘nave’ but no such parameter
+In file included from src/Cenario.c:5:0:
+include/Random.h:31:8: error: declaration for parameter ‘normal’ but no such parameter
+include/Random.h:25:8: error: declaration for parameter ‘uniformeD’ but no such parameter
+include/Random.h:19:5: error: declaration for parameter ‘uniforme’ but no such parameter
+In file included from src/Cenario.c:4:0:
+include/Cenario.h:54:6: error: declaration for parameter ‘liberaCenario’ but no such parameter
+include/Cenario.h:49:6: error: declaration for parameter ‘geraInimigo’ but no such parameter
+include/Cenario.h:42:6: error: declaration for parameter ‘atualizaCenario’ but no such parameter
+include/Cenario.h:35:6: error: declaration for parameter ‘inicializa’ but no such parameter
+In file included from src/Cenario.c:3:0:
+include/Tiro.h:40:15: error: declaration for parameter ‘projeteis’ but no such parameter
+include/Tiro.h:27:25: error: declaration for parameter ‘Projetil’ but no such parameter
+In file included from src/Cenario.c:2:0:
+include/Defesa.h:35:15: error: declaration for parameter ‘inimigos’ but no such parameter
+include/Defesa.h:26:24: error: declaration for parameter ‘Inimigo’ but no such parameter
+In file included from include/Defesa.h:13:0,
+                 from src/Cenario.c:2:
+include/Base.h:22:26: error: declaration for parameter ‘Esqueleto’ but no such parameter
+In file included from include/Defesa.h:12:0,
+                 from src/Cenario.c:2:
+include/Lista.h:39:9: error: declaration for parameter ‘criaLista’ but no such parameter
+include/Lista.h:21:23: error: declaration for parameter ‘Celula’ but no such parameter
+In file included from include/Lista.h:12:0,
+                 from include/Defesa.h:12,
+                 from src/Cenario.c:2:
+/usr/include/stdlib.h:772:17: error: declaration for parameter ‘labs’ but no such parameter
+/usr/include/stdlib.h:771:12: error: declaration for parameter ‘abs’ but no such parameter
+/usr/include/stdlib.h:742:15: error: declaration for parameter ‘__compar_fn_t’ but no such parameter
+/usr/include/stdlib.h:717:12: error: declaration for parameter ‘system’ but no such parameter
+/usr/include/stdlib.h:572:14: error: declaration for parameter ‘__secure_getenv’ but no such parameter
+/usr/include/stdlib.h:567:14: error: declaration for parameter ‘getenv’ but no such parameter
+/usr/include/stdlib.h:544:13: error: declaration for parameter ‘exit’ but no such parameter
+/usr/include/stdlib.h:518:12: error: declaration for parameter ‘atexit’ but no such parameter
+/usr/include/stdlib.h:514:13: error: declaration for parameter ‘abort’ but no such parameter
+/usr/include/stdlib.h:488:13: error: declaration for parameter ‘free’ but no such parameter
+/usr/include/stdlib.h:382:13: error: declaration for parameter ‘srand’ but no such parameter
+/usr/include/stdlib.h:380:12: error: declaration for parameter ‘rand’ but no such parameter
+/usr/include/stdlib.h:188:26: error: declaration for parameter ‘strtoul’ but no such parameter
+/usr/include/stdlib.h:184:17: error: declaration for parameter ‘strtol’ but no such parameter
+/usr/include/stdlib.h:165:15: error: declaration for parameter ‘strtod’ but no such parameter
+/usr/include/stdlib.h:151:17: error: declaration for parameter ‘atol’ but no such parameter
+/usr/include/stdlib.h:148:12: error: declaration for parameter ‘atoi’ but no such parameter
+/usr/include/stdlib.h:145:15: error: declaration for parameter ‘atof’ but no such parameter
+/usr/include/stdlib.h:110:5: error: declaration for parameter ‘ldiv_t’ but no such parameter
+/usr/include/stdlib.h:102:5: error: declaration for parameter ‘div_t’ but no such parameter
+In file included from /usr/include/stdlib.h:33:0,
+                 from include/Lista.h:12,
+                 from include/Defesa.h:12,
+                 from src/Cenario.c:2:
+/usr/lib/gcc/x86_64-linux-gnu/4.7/include/stddef.h:325:24: error: declaration for parameter ‘wchar_t’ but no such parameter
+/usr/lib/gcc/x86_64-linux-gnu/4.7/include/stddef.h:213:23: error: declaration for parameter ‘size_t’ but no such parameter
+src/Cenario.c:88:1: error: expected ‘{’ at end of input
+make: ** [obj/Cenario.o] Erro 1

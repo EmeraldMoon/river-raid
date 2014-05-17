@@ -26,6 +26,12 @@
  |   F U N Ç Õ E S   |
  *-------------------*/
 
+/*------------------------------------------------------------*
+ *
+ *  Recebe uma letra correspondente à uma tecla digitada pelo
+ *  usuário e executa o comando correspondente.
+ *
+ */
 void executaComando(char tecla)
 {
     tecla = toupper(tecla);
@@ -44,11 +50,12 @@ void executaComando(char tecla)
     if (nave.angY > ANG_MAX) nave.angY = ANG_MAX;
 }
 
-/*--------------------------------------------------------------------*
+/*------------------------------------------------------------*
  *
- *  Recebe um timestep, limpa a tela e imprime informação a respeito de
- *  todos os elementos do jogo neste timestep. É aguardado que o usuário
- *  pressione [Enter] e então espera-se até a próxima chamada da função.
+ *  Recebe um timestep, limpa a tela e imprime informação
+ *  a respeito de todos os elementos do jogo neste timestep.
+ *  É aguardado que o usuário pressione [Enter] e então
+ *  espera-se até a próxima chamada da função.
  *
  *  Para efeitos de clareza, todas as componentes Z, exceto
  *  a da nave, são relativas à nave em si (e não absolutas).
@@ -67,8 +74,8 @@ void imprimeElementos(int timestep)
     printf("Timestep %d\n", timestep);
     puts("==============");
     puts("{Nave}");
-    printf("Energia: %-3d/%d\n", nave.hp, NAVE_HP);
-    printf("Posição: (%d, %d, %d)\n", nave.x, nave.y, nave.z);
+    printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
+    printf("Posição: (%d, %d, %d)\n", nave.base.x, nave.base.y, nave.base.z);
     
     puts("\n{Inimigos}");
     puts("   ( x, y, z)       Recarga    Precisão  ");
@@ -76,8 +83,8 @@ void imprimeElementos(int timestep)
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         printf(" (%3d, %2d, %3d)      %2d/%2d       %3.0f%%\n",
-            foe->x, foe->y, (foe->z - nave.z),
-            foe->espera, foe->cooldown, 100*foe->precisao);
+            foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
+            foe->base.espera, foe->base.cooldown, 100*foe->precisao);
     }
     puts("\n{Projéteis}");
     puts("   ( x, y, z)          [ vx, vy, vz]     ");
@@ -85,7 +92,7 @@ void imprimeElementos(int timestep)
     for (p = projeteis; p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
         printf(" (%3.0f, %2.0f, %3.0f)      [%4.1f, %4.1f, %4.1f] \n",
-            bullet->x, bullet->y, (bullet->z - nave.z),
+            bullet->x, bullet->y, (bullet->z - nave.base.z),
             bullet->vx, bullet->vy, bullet->vz);
     }
     
@@ -109,7 +116,7 @@ int main(int argc, char **argv)
 
     inicializa();
     srand(semente);
-    hpAtual = nave.hp;    
+    hpAtual = nave.base.hp;    
 
     cont = TEMPO_INIMIGOS;
     for (timestep = 1; nave.vidas >= 0; timestep++) {
@@ -121,9 +128,9 @@ int main(int argc, char **argv)
         }
         else cont--;
 
-        if (nave.hp < hpAtual) {
+        if (nave.base.hp < hpAtual) {
             imprimeElementos(timestep);
-            hpAtual = nave.hp;
+            hpAtual = nave.base.hp;
         }
     }
     liberaCenario();

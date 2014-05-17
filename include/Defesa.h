@@ -10,14 +10,16 @@
 
 #include <stdbool.h>
 #include "Lista.h"
+#include "Base.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
 /* Atributos padrão */
-#define FOE_HP   100
-#define FOE_RAIO  30
+#define FOE_HP     100
+#define FOE_RAIO    30
+#define FOE_ALTURA 100
 
 /*
  *  Representa um inimigo (elemento de defesa).
@@ -27,7 +29,7 @@ struct inimigo
 {
     Esqueleto base;
 
-    /* Probabilidade do projétil acertar a nave */
+    /* Chance (esperada) de um projétil disparado acertar a nave */
     double precisao;
 };
 
@@ -43,10 +45,10 @@ extern Lista *inimigos;
 void criaInimigo(Inimigo foe);
 
 /*
- *  Dispara um projétil mirando a nave e atualiza o tempo
+ *  Dispara um projétil em direção à nave e atualiza o tempo
  *  de recarga, gerando um período de espera até o próximo.
  */
-void InimigoDispara(Inimigo *foe);
+void inimigoDispara(Inimigo *foe);
 
 /*
  *  Verifica se o inimigo passou pela nave e saiu

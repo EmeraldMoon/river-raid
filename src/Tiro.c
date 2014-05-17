@@ -1,6 +1,7 @@
 #include <math.h>  /* sqrt, abs, sin, cos, atan */
-#include "Nave.h"
 #include "Tiro.h"
+#include "Nave.h"
+#include "Defesa.h"
 #include "Cenario.h"
 #include "Base.h"
 #include "Random.h"
@@ -29,6 +30,10 @@ void aplicaPrecisao(Projetil *bullet, double precisao)
 {
     double ang, hip;
     double desvio = (1 - precisao) * PI/2;
+
+    double vx = bullet->vx;
+    double vy = bullet->vy;
+    double vz = bullet->vz;
 
     /* Desvio horizontal */
     ang = normal(atan(vx/vz), desvio);
@@ -64,13 +69,15 @@ void moveProjetil(Projetil *bullet)
  */
 bool projetilAcertou(Projetil *bullet)
 {
+    Celula *p;
+
     /* Verificação de colisão com a nave */
-    if (projetilColidiu(bullet, nave.corpo)) return true;
+    if (projetilColidiu(bullet, nave.base)) return true;
 
     /* Verificação de colisão com algum inimigo */
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-        if (projetilColidiu(bullet, foe->corpo)) return true;
+        if (projetilColidiu(bullet, foe->base)) return true;
     }
 
     return false;
@@ -78,6 +85,7 @@ bool projetilAcertou(Projetil *bullet)
 
 static bool projetilColidiu(Projetil *bullet, Esqueleto corpo)
 {
+    double d, dAltura;
     int dx = bullet->x - corpo.x;
     int dy = bullet->y - corpo.y;
     int dz = bullet->z - corpo.z;
@@ -86,10 +94,10 @@ static bool projetilColidiu(Projetil *bullet, Esqueleto corpo)
     /* Esta parte visa evitar cálculos desnecessários */
     if (dx >= somaRaios || dz >= somaRaios) return false;
 
-    double d = sqrt(sq(dx) + sq(dy) + sq(dz));
-    double dAlt = abs(dy) - (corpo.altura/2 + corpo.raio);
+    d = sqrt(sq(dx) + sq(dy) + sq(dz));
+    dAltura = abs(dy) - (corpo.altura/2 + corpo.raio);
 
-    return (d < somaRaios && dAlt > 0);
+    return (d < somaRaios && dAltura > 0);
 }
 
 /*------------------------------------------------------------*
@@ -102,7 +110,7 @@ static bool projetilColidiu(Projetil *bullet, Esqueleto corpo)
  */
 bool projetilSaiu(Projetil *bullet)
 {
-    return (bullet->z < nave.z - nave.raio)
+    return (bullet->z < nave.base.z - nave.base.raio)
         || (bullet->y <= 0 || bullet->y >= Y_MAX)
         || (abs(bullet->x) >= X_MAX);
 }

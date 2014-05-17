@@ -28,14 +28,10 @@ typedef struct projetil Projetil;
 struct projetil
 {
     /* Posição do projétil (x,y,z) */
-    double x;
-    double y;
-    double z;
+    double x, y, z;
 
     /* Componentes da velocidade para cada eixo */
-    double vx;
-    double vy;
-    double vz;    
+    double vx, vy, vz;    
 
     /* Energia removida do elemento em caso de acerto */
     unsigned int dano;

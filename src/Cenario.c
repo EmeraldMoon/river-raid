@@ -1,7 +1,7 @@
+#include "Cenario.h"
 #include "Nave.h"
 #include "Defesa.h"
 #include "Tiro.h"
-#include "Cenario.h"
 #include "Random.h"
 
 /* Elementos básicos do jogo */
@@ -15,7 +15,7 @@ Lista *projeteis;
 
 void inicializa()
 {
-    criaNave(Z_INI);
+    criaNave(0, VIDAS_INI);
     inimigos  = criaLista();
     projeteis = criaLista();
 }
@@ -33,7 +33,7 @@ void atualizaCenario()
     p = inimigos;
     while (p->prox != NULL) {
         Inimigo *foe = p->prox->item;
-        if ((foe->espera)-- == 0) inimigoDispara(foe);
+        if ((foe->base.espera)-- == 0) inimigoDispara(foe);
         if (inimigoSaiu(foe)) exclui(p);
         else p = p->prox;
     }
@@ -42,7 +42,7 @@ void atualizaCenario()
         Projetil *bullet = p->prox->item;
         moveProjetil(bullet);
         if (projetilAcertou(bullet)) {
-            nave.hp -= bullet->dano;
+            nave.base.hp -= bullet->dano;
             exclui(p);
         }
         else if (projetilSaiu(bullet)) exclui(p);
@@ -50,9 +50,9 @@ void atualizaCenario()
     }
 
     /* Verifica se nave perdeu vida */
-    if (nave.hp <= 0) {
+    if (nave.base.hp <= 0) {
         (nave.vidas)--;
-        if (vidas >= 0) criaNave(nave.z);
+        if (nave.vidas >= 0) criaNave(nave.base.z, nave.vidas);
     }
 }
 
@@ -67,14 +67,16 @@ void geraInimigo()
     Inimigo foe;
 
     /* (uniforme(-1, 0) | 1) gera um número que é 1 ou -1 */
-    foe.x = uniforme(X_MAX/2, X_MAX) * (uniforme(-1, 0) | 1);
-    foe.y = uniforme(0, Y_MAX);
-    foe.z = nave.z + Z_MAX;
+    foe.base.x = uniforme(X_MAX/2, X_MAX) * (uniforme(-1, 0) | 1);
+    foe.base.y = uniforme(0, Y_MAX);
+    foe.base.z = nave.base.z + Z_MAX;
 
-    foe.precisao = uniformeD(0.5, 1.0);
-    foe.hp       = FOE_HP;
-    foe.cooldown = uniforme(10, 20);
-    foe.espera   = foe.cooldown;
+    foe.precisao      = uniformeD(0.5, 1.0);
+    foe.base.hp       = FOE_HP;
+    foe.base.cooldown = uniforme(10, 20);
+    foe.base.espera   = foe.base.cooldown;
+    foe.base.raio     = FOE_RAIO;
+    foe.base.altura   = FOE_ALTURA;
 
     criaInimigo(foe);
 }
