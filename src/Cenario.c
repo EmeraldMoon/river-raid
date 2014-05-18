@@ -41,7 +41,7 @@ void atualizaCenario()
     while (p->prox != NULL) {
         Projetil *bullet = p->prox->item;
         moveProjetil(bullet);
-        if (projetilAcertou(bullet)) {
+        if (projetilAcertou(bullet) == NAVE) {
             nave.base.hp -= bullet->dano;
             exclui(p);
         }
@@ -71,12 +71,12 @@ void geraInimigo()
     foe.base.y = uniforme(0, Y_MAX);
     foe.base.z = nave.base.z + Z_MAX;
 
-    foe.precisao      = uniformeD(0.5, 1.0);
     foe.base.hp       = FOE_HP;
     foe.base.cooldown = uniforme(10, 20);
     foe.base.espera   = foe.base.cooldown;
     foe.base.raio     = FOE_RAIO;
     foe.base.altura   = FOE_ALTURA;
+    foe.precisao      = uniformeD(0.5, 1.0);
 
     criaInimigo(foe);
 }

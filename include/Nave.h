@@ -14,8 +14,8 @@
  *-------------------------*/
 
 /* Atributos iniciais e/ou fixos */
-#define NAVE_VEL      5
 #define VIDAS_INI     3
+#define NAVE_VEL      5
 #define NAVE_HPMAX  100
 #define NAVE_COOL     5
 #define NAVE_RAIO    10
@@ -56,7 +56,7 @@ extern Nave nave;
  *  Recebe a posição no eixo Oz da nave e um número de vidas.
  *  Inicializa os atributos da nave.
  */
-void criaNave(int z, int nVidas);
+void criaNave(int zIni, int nVidas);
 
 /*
  *  Atualiza a posição da nave em relação ao timestep anterior.

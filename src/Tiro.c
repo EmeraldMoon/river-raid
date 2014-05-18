@@ -67,20 +67,20 @@ void moveProjetil(Projetil *bullet)
  *  seja MENOR que a soma dos raios de ambos (d < r + R).
  *
  */
-bool projetilAcertou(Projetil *bullet)
+Alvo projetilAcertou(Projetil *bullet)
 {
     Celula *p;
 
     /* Verificação de colisão com a nave */
-    if (projetilColidiu(bullet, nave.base)) return true;
+    if (projetilColidiu(bullet, nave.base)) return NAVE;
 
     /* Verificação de colisão com algum inimigo */
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-        if (projetilColidiu(bullet, foe->base)) return true;
+        if (projetilColidiu(bullet, foe->base)) return INIMIGO;
     }
 
-    return false;
+    return MISS;
 }
 
 static bool projetilColidiu(Projetil *bullet, Esqueleto corpo)

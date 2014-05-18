@@ -74,6 +74,7 @@ void imprimeElementos(int timestep)
     printf("Timestep %d\n", timestep);
     puts("==============");
     puts("{Nave}");
+    printf("VIDAS: %d\n", nave.vidas);
     printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
     printf("Posição: (%d, %d, %d)\n", nave.base.x, nave.base.y, nave.base.z);
     
@@ -128,11 +129,12 @@ int main(int argc, char **argv)
         }
         else cont--;
 
-        if (nave.base.hp < hpAtual) {
+        if (nave.base.hp != hpAtual) {
             imprimeElementos(timestep);
             hpAtual = nave.base.hp;
         }
     }
+    
     liberaCenario();
 
     return EXIT_SUCCESS;

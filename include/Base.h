@@ -19,7 +19,7 @@
 #define sq(x) (pow((x), 2))
 
 /*
- *  Estrutura básica de um elemento corporal do jogo.
+ *  Estrutura básica de um elemento corpóreo do jogo.
  *  A ser usada comumente entre nave e seus inimigos.
  */
 typedef struct esqueleto Esqueleto;
@@ -36,7 +36,7 @@ struct esqueleto
     unsigned int cooldown;  /* valor máximo, fixo */
     unsigned int espera;    /* sofre decremento até chegar a 0 */
 
-    /* Representação de colisão é feita por um CILINDRO reto */
+    /* Corpo de colisão é um CILINDRO reto */
     unsigned int raio;
     unsigned int altura;
 };

@@ -22,8 +22,8 @@
 #define Y_MAX  90
 #define Z_MAX 400
 
-/* Valor da aceleração da gravidade */
-#define ACEL_GRAV 0.5
+/* Aceleração da gravidade em pixels/timestep² */
+#define ACEL_GRAV 0.1
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -36,8 +36,8 @@ void inicializa();
 
 /*
  *  Atualiza a posição dos elementos, eliminando os que
- *  saírem da tela ou acertarem a nave, e removendo a 
- *  energia correspondente ao dano neste último caso.
+ *  saírem da tela ou acertarem a nave, e atualizando
+ *  outros valores em decorrência dos acontecimentos.
  */
 void atualizaCenario();
 

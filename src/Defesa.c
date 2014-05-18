@@ -22,13 +22,14 @@ void inimigoDispara(Inimigo *foe)
 
     bullet.x = foe->base.x;
     bullet.y = foe->base.y;
-    bullet.z = foe->base.z - foe->base.raio - BALA_RAIO;
+    bullet.z = foe->base.z - (foe->base.raio + BALA_RAIO);
     bullet.dano = BALA_DANO;
 
     miraProjetil(&bullet);
     aplicaPrecisao(&bullet, foe->precisao);
     criaProjetil(bullet);
 
+    /* Reinicia contagem até próximo tiro */
     foe->base.espera = foe->base.cooldown;
 }
 

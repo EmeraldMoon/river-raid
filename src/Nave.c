@@ -10,19 +10,19 @@ static void direcionaProjetil(Projetil *bullet);
  |   F U N Ç Õ E S   |
  *-------------------*/
 
-void criaNave(int z, int nVidas)
+void criaNave(int zIni, int nVidas)
 {
     /* Coordenadas iniciais */
     nave.base.x = 0;
     nave.base.y = Y_MAX/2;
-    nave.base.z = 0;
+    nave.base.z = zIni;
 
     /* Começa apontando para o centro */
     nave.angX = 0.0;
     nave.angY = 0.0;
 
-    nave.vz            = NAVE_VEL;
     nave.vidas         = nVidas;
+    nave.vz            = NAVE_VEL;
     nave.base.hp       = NAVE_HPMAX;
     nave.base.cooldown = NAVE_COOL;
     nave.base.espera   = nave.base.cooldown;
@@ -60,14 +60,15 @@ void naveDispara()
     direcionaProjetil(&bullet);
     criaProjetil(bullet);
 
+    /* Reinicia contagem até próximo tiro */
     nave.base.espera = nave.base.cooldown;
 }
 
 /*------------------------------------------------------------*
  *
  *  Recebe um ponteiro para um ângulo de inclinação da nave e
- *  dimunui seu valor em módulo.
- *  Caso chegue a 0°, direção é mantida.
+ *  dimunui seu valor em módulo. Caso chegue a 0°, direção é
+ *  mantida.
  *
  */
 static void atualizaDirecao(double *ang)
