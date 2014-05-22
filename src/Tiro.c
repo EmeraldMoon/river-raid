@@ -3,10 +3,9 @@
 #include "Nave.h"
 #include "Defesa.h"
 #include "Cenario.h"
-#include "Base.h"
 #include "Random.h"
 
-static bool projetilColidiu(Projetil *bullet, Esqueleto corpo);
+static bool projetilColidiu(Projetil *bullet, Corpo corpo);
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -71,18 +70,29 @@ bool projetilAcertou(Projetil *bullet)
     Celula *p;
 
     /* Verificação de colisão com a nave */
-    if (projetilColidiu(bullet, nave.base)) return true;
+    if (projetilColidiu(bullet, nave.base)) {
+        nave.base.hp -= bullet->dano;
+        return true;
+    }
 
     /* Verificação de colisão com algum inimigo */
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-        if (projetilColidiu(bullet, foe->base)) return true;
+        if (projetilColidiu(bullet, foe->base)) {
+            foe->base.hp -= bullet->dano;
+            if (bullet.amigo) score += PONTOS_ACERTO;
+            if (foe->base.hp <= 0) {
+                exclui(p);
+                if (bullet.amigo) score += PONTOS_DESTRUCT;
+            }
+            return true;
+        }
     }
 
     return false;
 }
 
-static bool projetilColidiu(Projetil *bullet, Esqueleto corpo)
+static bool projetilColidiu(Projetil *bullet, Corpo corpo)
 {
     double d, dAltura;
     int dx = bullet->x - corpo.x;

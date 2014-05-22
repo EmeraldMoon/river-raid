@@ -72,19 +72,21 @@ void imprimeElementos(int timestep)
     printf("Timestep %d\n", timestep);
     puts("==============");
     puts("{Nave}");
+    printf("PONTUAÇÂO: %d\n", score);
     printf("VIDAS: %d\n", nave.vidas);
     printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
-    printf("Posição: (%d, %d, %d)\n", 
+    printf("Posição: (%g, %g, %g)\n", 
         nave.base.x, nave.base.y, nave.base.z);
     
     puts("\n{Inimigos}");
-    puts("   ( x, y, z)       Recarga    Precisão  ");
-    puts("----------------    -------    --------  ");
+    puts("   ( x, y, z)       Recarga    Precisão      HP   ");
+    puts("----------------    -------    --------   --------");
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-        printf(" (%3d, %2d, %3d)      %2d/%2d       %3.0f%%\n",
+        printf(" (%3g, %2g, %3g)      %2d/%2d       %3.0f%%     %3d/%3d\n",
             foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
-            foe->base.espera, foe->base.cooldown, 100*foe->precisao);
+            foe->base.espera, foe->base.cooldown, 100 * foe->precisao,
+            foe->base.hp, FOE_HPMAX);
     }
     puts("\n{Projéteis}");
     puts("   ( x, y, z)          [ vx, vy, vz]     ");
@@ -127,7 +129,8 @@ int main(int argc, char **argv)
         }
         else cont--;
 
-        if (nave.base.hp != hpAtual) {
+        /*if (nave.base.hp != hpAtual) {*/
+        if (timestep % 10 == 0) {
             imprimeElementos(timestep);
             hpAtual = nave.base.hp;
         }

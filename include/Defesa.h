@@ -17,9 +17,13 @@
  *-------------------------*/
 
 /* Atributos padrão */
-#define FOE_HP     100
+#define FOE_HPMAX  100
 #define FOE_RAIO    30
 #define FOE_ALTURA 100
+
+/* Pontuação */
+#define PONTOS_ACERTO     10
+#define PONTOS_DESTRUCT 1000
 
 /*
  *  Representa um inimigo (elemento de defesa).
@@ -27,7 +31,7 @@
 typedef struct inimigo Inimigo;
 struct inimigo
 {
-    Esqueleto base;
+    Corpo base;
 
     /* Chance (esperada) de um projétil disparado acertar a nave */
     double precisao;

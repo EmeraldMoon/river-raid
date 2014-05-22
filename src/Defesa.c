@@ -3,8 +3,6 @@
 #include "Nave.h"
 #include "Tiro.h"
 
-static void miraProjetil(Projetil *bullet);
-
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*/
@@ -24,9 +22,9 @@ void inimigoDispara(Inimigo *foe)
 
     /* Calcula distância entre coordenadas de inimigo e nave.
        No caso do eixo z, considera-se a posição um pouco à frente. */
-    dx = foe->base.x - nave.base.x;
-    dy = foe->base.y - nave.base.y;
-    dz = foe->base.z - (nave.base.z + nave.base.raio);
+    dx = nave.base.x - foe->base.x;
+    dy = nave.base.y - foe->base.y;
+    dz = (nave.base.z + nave.base.raio) - foe->base.z;
 
     d = norma(dx, dy, dz);
 
@@ -36,12 +34,14 @@ void inimigoDispara(Inimigo *foe)
     bullet.vy = k * dy;
     bullet.vz = k * dz;
 
+    /* Posição inicial de projétil segue direção da nave */
     r = (foe->base.raio + BALA_RAIO)/d;
     bullet.x = foe->base.x + (r * dx);
     bullet.y = foe->base.y + (r * dy);
     bullet.z = foe->base.z + (r * dz);
 
     bullet.dano = BALA_DANO;
+    bullet.amigo = false;
     
     aplicaPrecisao(&bullet, foe->precisao);
     criaProjetil(bullet);

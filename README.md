@@ -6,10 +6,10 @@ Segunda parte
 
 ### Versão 0.6
 
-###### 22/04:
+###### 22/05:
   - Nada por enquanto.
 
-###### 21/04:
+###### 21/05:
   - Somos agora (não tão) orgulhosamente usuários do ***GitHub***. Dessa vez para valer.
   - Novo integrante adicionado ao grupo. Corrigidos erros imperdoáveis de português.
   - ***Tiro.c***: Detecção de saída do projétil passa a levar em conta limite *Z_MAX* da tela.
@@ -23,7 +23,7 @@ Segunda parte
   - ***Nave.h***: Novo atributo *vidas*, representando o nº de chances do jogador.
 
 ###### 14/05:
-  - ***Base.h***: Novo módulo com definições comuns que não se enquadram em nenhum outro lugar do projeto. Em especial, foi criada uma estrutura *Esqueleto*, com atributos básicos (posição, energia, recarga, formato) a serem usados comumente entre nave e inimigos.
+  - ***Base.h***: Novo módulo com definições comuns que não se enquadram em nenhum outro lugar do projeto. Em especial, foi criada uma estrutura *Corpo*, com atributos básicos (posição, energia, recarga, formato) a serem usados comumente entre nave e inimigos.
   - ***Tiro.c***: Adicionada ação da gravidade sobre os projéteis.
   - ***Nave.h, Defesa.h***: Detecção de colisão passa a levar em conta nave e inimigos como corpos cilíndricos.
   - ***Nave.c***: Implementada alteração de direção da nave. Por meio das setas direcionais, o usuário pode alterar a inclinação da mesma, sob uma certa taxa, até um determinado limite. A nave tende naturalmente a voltar à posição orientada ao centro, sob uma taxa diferente.
@@ -101,4 +101,4 @@ Primeira parte
   - ***Defesa.h, Tiro.h***: Definidos atributos básicos.
 
 ###### 09/04: 
-  - Esqueleto do código montado, criação de alguns .h
+  - Corpo do código montado, criação de alguns .h

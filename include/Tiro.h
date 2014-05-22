@@ -11,6 +11,7 @@
 #define TIRO_H
 
 #include <stdbool.h>
+#include "Base.h"
 #include "Lista.h"
 
 /*-------------------------*
@@ -35,6 +36,9 @@ struct projetil
 
     /* Energia removida do elemento em caso de acerto */
     unsigned int dano;
+
+    /* Se true, tiro foi disparado pela nave */
+    bool amigo;
 };
 
 extern Lista *projeteis;
@@ -60,14 +64,18 @@ void aplicaPrecisao(Projetil *bullet, double precisao);
 void moveProjetil(Projetil *bullet);
 
 /*
- *  Recebe um projétil e devolve o tipo de alvo acertado
- *  por ele, ou MISS caso não tenha atingido nenhum.
+ *  Recebe um projétil. Se colisão for verificada com algum elemento,
+ *  remove HP do mesmo e, caso seja um inimigo, verifica também se o mesmo
+ *  foi destruído. Caso tiro tenho sido dado pela nave, são dados pontos
+ *  ao jogador por acerto e por destruição.
+ *
+ *  A função devolve true caso haja um acerto qualquer, ou false caso contrário.
  */
 bool projetilAcertou(Projetil *bullet);
 
 /*
  *  O projétil em questão saiu da tela de jogo?
- *  Considera-se fora de jogo caso saia de um dos limites da tela.
+ *  Considera-se fora de jogo caso saia por um dos limites da tela.
  */
 bool projetilSaiu(Projetil *bullet);
 

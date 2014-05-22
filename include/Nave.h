@@ -22,7 +22,7 @@
 #define NAVE_ALTURA   5
 
 /* Ângulo de inclinação máxima */
-#define ANG_MAX PI/4
+#define ANG_MAX PI/6
 
 /* Taxas de alteração da direção a cada timestep */
 #define ANG_MANUAL ANG_MAX/20  /* por comando do usuário */
@@ -34,7 +34,7 @@
 typedef struct nave Nave;
 struct nave
 {
-    Esqueleto base;
+    Corpo base;
 
     /* Número de chances do jogador */
     int vidas;

@@ -4,7 +4,6 @@
 #include "Cenario.h"
 
 static void atualizaDirecao(double *ang);
-static void direcionaProjetil(Projetil *bullet);
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -62,11 +61,12 @@ void naveDispara()
 
     /* Posição inicial será colinear ao centro da nave e ao destino */
     r = (nave.base.raio + BALA_RAIO)/modulo;
-    bullet.x = nave.x + (r * nave.vx);
-    bullet.y = nave.y + (r * nave.vy);
-    bullet.z = nave.z + (r * nave.vz);
+    bullet.x = nave.base.x + (r * nave.vx);
+    bullet.y = nave.base.y + (r * nave.vy);
+    bullet.z = nave.base.z + (r * nave.vz);
 
     bullet.dano = BALA_DANO;
+    bullet.amigo = true;
     
     criaProjetil(bullet);
 

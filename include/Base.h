@@ -25,8 +25,8 @@
  *  Estrutura básica de um elemento corpóreo do jogo.
  *  A ser usada comumente entre nave e seus inimigos.
  */
-typedef struct esqueleto Esqueleto;
-struct esqueleto
+typedef struct corpo Corpo;
+struct corpo
 {
     double x;  /* posição horizontal (centro == 0) */
     double y;  /* altura em relação ao solo */
