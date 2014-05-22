@@ -39,9 +39,6 @@ struct projetil
 
 extern Lista *projeteis;
 
-/* Tipo para representar alvo atingido */
-typedef enum {MISS, NAVE, INIMIGO} Alvo;
-
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/
@@ -66,7 +63,7 @@ void moveProjetil(Projetil *bullet);
  *  Recebe um projétil e devolve o tipo de alvo acertado
  *  por ele, ou MISS caso não tenha atingido nenhum.
  */
-Alvo projetilAcertou(Projetil *bullet);
+bool projetilAcertou(Projetil *bullet);
 
 /*
  *  O projétil em questão saiu da tela de jogo?

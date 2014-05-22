@@ -1,12 +1,10 @@
 /*------------------------------------------------------------------*
  |                                                                  |
- |  Módulo de testes para a primeira parte do projeto.              |
- |  Simula um jogo básico, ainda sem interação com o usuário,       |
- |  e exibe informações na tela toda vez que a nave for atingida.   |
+ |  Módulo de testes para a segunda parte do projeto.               |
+ |  Simula um jogo básico, recebendo comandos do usuário e          |
+ |  exibindo informações na tela a respeito dos elementos do jogo.  |
  |                                                                  |
- |  Uso: ./bin/River [semente]                                      |
- |  - semente: inteiro para o gerador de nºs aleatórios. Caso       |
- |             nenhuma seja digitada, usa-se o relógio do sistema.  |
+ |  Uso: ./bin/River [???]                                          |
  |                                                                  |
  *------------------------------------------------------------------*/
 
@@ -26,7 +24,7 @@
  |   F U N Ç Õ E S   |
  *-------------------*/
 
-/*------------------------------------------------------------*
+/*------------------------------------------------------------------*
  *
  *  Recebe uma letra correspondente à uma tecla digitada pelo
  *  usuário e executa o comando correspondente.
@@ -50,21 +48,21 @@ void executaComando(char tecla)
     if (nave.angY > ANG_MAX) nave.angY = ANG_MAX;
 }
 
-/*------------------------------------------------------------*
+/*------------------------------------------------------------------*
  *
- *  Recebe um timestep, limpa a tela e imprime informação
- *  a respeito de todos os elementos do jogo neste timestep.
- *  É aguardado que o usuário pressione [Enter] e então
- *  espera-se até a próxima chamada da função.
+ *  Recebe um timestep e mostra informação a respeito de todos os
+ *  elementos do jogo neste momento. Após usuário pressionar [Enter] 
+ *  aguarda-se até a próxima chamada da função.
  *
- *  Para efeitos de clareza, todas as componentes Z, exceto
- *  a da nave, são relativas à nave em si (e não absolutas).
+ *  Para efeitos de clareza, todas as componentes Z, exceto a da
+ *  nave, são relativas à nave em si (e não absolutas).
  *
  */
 void imprimeElementos(int timestep)
 {
     Celula *p;
 
+    /* Limpa a tela */
     #ifdef __linux__
         system("clear");
     #elif  _WIN32
@@ -76,7 +74,8 @@ void imprimeElementos(int timestep)
     puts("{Nave}");
     printf("VIDAS: %d\n", nave.vidas);
     printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
-    printf("Posição: (%d, %d, %d)\n", nave.base.x, nave.base.y, nave.base.z);
+    printf("Posição: (%d, %d, %d)\n", 
+        nave.base.x, nave.base.y, nave.base.z);
     
     puts("\n{Inimigos}");
     puts("   ( x, y, z)       Recarga    Precisão  ");
@@ -100,9 +99,7 @@ void imprimeElementos(int timestep)
     getchar();
 }
 
-/*------------------------------------------------------------*/
-
-/*----------------*
+/*----------------*-------------------------------------------------*
  |   M  A  I  N   |
  *----------------*/
 
@@ -117,9 +114,10 @@ int main(int argc, char **argv)
 
     inicializa();
     srand(semente);
+    cont = TEMPO_INIMIGOS;
     hpAtual = nave.base.hp;    
 
-    cont = TEMPO_INIMIGOS;
+    /* Loop principal de execução */
     for (timestep = 1; nave.vidas >= 0; timestep++) {
         atualizaCenario();
 

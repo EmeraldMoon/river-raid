@@ -48,7 +48,7 @@ void aplicaPrecisao(Projetil *bullet, double precisao)
     vz = -cos(ang) * hip;
 }
 
-/*------------------------------------------------------------*/
+/*------------------------------------------------------------------*/
 
 void moveProjetil(Projetil *bullet)
 {
@@ -60,27 +60,26 @@ void moveProjetil(Projetil *bullet)
     bullet->z += bullet->vz;
 }
 
-/*------------------------------------------------------------*
+/*------------------------------------------------------------------*
  *
- *  Para efeito de testes, considera-se que o projétil
- *  acertou um elemento caso a distância entre os dois 
- *  seja MENOR que a soma dos raios de ambos (d < r + R).
+ *  Considera-se que o projétil acertou um elemento caso a distância
+ *  entre ambos seja MENOR que a soma dos raios (d < r + R).
  *
  */
-Alvo projetilAcertou(Projetil *bullet)
+bool projetilAcertou(Projetil *bullet)
 {
     Celula *p;
 
     /* Verificação de colisão com a nave */
-    if (projetilColidiu(bullet, nave.base)) return NAVE;
+    if (projetilColidiu(bullet, nave.base)) return true;
 
     /* Verificação de colisão com algum inimigo */
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-        if (projetilColidiu(bullet, foe->base)) return INIMIGO;
+        if (projetilColidiu(bullet, foe->base)) return true;
     }
 
-    return MISS;
+    return false;
 }
 
 static bool projetilColidiu(Projetil *bullet, Esqueleto corpo)
@@ -91,7 +90,7 @@ static bool projetilColidiu(Projetil *bullet, Esqueleto corpo)
     int dz = bullet->z - corpo.z;
     int somaRaios = corpo.raio + BALA_RAIO;
 
-    /* Esta parte visa evitar cálculos desnecessários */
+    /* Esta parte visa a evitar cálculos desnecessários */
     if (dx >= somaRaios || dz >= somaRaios) return false;
 
     d = sqrt(sq(dx) + sq(dy) + sq(dz));
@@ -100,17 +99,17 @@ static bool projetilColidiu(Projetil *bullet, Esqueleto corpo)
     return (d < somaRaios && dAltura > 0);
 }
 
-/*------------------------------------------------------------*
+/*------------------------------------------------------------------*
  *
- *  O projétil passou INTEIRAMENTE pela nave?
- *  O projétil saiu pelo limite superior ou inferior?
- *  O projétil saiu por um dos lados da tela?
+ *  O projétil saiu por um dos limites da tela (x, y ou z)?
+ *  O projétil ultrapassou inteiramente a nave?
  *  Caso uma das respostas seja sim, o projétil saiu do jogo.
  *
  */
 bool projetilSaiu(Projetil *bullet)
 {
-    return (bullet->z < nave.base.z - nave.base.raio)
-        || (bullet->y <= 0 || bullet->y >= Y_MAX)
-        || (abs(bullet->x) >= X_MAX);
+    return (bullet->x < -X_MAX || bullet->x > X_MAX)
+        || (bullet->y <      0 || bullet->y > Y_MAX)
+        || (bullet->z < nave.base.z - nave.base.raio
+            || bullet->z > nave.base.z + Z_MAX);
 }

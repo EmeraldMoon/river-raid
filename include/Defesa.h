@@ -46,7 +46,8 @@ void criaInimigo(Inimigo foe);
 
 /*
  *  Dispara um projétil em direção à nave e atualiza o tempo
- *  de recarga, gerando um período de espera até o próximo.
+ *  de recarga do inimigo. A fim de aumentar a chance de acerto,
+ *  os tiros são mirados logo à frente da posição da nave.
  */
 void inimigoDispara(Inimigo *foe);
 

@@ -13,7 +13,7 @@ static void direcionaProjetil(Projetil *bullet);
 void criaNave(int zIni, int nVidas)
 {
     /* Coordenadas iniciais */
-    nave.base.x = 0;
+    nave.base.x = 0.0;
     nave.base.y = Y_MAX/2;
     nave.base.z = zIni;
 
@@ -30,7 +30,7 @@ void criaNave(int zIni, int nVidas)
     nave.base.altura   = NAVE_ALTURA;
 }
 
-/*------------------------------------------------------------*/
+/*------------------------------------------------------------------*/
 
 void moveNave()
 {
@@ -46,55 +46,48 @@ void moveNave()
     atualizaDirecao(&(nave.angY));
 }
 
-/*------------------------------------------------------------*/
+/*------------------------------------------------------------------*/
 
 void naveDispara()
 {
     Projetil bullet;
+    double k, r;
+    double modulo = norma(nave.vx, nave.vy, nave.vz);
 
-    bullet.x = nave.base.x;
-    bullet.y = nave.base.y;
-    bullet.z = nave.base.z + nave.base.raio + BALA_RAIO;
+    /* Componentes da velocidade da bala são proporcionais à nave */
+    k = BALA_VEL/modulo;
+    bullet.vx = k * nave.vx;
+    bullet.vy = k * nave.vy;
+    bullet.vz = k * nave.vz;
+
+    /* Posição inicial será colinear ao centro da nave e ao destino */
+    r = (nave.base.raio + BALA_RAIO)/modulo;
+    bullet.x = nave.x + (r * nave.vx);
+    bullet.y = nave.y + (r * nave.vy);
+    bullet.z = nave.z + (r * nave.vz);
+
     bullet.dano = BALA_DANO;
-
-    direcionaProjetil(&bullet);
+    
     criaProjetil(bullet);
 
     /* Reinicia contagem até próximo tiro */
     nave.base.espera = nave.base.cooldown;
 }
 
-/*------------------------------------------------------------*
+/*------------------------------------------------------------------*
  *
- *  Recebe um ponteiro para um ângulo de inclinação da nave e
- *  dimunui seu valor em módulo. Caso chegue a 0°, direção é
- *  mantida.
+ *  Recebe um ponteiro para um ângulo de inclinação da nave e diminui
+ *  seu valor em módulo. Caso chegue a 0°, direção é mantida.
  *
  */
 static void atualizaDirecao(double *ang)
 {
-    if (*ang < 0) {
+    if (*ang < 0.0) {
         *ang += ANG_AUTO;
-        if (*ang > 0) *ang = 0;
+        if (*ang > 0.0) *ang = 0.0;
     }
-    else if (*ang > 0) {
+    else if (*ang > 0.0) {
         *ang -= ANG_AUTO;
-        if (*ang < 0) *ang = 0;
+        if (*ang < 0.0) *ang = 0.0;
     }
-}
-
-/*------------------------------------------------------------*
- *
- *  Posiciona a velocidade do projétil na mesma direção e 
- *  sentido da da nave, proporcional em módulo.
- *
- */
-static void direcionaProjetil(Projetil *bullet)
-{
-    double modulo = sqrt(sq(nave.vx) + sq(nave.vy) + sq(nave.vz));
-    double k = BALA_VEL/modulo;
-
-    bullet->vx = k * nave.vx;
-    bullet->vy = k * nave.vy;
-    bullet->vz = k * nave.vz;
 }

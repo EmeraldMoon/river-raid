@@ -7,11 +7,11 @@
 
 int uniforme(int a, int b)
 {
-    /* O (+1) na fórmula visa incluir 'b' */
+    /* O (+1) na fórmula visa a incluir 'b' */
     return (rand() % (b - a + 1)) + a;
 }
 
-/*------------------------------------------------------------*/
+/*------------------------------------------------------------------*/
 
 double uniformeD(double a, double b)
 {
@@ -19,10 +19,10 @@ double uniformeD(double a, double b)
     return (x * (b - a)) + a;
 }
 
-/*------------------------------------------------------------*
+/*------------------------------------------------------------------*
  *
- *  O código a seguir foi inspirado na biblioteca
- *  StdRandom (em java) de Sedgewick & Wayne.
+ *  O código a seguir foi inspirado na biblioteca StdRandom 
+ *  (em java) do livro "Algorithms", de Sedgewick & Wayne.
  *
  */
 double normal(double media, double desvpadr)
