@@ -3,8 +3,9 @@ Relatório
 
   - Integrantes:
     - (**8516782**) Daniel Toshio Iwamoto
-    - (**8536065**) Leonardo Pereira Macedo
     - (**7557797**) Gustavo Chicato Wandeur
+    - (**8536065**) Leonardo Pereira Macedo
+    
     
     
 Introdução
