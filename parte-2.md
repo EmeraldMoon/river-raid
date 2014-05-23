@@ -14,7 +14,7 @@ Introdução
 Resumo do que foi feito
 -----------------------
   - Acrescentado sitema de pontuação.
-  - Adicionado módulo Base.h, que contém definições que não se enquadram em nenhum outro modulo e uma estrutura Corpo contendo atributos comuns à nave e aos inimigos.
+  - Adicionado módulo Base.h, que contém definições que não se enquadram em nenhum outro modulo, e uma estrutura Corpo contendo atributos comuns à nave e aos inimigos.
   - Adicionado ação da gravidade nos projéteis.
   - Adicionado controle da nave.
   - Adicionado sistema de detecção de colisões.
