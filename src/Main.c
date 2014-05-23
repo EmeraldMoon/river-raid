@@ -4,7 +4,7 @@
  |  Simula um jogo básico, recebendo comandos do usuário e          |
  |  exibindo informações na tela a respeito dos elementos do jogo.  |
  |                                                                  |
- |  Uso: ./bin/River [???]                                          |
+ |  Uso: ./bin/River [semente] [intervalo para comandos]            |
  |                                                                  |
  *------------------------------------------------------------------*/
 
@@ -18,7 +18,8 @@
 #include "Cenario.h"
 
 /* Tempo de espera entre um inimigo e outro */
-#define TEMPO_INIMIGOS 10
+#define TEMPO_INIMIGOS  10
+#define TEMPO_COMANDO   40
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -89,16 +90,14 @@ void imprimeElementos(int timestep)
             foe->base.hp, FOE_HPMAX);
     }
     puts("\n{Projéteis}");
-    puts("   ( x, y, z)          [ vx, vy, vz]     ");
-    puts("----------------    -------------------- ");
+    puts("   ( x, y, z)          [ vx, vy, vz]       Amigo");
+    puts("----------------    --------------------   -----");
     for (p = projeteis; p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
-        printf(" (%3.0f, %2.0f, %3.0f)      [%4.1f, %4.1f, %4.1f] \n",
+        printf(" (%3.0f, %2.0f, %3.0f)      [%4.1f, %4.1f, %4.1f]      %d\n",
             bullet->x, bullet->y, (bullet->z - nave.base.z),
-            bullet->vx, bullet->vy, bullet->vz);
+            bullet->vx, bullet->vy, bullet->vz, bullet->amigo);
     }
-    
-    getchar();
 }
 
 /*----------------*-------------------------------------------------*
@@ -107,32 +106,33 @@ void imprimeElementos(int timestep)
 
 int main(int argc, char **argv)
 {
-    int semente;
+    int semente, tempoComando;
     int timestep, cont;
-    int hpAtual;
 
     if (argc < 2) semente = time(NULL);
     else          semente = atoi(argv[1]);
 
+    if (argc < 3) tempoComando = TEMPO_COMANDO;
+    else          tempoComando = atoi(argv[2]);
+
     inicializa();
     srand(semente);
-    cont = TEMPO_INIMIGOS;
-    hpAtual = nave.base.hp;    
+    cont = TEMPO_INIMIGOS; 
 
     /* Loop principal de execução */
     for (timestep = 1; nave.vidas > 0; timestep++) {
         atualizaCenario();
+
+        if (timestep % tempoComando == 0) {
+            imprimeElementos(timestep);
+            executaComando(getchar());
+        }
 
         if (cont == 0) {
             geraInimigo();
             cont = TEMPO_INIMIGOS;
         }
         else cont--;
-
-        if (nave.base.hp != hpAtual) {
-            imprimeElementos(timestep);
-            hpAtual = nave.base.hp;
-        }
     }
     
     liberaCenario();
