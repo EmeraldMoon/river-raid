@@ -1,13 +1,19 @@
 River Raid - Changelog
 ========================
 
+##### TODO:
+  - Lidar com as malditas colisões nave x inimigos.
+  - Implementar o maldito teste da segunda parte.
+
 Segunda parte
 -------------
 
 ### Versão 0.6
 
 ###### 22/05:
-  - Nada por enquanto.
+  - Pontuação em ação no jogo. Pontos são presenteados ao jogador em caso de acerto ou destruição de inimigos. 
+  - ***Tiro.h***: Novo atributo booleano *amigo*. Em caso de fogo amigo entre próprios inimigos, dano ocorre, mas pontos não são conferidos ao jogador.
+  - ***Defesa.h***: Corrigido erro que fazia os inimigos atirarem no sentido contrário do eixo Oz, o que tornava praticamente impossível aos projéteis acertarem a nave.
 
 ###### 21/05:
   - Somos agora (não tão) orgulhosamente usuários do ***GitHub***. Dessa vez para valer.
