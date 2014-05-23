@@ -24,7 +24,7 @@ Resumo do que foi feito
 
 Simulação
 ---------
-  Para testar o jogo, foi criado um módulo exclusivo para isso, que chamamos criativamente de Teste.c.
+  Para testar o jogo, foi usado o arquivo Main.c.
   
   Esse módulo trata de simular a execução de um jogo, desta vez com interação com o usuário. Este passa um comando a ser executado durante X frames.
   A nave se desloca progressivamente pelo meio da tela com velocidade constante, enquanto inimigos fixos são gerados aleatoriamente de tempos em tempos.
