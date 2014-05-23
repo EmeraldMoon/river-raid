@@ -20,12 +20,15 @@ void inimigoDispara(Inimigo *foe)
     int dx, dy, dz;
     double d, k, r;
 
+    bullet.dano = BALA_DANO;
+    bullet.raio = BALA_RAIO;
+    bullet.amigo = false;
+
     /* Calcula distância entre coordenadas de inimigo e nave.
        No caso do eixo z, considera-se a posição um pouco à frente. */
     dx = nave.base.x - foe->base.x;
     dy = nave.base.y - foe->base.y;
     dz = (nave.base.z + nave.base.raio) - foe->base.z;
-
     d = norma(dx, dy, dz);
 
     /* Gera vetor velocidade na referida direção */
@@ -39,9 +42,6 @@ void inimigoDispara(Inimigo *foe)
     bullet.x = foe->base.x + (r * dx);
     bullet.y = foe->base.y + (r * dy);
     bullet.z = foe->base.z + (r * dz);
-
-    bullet.dano = BALA_DANO;
-    bullet.amigo = false;
     
     aplicaPrecisao(&bullet, foe->precisao);
     criaProjetil(bullet);

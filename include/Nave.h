@@ -7,6 +7,8 @@
 #ifndef NAVE_H
 #define NAVE_H
 
+#include <stdbool.h>
+#include "Defesa.h"
 #include "Base.h"
 
 /*-------------------------*
@@ -28,6 +30,12 @@
 #define ANG_MANUAL ANG_MAX/20  /* por comando do usuário */
 #define ANG_AUTO   ANG_MAX/60  /* automático */
 
+/* Tempo padrão de invencibilidade */
+#define TEMPO_INVENCIVEL 50
+
+/* Energia perdida caso ocorra colisão com inimigos */
+#define DANO_COLISAO 20
+
 /*
  *  Representa a nave do jogador.
  */
@@ -37,13 +45,19 @@ struct nave
     Corpo base;
 
     /* Número de chances do jogador */
-    int vidas;
+    unsigned int vidas;
 
     /* Componentes da velocidade da nave */
     double vx, vy, vz;
 
     /* Inclinações em relação ao eixo Oz */
     double angX, angY;
+
+    /* Guarda pontuação do jogador */
+    unsigned int score;
+
+    /* Enquanto > 0, nave é imune a tiros e colisões */
+    unsigned int invencibilidade;
 };
 
 extern Nave nave;
@@ -56,7 +70,7 @@ extern Nave nave;
  *  Recebe a posição no eixo Oz da nave e um número de vidas.
  *  Inicializa os atributos da nave.
  */
-void criaNave(int zIni, int nVidas);
+void criaNave(int z, int nVidas);
 
 /*
  *  Atualiza a posição da nave em relação ao timestep anterior.
@@ -70,5 +84,18 @@ void moveNave();
  *  apontando e atualiza o tempo de recarga.
  */
 void naveDispara();
+
+/*
+ *  Recebe uma quantidade de dano, remove a energia em questão
+ *  da nave e ativa o período de invencibilidade. Caso hp <= 0,
+ *  jogador perde uma vida.
+ */
+void danificaNave(int dano);
+
+/*
+ *  Verifica se nave colidiu com um determinado inimigo,
+ *  ou seja, se seus corpos entraram em contato.
+ */
+bool naveColidiu(Inimigo *foe);
 
 #endif

@@ -25,9 +25,6 @@
 /* Aceleração da gravidade em pixels/timestep² */
 #define ACEL_GRAV 0.1
 
-/* Guarda pontuação do jogador */
-extern unsigned int score;
-
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/

@@ -72,18 +72,18 @@ void imprimeElementos(int timestep)
     printf("Timestep %d\n", timestep);
     puts("==============");
     puts("{Nave}");
-    printf("PONTUAÇÂO: %d\n", score);
+    printf("PONTUAÇÂO: %d\n", nave.score);
     printf("VIDAS: %d\n", nave.vidas);
     printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
     printf("Posição: (%g, %g, %g)\n", 
         nave.base.x, nave.base.y, nave.base.z);
     
     puts("\n{Inimigos}");
-    puts("   ( x, y, z)       Recarga    Precisão      HP   ");
-    puts("----------------    -------    --------   --------");
+    puts("   ( x, y, z)       Recarga    Precisão    Energia ");
+    puts("----------------    -------    --------   ---------");
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-        printf(" (%3g, %2g, %3g)      %2d/%2d       %3.0f%%     %3d/%3d\n",
+        printf(" (%3g, %2g, %3g)      %2d/%2d       %3.0f%%      %3d/%3d\n",
             foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
             foe->base.espera, foe->base.cooldown, 100 * foe->precisao,
             foe->base.hp, FOE_HPMAX);
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
     hpAtual = nave.base.hp;    
 
     /* Loop principal de execução */
-    for (timestep = 1; nave.vidas >= 0; timestep++) {
+    for (timestep = 1; nave.vidas > 0; timestep++) {
         atualizaCenario();
 
         if (cont == 0) {
@@ -129,8 +129,7 @@ int main(int argc, char **argv)
         }
         else cont--;
 
-        /*if (nave.base.hp != hpAtual) {*/
-        if (timestep % 10 == 0) {
+        if (nave.base.hp != hpAtual) {
             imprimeElementos(timestep);
             hpAtual = nave.base.hp;
         }

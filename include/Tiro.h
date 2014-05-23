@@ -19,8 +19,8 @@
  *-------------------------*/
 
 #define BALA_VEL  10  /* módulo da velocidade */
-#define BALA_DANO  5  /* dano padrão */
-#define BALA_RAIO  3  /* para testes, projéteis esféricos */
+#define BALA_DANO 10
+#define BALA_RAIO  3
 
 /*
  *  Representa um projétil causador de dano.
@@ -32,10 +32,13 @@ struct projetil
     double x, y, z;
 
     /* Componentes da velocidade para cada eixo */
-    double vx, vy, vz;    
+    double vx, vy, vz;
 
     /* Energia removida do elemento em caso de acerto */
     unsigned int dano;
+
+    /* Projéteis são esféricos */
+    unsigned int raio;
 
     /* Se true, tiro foi disparado pela nave */
     bool amigo;

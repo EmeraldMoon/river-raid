@@ -71,7 +71,7 @@ bool projetilAcertou(Projetil *bullet)
 
     /* Verificação de colisão com a nave */
     if (projetilColidiu(bullet, nave.base)) {
-        nave.base.hp -= bullet->dano;
+        danificaNave(bullet->dano);
         return true;
     }
 
@@ -80,10 +80,10 @@ bool projetilAcertou(Projetil *bullet)
         Inimigo *foe = p->prox->item;
         if (projetilColidiu(bullet, foe->base)) {
             foe->base.hp -= bullet->dano;
-            if (bullet.amigo) score += PONTOS_ACERTO;
+            if (bullet->amigo) nave.score += PONTOS_ACERTO;
             if (foe->base.hp <= 0) {
                 exclui(p);
-                if (bullet.amigo) score += PONTOS_DESTRUCT;
+                if (bullet->amigo) nave.score += PONTOS_DESTRUCT;
             }
             return true;
         }
@@ -94,19 +94,16 @@ bool projetilAcertou(Projetil *bullet)
 
 static bool projetilColidiu(Projetil *bullet, Corpo corpo)
 {
-    double d, dAltura;
     int dx = bullet->x - corpo.x;
     int dy = bullet->y - corpo.y;
     int dz = bullet->z - corpo.z;
-    int somaRaios = corpo.raio + BALA_RAIO;
+    int somaRaios = corpo.raio + bullet->raio;
 
     /* Esta parte visa a evitar cálculos desnecessários */
     if (dx >= somaRaios || dz >= somaRaios) return false;
 
-    d = sqrt(sq(dx) + sq(dy) + sq(dz));
-    dAltura = abs(dy) - (corpo.altura/2 + corpo.raio);
-
-    return (d < somaRaios && dAltura > 0);
+    return (norma(dx, 0, dz) < somaRaios)
+        && (dy < nave.base.altura/2 + bullet->raio);
 }
 
 /*------------------------------------------------------------------*

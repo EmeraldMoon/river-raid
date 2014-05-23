@@ -9,9 +9,6 @@ Nave nave;
 Lista *inimigos;
 Lista *projeteis;
 
-/* Pontuação */
-unsigned int score;
-
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*/
@@ -21,7 +18,7 @@ void inicializa()
     criaNave(0, VIDAS_INI);
     inimigos  = criaLista();
     projeteis = criaLista();
-    score = 0;
+    nave.score = 0;
 }
 
 /*------------------------------------------------------------------*/
@@ -30,7 +27,9 @@ void atualizaCenario()
 {
     Celula *p;
 
+    /* Ações relacionadas à nave */
     moveNave();
+    if (nave.invencibilidade > 0) (nave.invencibilidade)--;
 
     /* Loop para verificar estado dos projéteis */
     p = projeteis;
@@ -41,19 +40,14 @@ void atualizaCenario()
         else p = p->prox;
     }
 
-    /* Loop para tratar ações dos inimigos */
+    /* Loop para tratar de inimigos */
     p = inimigos;
     while (p->prox != NULL) {
         Inimigo *foe = p->prox->item;
+        if (naveColidiu(foe)) danificaNave(DANO_COLISAO);
         if ((foe->base.espera)-- == 0) inimigoDispara(foe);
         if (inimigoSaiu(foe)) exclui(p);
         else p = p->prox;
-    }
-
-    /* Verifica se nave perdeu vida */
-    if (nave.base.hp <= 0) {
-        (nave.vidas)--;
-        if (nave.vidas >= 0) criaNave(nave.base.z, nave.vidas);
     }
 }
 
@@ -69,14 +63,14 @@ void geraInimigo()
 
     /* (uniforme(-1, 0) | 1) gera um número que é 1 ou -1 */
     foe.base.x = uniforme(X_MAX/2, X_MAX) * (uniforme(-1, 0) | 1);
-    foe.base.y = uniforme(0, Y_MAX);
+    foe.base.y = uniforme(0, Y_MAX/2);
     foe.base.z = nave.base.z + Z_MAX;
 
     foe.base.hp       = FOE_HPMAX;
     foe.base.cooldown = uniforme(10, 20);
     foe.base.espera   = foe.base.cooldown;
     foe.base.raio     = FOE_RAIO;
-    foe.base.altura   = FOE_ALTURA;
+    foe.base.altura   = 2 * foe.base.y;
     foe.precisao      = uniformeD(0.5, 1.0);
 
     criaInimigo(foe);
