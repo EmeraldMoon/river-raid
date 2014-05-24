@@ -3,7 +3,7 @@ River Raid - Changelog
 
 ##### TODO:
   - Testar, testar, TESTAR. Há bugs por aí, ansiosos para serem encontrados.
-  - Resolver Segmentation Fault quando comandos de um arquivo acabam antes do jogo.
+  - Resolver Segmentation Fault quando os comandos de um arquivo acabam antes do jogo.
 
 
 
