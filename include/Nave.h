@@ -31,8 +31,8 @@
 #define ANG_AUTO   ANG_MAX/60  /* automático */
 
 /* Nº de timesteps de invencibilidade */
-#define INVENCIBIL_DANO 30  /* ao ser atingida */
-#define INVENCIBIL_VIDA 90  /* ao perder uma vida */
+#define INVENCIVEL_DANO 30  /* ao ser atingida */
+#define INVENCIVEL_VIDA 90  /* ao perder uma vida */
 
 /* Energia perdida caso ocorra colisão com inimigos */
 #define DANO_COLISAO 20

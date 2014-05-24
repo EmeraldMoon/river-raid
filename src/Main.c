@@ -28,8 +28,8 @@
 
 /*------------------------------------------------------------------*
  *
- *  Recebe uma string correspondente às teclas digitada pelo usuário.
- *  Lê todas elas e executa os comandos correspondentes.
+ *  Recebe uma string correspondente às teclas digitadas pelo
+ *  usuário. Lê todas elas e executa os comandos correspondentes.
  *
  */
 void executaComandos(char teclas[])

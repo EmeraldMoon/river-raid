@@ -28,7 +28,7 @@ void criaNave(int z, int nVidas)
     nave.base.raio     = NAVE_RAIO;
     nave.base.altura   = NAVE_ALTURA;
 
-    nave.invencibilidade = INVENCIBIL_VIDA;
+    nave.invencibilidade = INVENCIVEL_VIDA;
 }
 
 /*------------------------------------------------------------------*/
@@ -90,7 +90,7 @@ void danificaNave(int dano)
     if (nave.invencibilidade > 0) return;
 
     nave.base.hp -= dano;
-    nave.invencibilidade = INVENCIBIL_DANO;
+    nave.invencibilidade = INVENCIVEL_DANO;
 
     /* Verifica se nave perdeu vida */
     if (nave.base.hp <= 0) {
