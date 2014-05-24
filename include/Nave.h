@@ -30,8 +30,9 @@
 #define ANG_MANUAL ANG_MAX/20  /* por comando do usuário */
 #define ANG_AUTO   ANG_MAX/60  /* automático */
 
-/* Tempo padrão de invencibilidade */
-#define TEMPO_INVENCIVEL 50
+/* Nº de timesteps de invencibilidade */
+#define INVENCIBIL_DANO 30  /* ao ser atingida */
+#define INVENCIBIL_VIDA 90  /* ao perder uma vida */
 
 /* Energia perdida caso ocorra colisão com inimigos */
 #define DANO_COLISAO 20
