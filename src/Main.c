@@ -36,9 +36,9 @@ void executaComandos(char teclas[])
 {
     int i;
 
-    for (i = 0; teclas[i] != '\0'; i++) {
+    for (i = 0; teclas[i] != '\0' && teclas[i] != '\n' && teclas[i] != 0; i++) {
         teclas[i] = toupper(teclas[i]);
-        printf("%d", teclas[i]);
+        printf("%d", teclas[i]); /* TESTE */
 
         switch (teclas[i]) {
             case 'U': nave.angY += ANG_MANUAL; break;
@@ -51,9 +51,11 @@ void executaComandos(char teclas[])
         }
     }
 
-    /* Ângulos nunca serão maiores em módulo que ANG_MAX */ 
-    if (fabs(nave.angX) > ANG_MAX) nave.angX = ANG_MAX;
-    if (fabs(nave.angY) > ANG_MAX) nave.angY = ANG_MAX;
+    /* Ângulos devem estar no intervalo [-ANG_MAX, ANG_MAX] */ 
+    if (nave.angX >  ANG_MAX) nave.angX  =  ANG_MAX;
+    if (nave.angX < -ANG_MAX) nave.angX  = -ANG_MAX;
+    if (nave.angY >  ANG_MAX) nave.angY  =  ANG_MAX;
+    if (nave.angY < -ANG_MAX) nave.angY  = -ANG_MAX;
 }
 
 /*------------------------------------------------------------------*
@@ -127,15 +129,26 @@ int main(int argc, char **argv)
     srand(semente);
     cont = TEMPO_INIMIGOS; 
 
+    printf("%d", '\0');
     /* Loop principal de execução */
     for (timestep = 0; nave.vidas > 0; timestep++) {
         char teclas[256];
 
         if (timestep % tempoComando == 0) {
+            int c, i;
+
             imprimeElementos(timestep);
             printf("\n> Comandos: ");
-            scanf("%[^\n]", teclas);
-            getchar();  /* limpa '\n' do buffer */
+            for (i = 0, c = 'a'; c != '\n' && i < 255; i++) {
+                c = getc(stdin);
+                if (c == '\0') {
+                    ungetc(c, stdin);
+                    break;
+                }
+                else if (c != '\n') teclas[i] = c;
+            }
+            printf("i = %d\n", i); /* TESTE: Imprime o número de teclas lidas */
+            if (i != 1) teclas[i] = '\0';
         }
 
         executaComandos(teclas);
