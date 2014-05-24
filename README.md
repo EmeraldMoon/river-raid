@@ -2,13 +2,21 @@ River Raid - Changelog
 ========================
 
 ##### TODO:
-  - Lidar com as malditas colisões nave x inimigos.
-  - Implementar o maldito teste da segunda parte.
+  - Testar, testar, TESTAR. Há bugs por aí, ansiosos para serem encontrados.
+  - Resolver erro de comandos não serem resetados ao inserir comando vazio.
+
+
 
 Segunda parte
 -------------
 
 ### Versão 0.6
+
+###### 23/05:
+  - ***Nave.c***: Dois conceitos fundamentais.
+    - *Invencibilidade*: Nave torna-se imune a danos por um certo período de tempo após levar um tiro, e por um período ainda maior caso perca uma vida. A representação se dá por uma variável que decresce a cada timestep, similar ao conceito de cooldown. Quando chega a zero, invencibilidade acaba.
+    - *Colisão com inimigos*: Implementação similar à da detecção dos projéteis, porém levando em conta dois corpos cilíndricos. 
+  - ***Main.c***: Módulo de testes da segunda parte está pronto. Ao receber comandos do usuário, programa simula o pressionamento de tais teclas e passa as ações à nave. Ao fim do intervalo, usuário pode inserir novos comandos. O jogo segue como usual, até a nave morrer. Dessa vez aparecem novidades na tela, como pontuação, vidas, movimento, inclinação, tiros da nave, etc - englobando tudo que foi feito nesta segunda parte.
 
 ###### 22/05:
   - Pontuação em ação no jogo. Pontos são presenteados ao jogador em caso de acerto ou destruição de inimigos. 
@@ -36,12 +44,13 @@ Segunda parte
   - ***Main.c***: Pequena função que recebe uma tecla (na verdade, uma letra), interpretando e executando o comando do usuário.
 
 ###### 10/05:
+  - Somos agora orgulhosamente usuários do ***git***. Isso não só ajudará no controle e acompanhamento de versões como possibilitará uma visão mais ampla do projeto como um todo.
   - *Makefile* incrementado com novas opções.
     - ***make tar***: Cria um arquivo .tar com todos os arquivos necessários ao projeto.
     - ***make count***: Conta o número de linhas de código (por pura satisfação pessoal).
 
 ###### 09/05:
-  - Somos agora orgulhosamente usuários do ***git***. Isso não só ajudará no controle e acompanhamento de versões como possibilitará uma visão mais ampla do projeto como um todo.
+  - ***Main.c***: Alterado nome do módulo de testes, anteriormente conhecido como *Teste.c*.
   - Documentação reformulada. Descrições de funções foram agora movidas para os respectivos arquivos .h, ao passo que restaram nos .c, em geral, detalhes com respeito à implementação. Sessões também estão definidas de maneira mais clara.
 
 
