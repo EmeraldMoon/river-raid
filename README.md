@@ -3,7 +3,7 @@ River Raid - Changelog
 
 ##### TODO:
   - Testar, testar, TESTAR. Há bugs por aí, ansiosos para serem encontrados.
-  - Resolver erro de comandos não serem resetados ao inserir comando vazio.
+  - Resolver Segmentation Fault quando comandos de um arquivo acabam antes do jogo.
 
 
 
