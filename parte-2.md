@@ -42,6 +42,7 @@ Uso
   - intervalo para comandos: Intervalo de tempo, em frames, para pedir um comando para o usuário. Se nada for especificado, usa-se 20 frames.
 
   As seguintes teclas podem ser usadas pelo usuário:
+  
   - U: Move a nave para cima.
   - D: Move a nave para baixo.
   - L: Move a nave para a esquerda.
