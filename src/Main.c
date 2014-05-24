@@ -12,14 +12,15 @@
 #include <stdlib.h>  /* system, rand, srand */
 #include <time.h>    /* time */
 #include <ctype.h>   /* toupper */
+#include <math.h>    /* fabs */
 #include "Nave.h"
 #include "Defesa.h"
 #include "Tiro.h"
 #include "Cenario.h"
 
-/* Tempo de espera entre um inimigo e outro */
-#define TEMPO_INIMIGOS  10
-#define TEMPO_COMANDO   40
+/* Tempos de espera, em timesteps */
+#define TEMPO_INIMIGOS 10
+#define TEMPO_COMANDOS 20
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -27,26 +28,32 @@
 
 /*------------------------------------------------------------------*
  *
- *  Recebe uma letra correspondente à uma tecla digitada pelo
- *  usuário e executa o comando correspondente.
+ *  Recebe uma string correspondente às teclas digitada pelo usuário.
+ *  Lê todas elas e executa os comandos correspondentes.
  *
  */
-void executaComando(char tecla)
+void executaComandos(char teclas[])
 {
-    tecla = toupper(tecla);
+    int i;
 
-    switch (tecla) {
-        case 'U': nave.angY += ANG_MANUAL; break;
-        case 'D': nave.angY -= ANG_MANUAL; break;
-        case 'L': nave.angX -= ANG_MANUAL; break;
-        case 'R': nave.angX += ANG_MANUAL; break;
+    for (i = 0; teclas[i] != '\0'; i++) {
+        teclas[i] = toupper(teclas[i]);
+        printf("%d", teclas[i]);
 
-        case 'Z': naveDispara(); break;
+        switch (teclas[i]) {
+            case 'U': nave.angY += ANG_MANUAL; break;
+            case 'D': nave.angY -= ANG_MANUAL; break;
+            case 'L': nave.angX -= ANG_MANUAL; break;
+            case 'R': nave.angX += ANG_MANUAL; break;
+
+            case 'Z':
+                if (nave.base.espera == 0) naveDispara(); break;
+        }
     }
 
-    /* Ângulos nunca serão maiores que ANG_MAX */ 
-    if (nave.angX > ANG_MAX) nave.angX = ANG_MAX;
-    if (nave.angY > ANG_MAX) nave.angY = ANG_MAX;
+    /* Ângulos nunca serão maiores em módulo que ANG_MAX */ 
+    if (fabs(nave.angX) > ANG_MAX) nave.angX = ANG_MAX;
+    if (fabs(nave.angY) > ANG_MAX) nave.angY = ANG_MAX;
 }
 
 /*------------------------------------------------------------------*
@@ -78,6 +85,7 @@ void imprimeElementos(int timestep)
     printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
     printf("Posição: (%g, %g, %g)\n", 
         nave.base.x, nave.base.y, nave.base.z);
+    printf("Ângulos: (%g, %g)\n", nave.angX, nave.angY);
     
     puts("\n{Inimigos}");
     puts("   ( x, y, z)       Recarga    Precisão    Energia ");
@@ -90,13 +98,14 @@ void imprimeElementos(int timestep)
             foe->base.hp, FOE_HPMAX);
     }
     puts("\n{Projéteis}");
-    puts("   ( x, y, z)          [ vx, vy, vz]       Amigo");
-    puts("----------------    --------------------   -----");
+    puts("   ( x, y, z)          [ vx, vy, vz]        Amigo? ");
+    puts("----------------    --------------------   --------");
     for (p = projeteis; p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
-        printf(" (%3.0f, %2.0f, %3.0f)      [%4.1f, %4.1f, %4.1f]      %d\n",
+        printf(" (%3.0f, %2.0f, %3.0f)      [%4.1f, %4.1f, %4.1f]       %s\n",
             bullet->x, bullet->y, (bullet->z - nave.base.z),
-            bullet->vx, bullet->vy, bullet->vz, bullet->amigo);
+            bullet->vx, bullet->vy, bullet->vz,
+            (bullet->amigo) ? "sim" : "não");
     }
 }
 
@@ -111,8 +120,7 @@ int main(int argc, char **argv)
 
     if (argc < 2) semente = time(NULL);
     else          semente = atoi(argv[1]);
-
-    if (argc < 3) tempoComando = TEMPO_COMANDO;
+    if (argc < 3) tempoComando = TEMPO_COMANDOS;
     else          tempoComando = atoi(argv[2]);
 
     inicializa();
@@ -120,19 +128,23 @@ int main(int argc, char **argv)
     cont = TEMPO_INIMIGOS; 
 
     /* Loop principal de execução */
-    for (timestep = 1; nave.vidas > 0; timestep++) {
-        atualizaCenario();
+    for (timestep = 0; nave.vidas > 0; timestep++) {
+        char teclas[256];
 
         if (timestep % tempoComando == 0) {
             imprimeElementos(timestep);
-            executaComando(getchar());
+            printf("\n> Comandos: ");
+            scanf("%[^\n]", teclas);
+            getchar();  /* limpa '\n' do buffer */
         }
 
-        if (cont == 0) {
+        executaComandos(teclas);
+        atualizaCenario();
+
+        if (cont-- == 0) {
             geraInimigo();
             cont = TEMPO_INIMIGOS;
         }
-        else cont--;
     }
     
     liberaCenario();

@@ -29,6 +29,9 @@ void atualizaCenario()
 
     /* Ações relacionadas à nave */
     moveNave();
+    if ((nave.base.espera)-- == 0) {
+        nave.base.espera = nave.base.cooldown;
+    }
     if (nave.invencibilidade > 0) (nave.invencibilidade)--;
 
     /* Loop para verificar estado dos projéteis */

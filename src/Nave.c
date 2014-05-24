@@ -1,4 +1,4 @@
-#include <math.h>  /* tan*/
+#include <math.h>  /* tan */
 #include "Nave.h"
 #include "Tiro.h"
 #include "Cenario.h"
@@ -28,7 +28,7 @@ void criaNave(int z, int nVidas)
     nave.base.raio     = NAVE_RAIO;
     nave.base.altura   = NAVE_ALTURA;
 
-    nave.invencibilidade = TEMPO_INVENCIVEL;
+    nave.invencibilidade = INVENCIBIL_VIDA;
 }
 
 /*------------------------------------------------------------------*/
@@ -42,7 +42,13 @@ void moveNave()
     nave.base.y += nave.vy;
     nave.base.z += nave.vz;
 
-    /* Nave tende a voltar ao centro */
+    /* Impede que nave ultrapasse os limites do cenário */
+    if      (nave.base.x >  X_MAX) nave.base.x =  X_MAX;
+    else if (nave.base.x < -X_MAX) nave.base.x = -X_MAX;
+    if      (nave.base.y >  Y_MAX) nave.base.y =  Y_MAX;
+    else if (nave.base.y <      0) nave.base.y =      0;
+
+    /* Direção tende a voltar ao centro */
     atualizaDirecao(&(nave.angX));
     atualizaDirecao(&(nave.angY));
 }
@@ -81,8 +87,10 @@ void naveDispara()
 
 void danificaNave(int dano)
 {
+    if (nave.invencibilidade > 0) return;
+
     nave.base.hp -= dano;
-    nave.invencibilidade = TEMPO_INVENCIVEL;
+    nave.invencibilidade = INVENCIBIL_DANO;
 
     /* Verifica se nave perdeu vida */
     if (nave.base.hp <= 0) {
