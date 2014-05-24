@@ -36,8 +36,8 @@ Simulação
 Uso
 ---
   O programa é executado pelo Terminal da seguinte forma:
-  @ ./bin/River [semente] [intervalo para comandos]
   
+  @ ./bin/River [semente] [intervalo para comandos]
   - semente: Valor inteiro a ser usado na geração de números aleatórios. Se nada for especificado, usa-se o tempo do sistema.
   - intervalo para comandos: Intervalo de tempo, em frames, para pedir um comando para o usuário. Se nada for especificado, usa-se 20 frames.
 
@@ -47,4 +47,5 @@ Uso
   - L: Move a nave para a esquerda.
   - R: Move a nave para a direita.
   - Z: Faz a nave atirar.
-  
+
+Pode-se digitar mais de uma tecla de uma vez. Por exemplo, "UZ" faz a nave atirar enquanto sobe.
