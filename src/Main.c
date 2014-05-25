@@ -12,7 +12,6 @@
 #include <stdlib.h>  /* system, rand, srand */
 #include <time.h>    /* time */
 #include <ctype.h>   /* toupper */
-#include <math.h>    /* fabs */
 #include "Nave.h"
 #include "Defesa.h"
 #include "Tiro.h"
@@ -28,6 +27,20 @@
 
 /*------------------------------------------------------------------*
  *
+ *  Lê da entrada padrão uma linha de comandos e devolve um ponteiro
+ *  para a string. Funciona mesmo se houver linha vazia ou EOF.
+ *
+ */
+
+void leComandos(char teclas[])
+{
+    int temp = scanf("%[^\n]", teclas);
+    if (temp == 0 || temp == EOF) teclas[0] = '\0';
+    getchar();  /* limpa '\n' do buffer */
+}
+
+/*------------------------------------------------------------------*
+ *
  *  Recebe uma string correspondente às teclas digitadas pelo
  *  usuário. Lê todas elas e executa os comandos correspondentes.
  *
@@ -36,9 +49,8 @@ void executaComandos(char teclas[])
 {
     int i;
 
-    for (i = 0; teclas[i] != '\0' && teclas[i] != '\n' && teclas[i] != 0; i++) {
+    for (i = 0; teclas[i] != '\0'; i++) {
         teclas[i] = toupper(teclas[i]);
-        printf("%d", teclas[i]); /* TESTE */
 
         switch (teclas[i]) {
             case 'U': nave.angY += ANG_MANUAL; break;
@@ -52,10 +64,10 @@ void executaComandos(char teclas[])
     }
 
     /* Ângulos devem estar no intervalo [-ANG_MAX, ANG_MAX] */ 
-    if (nave.angX >  ANG_MAX) nave.angX  =  ANG_MAX;
-    if (nave.angX < -ANG_MAX) nave.angX  = -ANG_MAX;
-    if (nave.angY >  ANG_MAX) nave.angY  =  ANG_MAX;
-    if (nave.angY < -ANG_MAX) nave.angY  = -ANG_MAX;
+    if      (nave.angX >  ANG_MAX) nave.angX =  ANG_MAX;
+    else if (nave.angX < -ANG_MAX) nave.angX = -ANG_MAX;
+    if      (nave.angY >  ANG_MAX) nave.angY =  ANG_MAX;
+    else if (nave.angY < -ANG_MAX) nave.angY = -ANG_MAX;
 }
 
 /*------------------------------------------------------------------*
@@ -85,16 +97,17 @@ void imprimeElementos(int timestep)
     printf("PONTUAÇÂO: %d\n", nave.score);
     printf("VIDAS: %d\n", nave.vidas);
     printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
-    printf("Posição: (%g, %g, %g)\n", 
+    printf("Posição: (%.0f, %.0f, %.0f)\n", 
         nave.base.x, nave.base.y, nave.base.z);
-    printf("Ângulos: (%g, %g)\n", nave.angX, nave.angY);
+    printf("Ângulos: (%.0f°, %.0f°)\n",
+        (180/PI) * nave.angX, (180/PI) * nave.angY);
     
     puts("\n{Inimigos}");
     puts("   ( x, y, z)       Recarga    Precisão    Energia ");
     puts("----------------    -------    --------   ---------");
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-        printf(" (%3g, %2g, %3g)      %2d/%2d       %3.0f%%      %3d/%3d\n",
+        printf(" (%3g, %2g, %3g)      %2d/%2d       %3.0f%%       %2d/%2d\n",
             foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
             foe->base.espera, foe->base.cooldown, 100 * foe->precisao,
             foe->base.hp, FOE_HPMAX);
@@ -129,28 +142,15 @@ int main(int argc, char **argv)
     srand(semente);
     cont = TEMPO_INIMIGOS; 
 
-    printf("%d", '\0');
     /* Loop principal de execução */
     for (timestep = 0; nave.vidas > 0; timestep++) {
         char teclas[256];
 
         if (timestep % tempoComando == 0) {
-            int c, i;
-
             imprimeElementos(timestep);
             printf("\n> Comandos: ");
-            for (i = 0, c = 'a'; c != '\n' && i < 255; i++) {
-                c = getc(stdin);
-                if (c == '\0') {
-                    ungetc(c, stdin);
-                    break;
-                }
-                else if (c != '\n') teclas[i] = c;
-            }
-            printf("i = %d\n", i); /* TESTE: Imprime o número de teclas lidas */
-            if (i != 1) teclas[i] = '\0';
+            leComandos(teclas);
         }
-
         executaComandos(teclas);
         atualizaCenario();
 
@@ -159,7 +159,8 @@ int main(int argc, char **argv)
             cont = TEMPO_INIMIGOS;
         }
     }
-    
+
+    imprimeElementos(timestep);
     liberaCenario();
 
     return EXIT_SUCCESS;

@@ -17,7 +17,7 @@
  *-------------------------*/
 
 /* Atributos padrão */
-#define FOE_HPMAX  100
+#define FOE_HPMAX   50
 #define FOE_RAIO    30
 #define FOE_ALTURA 100
 
