@@ -1,5 +1,6 @@
 #include <stdlib.h>  /* rand */
 #include <math.h>    /* sqrt, log */
+#include "Base.h"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -32,10 +33,10 @@ double normal(double media, double desvpadr)
     do {
         x = uniformeD(-1.0, 1.0);
         y = uniformeD(-1.0, 1.0);
-        r = x*x + y*y;
+        r = sq(x) + sq(y);
     } while (r >= 1 || r == 0);
     
-    /* Número gerado por uma Normal padrão */
+    /* Valor gerado por uma Normal(0,1) */
     r = x * sqrt((-2) * log(r)/r);
 
     /* Aplicamos média e desvio-padrão */

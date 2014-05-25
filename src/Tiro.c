@@ -16,35 +16,32 @@ void criaProjetil(Projetil bullet)
     insere(projeteis, &bullet, sizeof bullet);
 }
 
-/*------------------------------------------------------------*
+/*------------------------------------------------------------------*
  *  
  *  Os desvios são calculados segundo uma distribuição Normal.
  *  Enquanto a trajetória é alterada, o módulo da velocidade
  *  permanece constante.
  *
- *  Observe que o desvio mínimo é 0° e o máximo 90°.
- *
  */
 void aplicaPrecisao(Projetil *bullet, double precisao)
 {
     double ang, hip;
-    double desvio = (1 - precisao) * PI/2;
-
     double vx = bullet->vx;
     double vy = bullet->vy;
     double vz = bullet->vz;
+    double desvio = (1 - precisao) * DESVIO_MAX;    
 
     /* Desvio horizontal */
     ang = normal(atan(vx/vz), desvio);
-    hip = sqrt(sq(vx) + sq(vz));
-    vx = -sin(ang) * hip;
-    vz = -cos(ang) * hip;
+    hip = hipot(vx, vz);
+    vx = sin(abs(ang)) * sinal(vx);
+    vz = cos(abs(ang)) * sinal(vz);
 
     /* Desvio vertical */
     ang = normal(atan(vy/vz), desvio);
-    hip = sqrt(sq(vy) + sq(vz));
-    vy = -sin(ang) * hip;
-    vz = -cos(ang) * hip;
+    hip = hipot(vy, vz);
+    vy = sin(abs(ang)) * sinal(vy);
+    vz = cos(abs(ang)) * sinal(vz);
 }
 
 /*------------------------------------------------------------------*/
@@ -52,7 +49,7 @@ void aplicaPrecisao(Projetil *bullet, double precisao)
 void moveProjetil(Projetil *bullet)
 {
     /* Efeito da gravidade */
-    bullet->vy -= ACEL_GRAV;
+    bullet->vy -= ACEL_GRAVIDADE;
 
     bullet->x += bullet->vx;
     bullet->y += bullet->vy;
@@ -65,7 +62,7 @@ void moveProjetil(Projetil *bullet)
  *  entre ambos seja MENOR que a soma dos raios (d < r + R).
  *
  */
-bool projetilAcertou(Projetil *bullet)
+bool verificaAcerto(Projetil *bullet)
 {
     Celula *p;
 
@@ -78,6 +75,7 @@ bool projetilAcertou(Projetil *bullet)
     /* Verificação de colisão com algum inimigo */
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
+
         if (projetilColidiu(bullet, foe->base)) {
             foe->base.hp -= bullet->dano;
             if (bullet->amigo) nave.score += PONTOS_ACERTO;
@@ -90,20 +88,6 @@ bool projetilAcertou(Projetil *bullet)
     }
 
     return false;
-}
-
-static bool projetilColidiu(Projetil *bullet, Corpo corpo)
-{
-    int dx = bullet->x - corpo.x;
-    int dy = bullet->y - corpo.y;
-    int dz = bullet->z - corpo.z;
-    int somaRaios = corpo.raio + bullet->raio;
-
-    /* Esta parte visa a evitar cálculos desnecessários */
-    if (dx >= somaRaios || dz >= somaRaios) return false;
-
-    return (norma(dx, 0, dz) < somaRaios)
-        && (dy < nave.base.altura/2 + bullet->raio);
 }
 
 /*------------------------------------------------------------------*
@@ -119,4 +103,24 @@ bool projetilSaiu(Projetil *bullet)
         || (bullet->y <      0 || bullet->y > Y_MAX)
         || (bullet->z < nave.base.z - nave.base.raio
             || bullet->z > nave.base.z + Z_MAX);
+}
+
+/*------------------------------------------------------------------*
+ *
+ *  Verifica se houve colisão entre projétil e corpo cilíndrico.
+ *
+ */
+
+static bool projetilColidiu(Projetil *bullet, Corpo corpo)
+{
+    int dx = bullet->x - corpo.x;
+    int dy = bullet->y - corpo.y;
+    int dz = bullet->z - corpo.z;
+    int somaRaios = corpo.raio + bullet->raio;
+
+    /* Esta parte visa a evitar cálculos desnecessários */
+    if (dx >= somaRaios || dz >= somaRaios) return false;
+
+    return (norma(dx, 0, dz) < somaRaios)
+        && (dy < corpo.altura/2 + bullet->raio);
 }

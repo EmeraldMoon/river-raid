@@ -39,7 +39,7 @@ void atualizaCenario()
     while (p->prox != NULL) {
         Projetil *bullet = p->prox->item;
         moveProjetil(bullet);
-        if (projetilAcertou(bullet) || projetilSaiu(bullet)) exclui(p);
+        if (verificaAcerto(bullet) || projetilSaiu(bullet)) exclui(p);
         else p = p->prox;
     }
 

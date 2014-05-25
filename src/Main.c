@@ -2,7 +2,7 @@
  |                                                                  |
  |  Módulo de testes para a segunda parte do projeto.               |
  |  Simula um jogo básico, recebendo comandos do usuário e          |
- |  exibindo informações na tela a respeito dos elementos do jogo.  |
+ |  exibindo informações na tela a respeito dos elementos.          |
  |                                                                  |
  |  Uso: ./bin/River [semente] [intervalo para comandos]            |
  |                                                                  |
@@ -31,7 +31,6 @@
  *  para a string. Funciona mesmo se houver linha vazia ou EOF.
  *
  */
-
 void leComandos(char teclas[])
 {
     int temp = scanf("%[^\n]", teclas);
@@ -135,8 +134,8 @@ int main(int argc, char **argv)
 
     if (argc < 2) semente = time(NULL);
     else          semente = atoi(argv[1]);
-    if (argc < 3) tempoComando = TEMPO_COMANDOS;
-    else          tempoComando = atoi(argv[2]);
+    if (argc < 3) tempoComandos = TEMPO_COMANDOS;
+    else          tempoComandos = atoi(argv[2]);
 
     inicializa();
     srand(semente);

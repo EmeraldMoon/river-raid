@@ -22,8 +22,8 @@
 #define Y_MAX  90
 #define Z_MAX 400
 
-/* Aceleração da gravidade em pixels/timestep² */
-#define ACEL_GRAV 0.1
+/* Variação de vy dos projéteis por timestep */
+#define ACEL_GRAVIDADE 0.1
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |

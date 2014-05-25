@@ -22,6 +22,9 @@
 #define BALA_DANO 10
 #define BALA_RAIO  3
 
+/* Desvio-padrão caso precisão == 0 */
+#define DESVIO_MAX PI/2
+
 /*
  *  Representa um projétil causador de dano.
  */
@@ -74,7 +77,7 @@ void moveProjetil(Projetil *bullet);
  *
  *  A função devolve true caso haja um acerto qualquer, ou false caso contrário.
  */
-bool projetilAcertou(Projetil *bullet);
+bool verificaAcerto(Projetil *bullet);
 
 /*
  *  O projétil em questão saiu da tela de jogo?

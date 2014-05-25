@@ -124,12 +124,12 @@ bool naveColidiu(Inimigo *foe)
  */
 static void atualizaDirecao(double *ang)
 {
-    if (*ang < 0.0) {
-        *ang += ANG_AUTO;
-        if (*ang > 0.0) *ang = 0.0;
-    }
-    else if (*ang > 0.0) {
+    if (*ang > 0.0) {
         *ang -= ANG_AUTO;
         if (*ang < 0.0) *ang = 0.0;
+    }
+    else if (*ang < 0.0) {
+        *ang += ANG_AUTO;
+        if (*ang > 0.0) *ang = 0.0;
     }
 }

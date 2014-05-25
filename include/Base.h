@@ -21,6 +21,12 @@
 /* Calcula norma de um vetor */
 #define norma(x, y, z) (sqrt(sq(x) + sq(y) + sq(z)))
 
+/* Calcula hipotenusa de um triângulo */
+#define hipot(x, y) (sqrt(sq(x) + sq(y)))
+
+/* Devolve uma unidade acoplada do sinal de x */
+#define sinal(x) ((x >= 0) ? 1 : -1)
+
 /*
  *  Estrutura básica de um elemento corpóreo do jogo.
  *  A ser usada comumente entre nave e seus inimigos.
