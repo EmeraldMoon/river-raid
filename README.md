@@ -3,8 +3,6 @@ River Raid - Changelog
 
 ##### TODO:
   - Testar, testar, TESTAR. Há bugs por aí, ansiosos para serem encontrados.
-  - Resolver Segmentation Fault quando os comandos de um arquivo acabam antes do jogo.
-
 
 
 Segunda parte
@@ -29,7 +27,6 @@ Segunda parte
   - ***Tiro.c***: Detecção de saída do projétil passa a levar em conta limite *Z_MAX* da tela.
   - ***Nave.c, Defesa.c***: Corrigido posicionamento dos projéteis ao serem disparados. Removidas funções supérfluas.
 
-
 ### Versão 0.5
 
 ###### 17/05: 
@@ -52,7 +49,6 @@ Segunda parte
 ###### 09/05:
   - ***Main.c***: Alterado nome do módulo de testes, anteriormente conhecido como *Teste.c*.
   - Documentação reformulada. Descrições de funções foram agora movidas para os respectivos arquivos .h, ao passo que restaram nos .c, em geral, detalhes com respeito à implementação. Sessões também estão definidas de maneira mais clara.
-
 
 
 Primeira parte
@@ -79,7 +75,6 @@ Primeira parte
   - ***Teste.c***: Nova apresentação dos resultados. Agora o programa recebe uma semente por linha de comando ou, caso o usuário não insira nada, usa o tempo do sistema. Toda vez que a nave sofre um dano são exibidos a energia atual, sua posição, posição e tempo de recarga de todos os inimigos e, finalmente, coordenadas e velocidade de cada projétil. Ao fim do jogo, memória das listas é liberada.
   - **Bônus**: All heap blocks were freed -- no leaks are possible (!)
 
-
 ### Versão 0.2
 
 ###### 16/04:
@@ -103,7 +98,6 @@ Primeira parte
   - ***Nave.c***: Inicialização dos atributos da nave.
   - ***Tiro.c***: Funções para verificar se um determinado tiro saiu da tela ou acertou a nave.
   - A princípio, com propósito de testes, definimos tanto tiro quanto nave como corpos esféricos. Nas versões futuras isso provavelmente será removido; o OpenGL deve lidar com a verificação de colisões de formatos variados.
-
 
 ### Versão 0.1
 
