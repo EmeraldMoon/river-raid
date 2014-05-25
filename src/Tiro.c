@@ -5,6 +5,7 @@
 #include "Cenario.h"
 #include "Random.h"
 
+static void calculaAngulo(double *a, double *b, double desvio);
 static bool projetilColidiu(Projetil *bullet, Corpo corpo);
 
 /*-------------------*
@@ -25,23 +26,27 @@ void criaProjetil(Projetil bullet)
  */
 void aplicaPrecisao(Projetil *bullet, double precisao)
 {
-    double ang, hip;
     double vx = bullet->vx;
     double vy = bullet->vy;
     double vz = bullet->vz;
     double desvio = (1 - precisao) * DESVIO_MAX;    
 
-    /* Desvio horizontal */
-    ang = normal(atan(vx/vz), desvio);
-    hip = hipot(vx, vz);
-    vx = sin(abs(ang)) * sinal(vx);
-    vz = cos(abs(ang)) * sinal(vz);
+    calculaAngulo(&vx, &vz, desvio);  /* desvio horizontal */
+    calculaAngulo(&vy, &vz, desvio);  /* desvio vertical   */
+}
 
-    /* Desvio vertical */
-    ang = normal(atan(vy/vz), desvio);
-    hip = hipot(vy, vz);
-    vy = sin(abs(ang)) * sinal(vy);
-    vz = cos(abs(ang)) * sinal(vz);
+/*
+ *  Recebe duas componentes, encontra seu ângulo em coordenadas 
+ *  polares, modifica-o por meio de uma Normal e atualiza os valores.
+ */
+static void calculaAngulo(double *a, double *b, double desvio)
+{
+    double hip = hipot(*a, *b);
+    double ang = acos(*b/hip);
+    if (*a < 0) ang = 2*PI - ang;
+    ang = normal(ang, desvio);
+    *a = sin(ang) * hip;
+    *b = cos(ang) * hip; 
 }
 
 /*------------------------------------------------------------------*/
@@ -90,6 +95,23 @@ bool verificaAcerto(Projetil *bullet)
     return false;
 }
 
+/*
+ *  Verifica se há colisão entre projétil e corpo cilíndrico.
+ */
+static bool projetilColidiu(Projetil *bullet, Corpo corpo)
+{
+    int dx = bullet->x - corpo.x;
+    int dy = bullet->y - corpo.y;
+    int dz = bullet->z - corpo.z;
+    int somaRaios = corpo.raio + bullet->raio;
+
+    /* Esta parte visa a evitar cálculos desnecessários */
+    if (dx >= somaRaios || dz >= somaRaios) return false;
+
+    return (hipot(dx, dz) < somaRaios)
+        && (dy < corpo.altura/2 + bullet->raio);
+}
+
 /*------------------------------------------------------------------*
  *
  *  O projétil saiu por um dos limites da tela (x, y ou z)?
@@ -103,24 +125,4 @@ bool projetilSaiu(Projetil *bullet)
         || (bullet->y <      0 || bullet->y > Y_MAX)
         || (bullet->z < nave.base.z - nave.base.raio
             || bullet->z > nave.base.z + Z_MAX);
-}
-
-/*------------------------------------------------------------------*
- *
- *  Verifica se houve colisão entre projétil e corpo cilíndrico.
- *
- */
-
-static bool projetilColidiu(Projetil *bullet, Corpo corpo)
-{
-    int dx = bullet->x - corpo.x;
-    int dy = bullet->y - corpo.y;
-    int dz = bullet->z - corpo.z;
-    int somaRaios = corpo.raio + bullet->raio;
-
-    /* Esta parte visa a evitar cálculos desnecessários */
-    if (dx >= somaRaios || dz >= somaRaios) return false;
-
-    return (norma(dx, 0, dz) < somaRaios)
-        && (dy < corpo.altura/2 + bullet->raio);
 }

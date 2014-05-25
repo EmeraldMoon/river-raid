@@ -129,7 +129,7 @@ void imprimeElementos(int timestep)
 
 int main(int argc, char **argv)
 {
-    int semente, tempoComando;
+    int semente, tempoComandos;
     int timestep, cont;
 
     if (argc < 2) semente = time(NULL);
@@ -145,7 +145,7 @@ int main(int argc, char **argv)
     for (timestep = 0; nave.vidas > 0; timestep++) {
         char teclas[256];
 
-        if (timestep % tempoComando == 0) {
+        if (timestep % tempoComandos == 0) {
             imprimeElementos(timestep);
             printf("\n> Comandos: ");
             leComandos(teclas);
