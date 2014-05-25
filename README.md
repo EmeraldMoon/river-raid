@@ -1,14 +1,15 @@
 River Raid - Changelog
 ========================
 
-##### TODO:
-  - Testar, testar, TESTAR. Há bugs por aí, ansiosos para serem encontrados.
-
-
 Segunda parte
 -------------
 
 ### Versão 0.6
+
+###### 25/05:
+  - ***Main.c***: Problemas relacionados à leitura de comandos corrigidos com sucesso.
+  - ***Tiro.c***: Cálculo de precisão, antes feito erroneamente, corrigido. Ainda não parece estar funcionando de forma muito correta. Teremos uma ideia melhor do que acontece quando a parte visual for implementada.
+  - Relatório feito. Segunda parte do projeto está oficialmente concluída.
 
 ###### 23/05:
   - ***Nave.c***: Dois conceitos fundamentais.
@@ -49,7 +50,6 @@ Segunda parte
 ###### 09/05:
   - ***Main.c***: Alterado nome do módulo de testes, anteriormente conhecido como *Teste.c*.
   - Documentação reformulada. Descrições de funções foram agora movidas para os respectivos arquivos .h, ao passo que restaram nos .c, em geral, detalhes com respeito à implementação. Sessões também estão definidas de maneira mais clara.
-
 
 Primeira parte
 --------------
