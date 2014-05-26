@@ -74,7 +74,7 @@ void geraInimigo()
     foe.base.espera   = foe.base.cooldown;
     foe.base.raio     = FOE_RAIO;
     foe.base.altura   = 2 * foe.base.y;
-    foe.precisao      = uniformeD(0.5, 1.0);
+    foe.precisao      = uniformeD(0.0, 0.0);
 
     criaInimigo(foe);
 }

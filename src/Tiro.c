@@ -26,13 +26,13 @@ void criaProjetil(Projetil bullet)
  */
 void aplicaPrecisao(Projetil *bullet, double precisao)
 {
-    double vx = bullet->vx;
-    double vy = bullet->vy;
-    double vz = bullet->vz;
+    double *vx = &(bullet->vx);
+    double *vy = &(bullet->vy);
+    double *vz = &(bullet->vz);
     double desvio = (1 - precisao) * DESVIO_MAX;    
 
-    calculaAngulo(&vx, &vz, desvio);  /* desvio horizontal */
-    calculaAngulo(&vy, &vz, desvio);  /* desvio vertical   */
+    calculaAngulo(vx, vz, desvio);  /* desvio horizontal */
+    calculaAngulo(vy, vz, desvio);  /* desvio vertical   */
 }
 
 /*
@@ -41,12 +41,11 @@ void aplicaPrecisao(Projetil *bullet, double precisao)
  */
 static void calculaAngulo(double *a, double *b, double desvio)
 {
-    double hip = hipot(*a, *b);
-    double ang = acos(*b/hip);
-    if (*a < 0) ang = 2*PI - ang;
+    double v = hipot(*a, *b);
+    double ang = atan2(*b, *a);
     ang = normal(ang, desvio);
-    *a = sin(ang) * hip;
-    *b = cos(ang) * hip; 
+    *a = cos(ang) * v;
+    *b = sin(ang) * v; 
 }
 
 /*------------------------------------------------------------------*/
