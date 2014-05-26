@@ -1,6 +1,8 @@
 River Raid - Changelog
 ========================
 
+  - Relatórios e documentação encontram-se na pasta doc.
+
 Segunda parte
 -------------
 

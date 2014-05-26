@@ -43,7 +43,7 @@ dump:
 
 tar:
 	mkdir River/
-	cp -r include/ src/ Makefile *.pdf *.md River/
+	cp -r include/ src/ doc/ Makefile *.md River/
 	tar -czf $(TAR) River/
 	rm -rf River/	
 	@echo "Arquivo\033[1;32m" $(TAR) "\033[0mcriado com sucesso"
