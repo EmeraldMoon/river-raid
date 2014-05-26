@@ -23,7 +23,7 @@ Resumo do que foi feito
 
 Simulação
 ---------
-  Para testar o programa, foi atualizado o módulo Main.c. Como anteriormente, simulamos a execução do jogo, porém desta vez havendo interação com o usuário. O programa recebe comandos em forma de letras a cada certo número fixo de timesteps, simulando o pressionamento contínuo das teclas de ação até chegar a hora de receber os próximos comandos.
+  Para testar o programa, foi atualizado o módulo ***Main.c***. Como anteriormente, simulamos a execução do jogo, porém desta vez havendo interação com o usuário. O programa recebe comandos em forma de letras a cada certo número fixo de timesteps, simulando o pressionamento contínuo das teclas de ação até chegar a hora de receber os próximos comandos.
   
   Diferentemente da primeira fase, a nave não ficará parada esperando a morte chegar; agora pode mover-se e atirar de volta nos inimigos. Em caso de acerto, são conferidos 10 pontos, e em caso de conseguir destruir uma torre, 1000 pontos. Fogo amigo é permitido, ou seja, os inimigos podem danificar seus semelhantes, mas pontos serão conferidos à nave somente se o dano partir de tiros dela mesma (sem vida fácil no score aqui).
   
