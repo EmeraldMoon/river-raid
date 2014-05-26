@@ -18,7 +18,7 @@ Resumo do que foi feito
   - Controle interativo da nave (ver "Testes" mais abaixo).
   - Adicionado sistema de detecção de colisões.
   - Nave e inimigos alterados para terem formato cilíndrico.
-  - Efeito de invulnerabilidade: nave fica imune por um período de tempo após receber dano ou ser destrúida.
+  - Efeito de invulnerabilidade: nave fica imune por um período de tempo após receber dano ou ser destruída.
   - Sistema de vidas para a nave: quando todas acabarem, game over.
 
 Simulação
