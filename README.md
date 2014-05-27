@@ -3,6 +3,9 @@ River Raid - Changelog
 
 ##### TODO:
   - Esperar Gubi lançar a terceira parte.
+  - Descrever funções do *Grafico.c* e traduzir os nomes das mesmas.
+  - Inversão de esquerda e direita na hora de mover a nave (só funciona porque foi invertido na função *keyOperations*).
+  - Rever as constantes do cenário, inimigos, nave, etc..
 
 Terceira parte
 --------------
@@ -11,7 +14,7 @@ Terceira parte
 
 ###### 27/05:
   - ***Grafico.c***: Novo módulo para funções relacionadas ao OpenGL!
-  - ***Main.c***: Possui agora o objetivo de inicializar o programa e chamar o loop do OpenGL. As funções desse módulo foram levadas para o *Grafico.c*.
+  - ***Main.c***: Possui agora o objetivo de inicializar o programa e chamar o loop do OpenGL. Algumas funções deste módulo foram usadas no *Grafico.c*.
   - No momento, a parte gráfica se resume a usar "esqueletos" de cone para a nave e inimigos, e esferas para os tiros. Há também a representação das vidas restantes, hp e score da nave. O usuário pode controlar a nave através do teclado.
 
 ###### 26/05:
