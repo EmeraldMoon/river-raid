@@ -1,7 +1,16 @@
 River Raid - Changelog
 ========================
 
-  - Relatórios e documentação encontram-se na pasta doc.
+##### TODO:
+  - Esperar Gubi lançar a terceira parte.
+
+Terceira parte
+--------------
+
+### Versão 0.8
+
+###### 26/05:
+  - ***Tiro.c***: Precisão finalmente corrigida e funcionando. Grande parte disso deve-se à função *atan2()*, extremamente útil na tarefa de encontrar valor de um ângulo baseado em coordenadas euclidianas.
 
 Segunda parte
 -------------
