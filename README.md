@@ -9,6 +9,11 @@ Terceira parte
 
 ### Versão 0.8
 
+###### 27/05:
+  - ***Grafico.c***: Novo módulo para funções relacionadas ao OpenGL!
+  - ***Main.c***: Possui agora o objetivo de inicializar o programa e chamar o loop do OpenGL. As funções desse módulo foram levadas para o *Grafico.c*.
+  - No momento, a parte gráfica se resume a usar "esqueletos" de cone para a nave e inimigos, e esferas para os tiros. Há também a representação das vidas restantes, hp e score da nave. O usuário pode controlar a nave através do teclado.
+
 ###### 26/05:
   - ***Tiro.c***: Precisão finalmente corrigida e funcionando. Grande parte disso deve-se à função *atan2()*, extremamente útil na tarefa de encontrar valor de um ângulo baseado em coordenadas euclidianas.
 
