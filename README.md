@@ -2,10 +2,11 @@ River Raid - Changelog
 ========================
 
 ##### TODO:
-  - Esperar Gubi lançar a terceira parte.
-  - Descrever funções do *Grafico.c* e traduzir os nomes das mesmas.
+  - Descrever funções do *Grafico.c* e traduzir os nomes das mesmas. Resumindo, limpar o módulo *Grafico*.
   - Inversão de esquerda e direita na hora de mover a nave (só funciona porque foi invertido na função *keyOperations*).
-  - Rever as constantes do cenário, inimigos, nave, etc..
+  - Ver sentido em que a nave aponta ao ser movida (por exemplo, ela vira um pouco para a esquerda ao subir).
+  - Rever as constantes do cenário, inimigos, nave, etc. para balancear o jogo.
+  - Esperar Gubi lançar a terceira parte.
 
 Terceira parte
 --------------
