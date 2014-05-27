@@ -1,6 +1,7 @@
 CC:= gcc
 CFLAGS:= -Wall -O3 -ansi -pedantic
 LM:= -lm
+OPENGL:= -lGL -lGLU -lglut
 M32:= -m32
 RM:= rm -f
 RMDIR:= rm -rf
@@ -20,7 +21,7 @@ TAR:= $(BIN).tar
 all: $(BINDIR)/$(BIN)
 
 $(BINDIR)/$(BIN): $(OBJ) | $(BINDIR)
-	$(CC) $(M32) $(LM) $^ -o $@
+	$(CC) $(M32) $(LM) $(OPENGL) $^ -o $@
 	@echo "Generating C binary \033[1;32m"$@"\033[0m"
 
 $(OBJ): | $(OBJDIR)
