@@ -2,7 +2,7 @@ River Raid - Changelog
 ========================
 
 ##### TODO:
-  - Descrever funções do *Grafico.c* e traduzir os nomes das mesmas. Resumindo, limpar o módulo *Grafico*.
+  - Descrever funções do *Grafico.c* e traduzir os nomes das mesmas. Resumindo, polir o módulo *Grafico*.
   - Inversão de esquerda e direita na hora de mover a nave (só funciona porque foi invertido na função *keyOperations*).
   - Ver sentido em que a nave aponta ao ser movida (por exemplo, ela vira um pouco para a esquerda ao subir).
   - Rever as constantes do cenário, inimigos, nave, etc. para balancear o jogo.
