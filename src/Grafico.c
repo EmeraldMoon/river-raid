@@ -35,6 +35,7 @@ static void desenhaNave();
 static void desenhaInimigos();
 static void desenhaProjeteis();
 static void hud();
+static void ground();
 
 static int  itoa(char str[25], unsigned int pontos);
 static void imprimeElementos();
@@ -70,10 +71,11 @@ void display()
     glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
 
     /* Desenhos */
-    hud();
     desenhaNave();
     desenhaInimigos();
     desenhaProjeteis();
+    hud();
+    ground();
 
     /* Atualizações */
     atualizaCenario();
@@ -246,6 +248,27 @@ static void hud()
     glRasterPos3f(5.0f, -20.0f, 0.0f);
     for (i = 0; i < tam; i++)
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, score[i]);
+
+    glPopMatrix();
+}
+
+/*------------------------------------------------------------------*/
+
+static void ground() {
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, nave.base.z - DIST_CAMERA);
+
+    /* Desenha o chão com alguns tons diferentes de marrom */
+    glBegin(GL_QUADS); {
+        glColor3f(0.8f, 0.25f, 0.1f);
+        glVertex3f(-X_MAX, 0.0f, 0.0f);
+        glColor3f(0.4f, 0.4f, 0.1f);
+        glVertex3f( X_MAX, 0.0f, 0.0f);
+        glColor3f(0.8f, 0.25f, 0.1f);
+        glVertex3f( X_MAX, 0.0f, 400.0f);
+        glColor3f(0.5f, 0.3f, 0.1f);
+        glVertex3f(-X_MAX, 0.0f, 400.0f);
+    } glEnd();
 
     glPopMatrix();
 }
