@@ -13,6 +13,10 @@ Terceira parte
 
 ### Versão 0.8
 
+###### 28/05:
+  - Ângulos da nave redefinidos, sendo agora chamados de AngHoriz e AngVert para maior clareza.
+  - Resolvido problema de espelhamento da tela através de um *glScale*.
+
 ###### 27/05:
   - ***Grafico.c***: Novo módulo para funções relacionadas ao OpenGL!
   - ***Main.c***: Possui agora o objetivo de inicializar o programa e chamar o loop do OpenGL. Algumas funções deste módulo foram usadas no *Grafico.c*.
