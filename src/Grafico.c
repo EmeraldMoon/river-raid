@@ -101,7 +101,7 @@ void reshape(GLsizei width, GLsizei height)
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION); 
     glLoadIdentity();
-    glScaled(-1.0, 1.0, 1.0);
+    glScaled(-1.0, 1.0, 1.0); /* Espelha o eixo x */
     gluPerspective(60, (GLdouble) width/height, 1.0, Z_MAX);
     glMatrixMode(GL_MODELVIEW);
 }
@@ -173,7 +173,7 @@ static void desenhaNave()
     glTranslated(nave.base.x, nave.base.y, nave.base.z);
     glRotated(nave.angHoriz * 180.0/PI,  0.0, 1.0, 0.0);
     glRotated(nave.angVert  * 180.0/PI, -1.0, 0.0, 0.0);    
-    glColor3ub(255, 255, 0); /* Amarelo */
+    glColor3ub(255, 255, 0); /* amarelo */
     glutWireCone(nave.base.raio, nave.base.altura + 20, SLICES, STACKS);
     glPopMatrix();
 }
@@ -189,7 +189,7 @@ static void desenhaInimigos()
         glPushMatrix();
         glTranslated(foe->base.x, foe->base.y, foe->base.z);
         glRotated(-90.0, 1.0, 0.0, 0.0);
-        glColor3ub(255, 0, 0); /* Vermelho */
+        glColor3ub(255, 0, 0); /* vermelho */
         glutWireCone(foe->base.raio, foe->base.altura, SLICES, STACKS);
         glPopMatrix();
     }
@@ -205,7 +205,7 @@ static void desenhaProjeteis()
         Projetil *bullet = p->prox->item;
         glPushMatrix();
         glTranslated(bullet->x, bullet->y, bullet->z);
-        glColor3ub(0, 255, 0); /* Verde */
+        glColor3ub(0, 255, 0); /* verde */
         glPointSize(20.0);  
         glutSolidSphere(bullet->raio, SLICES, STACKS);  
         glPopMatrix();
@@ -217,37 +217,60 @@ static void desenhaProjeteis()
 
 static void hud()
 {
+    #define RAIO 5.0
+
     int i, tam;
     char score[16];
 
     glPushMatrix();
     glTranslated(-GLUT_WINDOW_WIDTH, GLUT_WINDOW_HEIGHT, nave.base.z);
 
-    /* Imprime vidas restantes da nave */
-    glColor3ub(0, 255, 255); /* ciano */
+    /* Desenha vidas restantes da nave */
     for (i = 0; i < nave.vidas; i++) {
         glPointSize(50.0);  
         glBegin(GL_TRIANGLE_FAN);
-            glVertex3d( 0.0  - 15*i,  0.0, 0.0);
-            glVertex3d( 0.0  - 15*i,  5.0, 0.0);
-            glVertex3d( 5.0  - 15*i,  0.0, 0.0);
-            glVertex3d( 0.0  - 15*i, -5.0, 0.0);
-            glVertex3d(-5.0  - 15*i,  0.0, 0.0);
-            glVertex3d( 0.0  - 15*i,  5.0, 0.0);
+            glColor3ub(0, 255, 255);   /* ciano */
+            glVertex3d( 0.0  + 3*RAIO*i,   0.0, 0.0);
+            glColor3ub(255, 255, 255); /* branco */
+            glVertex3d( 0.0  + 3*RAIO*i,  RAIO, 0.0);
+            glColor3ub(255, 255, 255); /* branco */
+            glVertex3d( RAIO + 3*RAIO*i,   0.0, 0.0);
+            glColor3ub(0, 255, 255);   /* ciano */
+            glVertex3d( 0.0  + 3*RAIO*i, -RAIO, 0.0);
+            glColor3ub(0, 255, 255);   /* ciano */
+            glVertex3d(-RAIO + 3*RAIO*i,   0.0, 0.0);
+            glColor3ub(255, 255, 255); /* branco */
+            glVertex3d( 0.0  + 3*RAIO*i,  RAIO, 0.0);
         glEnd();
     }
 
-    /* Imprime hp da nave */
-    glColor3ub(0, 255, 0); /* Verde */
-    glBegin(GL_LINES); {
-        glVertex3d(5.0, -10.0, 0.0);
-        glVertex3d(5.0 - NAVE_HPMAX*nave.base.hp/100.0, -10.0, 0.0);
+    /* Desenha caixa da lifebar da nave */
+    glColor3ub(0, 0, 60);  /* azul bem escuro */
+    glBegin(GL_QUADS); {
+        glVertex3d(-1.0, -2*RAIO + 1, 0.0);
+        glVertex3d(NAVE_HPMAX + 1, -2*RAIO + 1, 0.0);
+        glVertex3d(NAVE_HPMAX + 1, -2*RAIO - 2, 0.0);
+        glVertex3d(-1.0, -2*RAIO - 2, 0.0);
+    } glEnd();
+
+    /* Desenha lifebar da nave */
+    if (NAVE_HPMAX*nave.base.hp/100.0 > 50.0)
+        glColor3ub(0, 255, 0);   /* verde */
+    else if (NAVE_HPMAX*nave.base.hp/100.0 > 25.0)
+        glColor3ub(255, 255, 0); /* amarelo */
+    else 
+        glColor3ub(255, 0, 0);   /* vermelho */
+    glBegin(GL_QUADS); {
+        glVertex3d(0.0, -2*RAIO, 0.0);
+        glVertex3d(NAVE_HPMAX*nave.base.hp/100.0, -2*RAIO, 0.0);
+        glVertex3d(NAVE_HPMAX*nave.base.hp/100.0, -2*RAIO - 1, 0.0);
+        glVertex3d(0.0, -2*RAIO - 1, 0.0);
     } glEnd();
 
     /* Imprime score */
     tam = sprintf(score, "Score: %d", nave.score);
     glColor3d(1.0, 1.0, 1.0);
-    glRasterPos3d(5.0, -20.0, 0.0);
+    glRasterPos3d(0.0, -2*RAIO - 10, 0.0);
     for (i = 0; i < tam; i++) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, score[i]);
     }
@@ -263,13 +286,13 @@ static void ground() {
 
     /* Desenha o chão com alguns tons diferentes de marrom */
     glBegin(GL_QUADS); {
-        glColor3d(0.8f, 0.25f, 0.1f);
+        glColor3d(0.8, 0.25, 0.1);
         glVertex3d(2 * -X_MAX, 0.0, 0.0);
-        glColor3d(0.4f, 0.4f, 0.1f);
+        glColor3d(0.4, 0.4, 0.1);
         glVertex3d(2 * X_MAX, 0.0, 0.0);
-        glColor3d(0.8f, 0.25f, 0.1f);
+        glColor3d(0.8, 0.25, 0.1);
         glVertex3d(2 * X_MAX, 0.0, Z_MAX + DIST_CAMERA);
-        glColor3d(0.5f, 0.3f, 0.1f);
+        glColor3d(0.5, 0.3, 0.1);
         glVertex3d(2 * -X_MAX, 0.0, Z_MAX + DIST_CAMERA);
     } glEnd();
 
@@ -318,7 +341,7 @@ static void imprimeElementos()
     puts("----------------    --------------------   --------");
     for (p = projeteis; p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
-        printf(" (%3.0f, %2.0f, %3.0f)      [%4.1f, %4.1f, %4.1f]       %s\n",
+        printf(" (%3.0f, %3.0f, %3.0f)      [%4.1f, %4.1f, %4.1f]       %s\n",
             bullet->x, bullet->y, (bullet->z - nave.base.z),
             bullet->vx, bullet->vy, bullet->vz,
             (bullet->amigo) ? "sim" : "não");
