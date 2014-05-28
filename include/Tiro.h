@@ -19,7 +19,7 @@
  *-------------------------*/
 
 #define BALA_VEL  10  /* módulo da velocidade */
-#define BALA_DANO 10
+#define BALA_DANO 20
 #define BALA_RAIO  3
 
 /* Desvio-padrão caso precisão == 0 */

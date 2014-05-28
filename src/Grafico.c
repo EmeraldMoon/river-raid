@@ -37,7 +37,6 @@ static void desenhaProjeteis();
 static void hud();
 static void ground();
 
-static int  itoa(char str[25], unsigned int pontos);
 static void imprimeElementos();
 
 /*-------------------*
@@ -62,20 +61,23 @@ void display()
     keySpecialOperations();
 
     /* Limpa fundo de tela e prepara para desenhar */
-    glClearColor(0.0f, 0.0f, 0.0f, 1.f);
+    /*glClearColor(0, 0, 0, 255);*/
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
     /* Coloca câmera atrás da nave */
-    glTranslatef(0.0f, -Y_MAX/2, nave.base.z - DIST_CAMERA);
-    glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+    gluLookAt(0.0, Y_MAX/2, nave.base.z - DIST_CAMERA,
+              0.0, Y_MAX/2, nave.base.z + Z_MAX,
+              0.0, 1.0, 0.0);
+    /*glTranslated(0.0, -Y_MAX/2, nave.base.z - DIST_CAMERA);
+    glRotated(180.0, 0.0, 1.0, 0.0);*/
 
     /* Desenhos */
     desenhaNave();
     desenhaInimigos();
     desenhaProjeteis();
     hud();
-    ground();
+    /*ground();*/
 
     /* Atualizações */
     atualizaCenario();
@@ -94,12 +96,13 @@ void display()
 
 /*------------------------------------------------------------------*/
 
-void reshape(int width, int height)
+void reshape(GLsizei width, GLsizei height)
 { 
-    glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+    glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION); 
     glLoadIdentity();
-    gluPerspective(60, (GLfloat) width / (GLfloat) height, 1.0, 500.0); 
+    glScaled(-1.0, 1.0, 1.0);
+    gluPerspective(60, (GLdouble) width/height, 1.0, Z_MAX);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -148,16 +151,16 @@ static void keyOperations()
 
 static void keySpecialOperations()
 {
-    if (keySpecialStates[GLUT_KEY_UP])    nave.angY += ANG_MANUAL;
-    if (keySpecialStates[GLUT_KEY_DOWN])  nave.angY -= ANG_MANUAL;
-    if (keySpecialStates[GLUT_KEY_RIGHT]) nave.angX -= ANG_MANUAL;
-    if (keySpecialStates[GLUT_KEY_LEFT])  nave.angX += ANG_MANUAL;
+    if (keySpecialStates[GLUT_KEY_UP])    nave.angVert  += ANG_MANUAL;
+    if (keySpecialStates[GLUT_KEY_DOWN])  nave.angVert  -= ANG_MANUAL;
+    if (keySpecialStates[GLUT_KEY_LEFT])  nave.angHoriz -= ANG_MANUAL;
+    if (keySpecialStates[GLUT_KEY_RIGHT]) nave.angHoriz += ANG_MANUAL;
 
-    /* Ângulos devem estar no intervalo [-ANG_MAX, ANG_MAX] */ 
-    if      (nave.angX >  ANG_MAX) nave.angX =  ANG_MAX;
-    else if (nave.angX < -ANG_MAX) nave.angX = -ANG_MAX;
-    if      (nave.angY >  ANG_MAX) nave.angY =  ANG_MAX;
-    else if (nave.angY < -ANG_MAX) nave.angY = -ANG_MAX;
+    /* Ângulos devem estar no intervalo [-ANG_MAX, ANG_MAX] */
+    if      (nave.angVert  >  ANG_MAX) nave.angVert  =  ANG_MAX;
+    else if (nave.angVert  < -ANG_MAX) nave.angVert  = -ANG_MAX;
+    if      (nave.angHoriz >  ANG_MAX) nave.angHoriz =  ANG_MAX;
+    else if (nave.angHoriz < -ANG_MAX) nave.angHoriz = -ANG_MAX;
 
     glutPostRedisplay();
 }
@@ -167,11 +170,11 @@ static void keySpecialOperations()
 static void desenhaNave()
 {
     glPushMatrix();
-    glTranslatef(nave.base.x, nave.base.y, nave.base.z);
-    glRotatef(nave.angX*180.0/PI, 1.0, 0.0, 0.0);
-    glRotatef(nave.angY*180.0/PI, 0.0, 1.0, 0.0);
-    glColor3f(1.0, 1.0, 0.0); /* Amarelo */
-    glutWireCone(NAVE_RAIO, NAVE_ALTURA + 20, SLICES, STACKS);
+    glTranslated(nave.base.x, nave.base.y, nave.base.z);
+    glRotated(nave.angHoriz * 180.0/PI,  0.0, 1.0, 0.0);
+    glRotated(nave.angVert  * 180.0/PI, -1.0, 0.0, 0.0);    
+    glColor3ub(255, 255, 0); /* Amarelo */
+    glutWireCone(nave.base.raio, nave.base.altura + 20, SLICES, STACKS);
     glPopMatrix();
 }
 
@@ -184,13 +187,12 @@ static void desenhaInimigos()
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         glPushMatrix();
-        glTranslatef(foe->base.x, foe->base.y, foe->base.z);
-        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-        glColor3f(1.0, 0.0, 0.0); /* Vermelho */
+        glTranslated(foe->base.x, foe->base.y, foe->base.z);
+        glRotated(-90.0, 1.0, 0.0, 0.0);
+        glColor3ub(255, 0, 0); /* Vermelho */
         glutWireCone(foe->base.raio, foe->base.altura, SLICES, STACKS);
         glPopMatrix();
     }
-
 }
 
 /*------------------------------------------------------------------*/
@@ -202,10 +204,10 @@ static void desenhaProjeteis()
     for (p = projeteis; p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
         glPushMatrix();
-        glTranslatef(bullet->x, bullet->y, bullet->z);
-        glColor3f(0.0, 1.0, 0.0); /* Verde */
-        glPointSize(20.0f);  
-        glutSolidSphere(BALA_RAIO, SLICES, STACKS);  
+        glTranslated(bullet->x, bullet->y, bullet->z);
+        glColor3ub(0, 255, 0); /* Verde */
+        glPointSize(20.0);  
+        glutSolidSphere(bullet->raio, SLICES, STACKS);  
         glPopMatrix();
     }
 
@@ -216,38 +218,39 @@ static void desenhaProjeteis()
 static void hud()
 {
     int i, tam;
-    char score[25] = "Score: ";
+    char score[16];
 
     glPushMatrix();
-    glTranslatef(1.15*X_MAX, 1.5*Y_MAX, nave.base.z);
+    glTranslated(-GLUT_WINDOW_WIDTH, GLUT_WINDOW_HEIGHT, nave.base.z);
 
     /* Imprime vidas restantes da nave */
-    glColor3f(0.0, 1.0, 1.0); /* Azul claro */
+    glColor3ub(0, 255, 255); /* ciano */
     for (i = 0; i < nave.vidas; i++) {
-        glPointSize(50.0f);  
+        glPointSize(50.0);  
         glBegin(GL_TRIANGLE_FAN);
-            glVertex3f( 0.0f  - 15*i,  0.0f, 0.0f);
-            glVertex3f( 0.0f  - 15*i,  5.0f, 0.0f);
-            glVertex3f( 5.0f  - 15*i,  0.0f, 0.0f);
-            glVertex3f( 0.0f  - 15*i, -5.0f, 0.0f);
-            glVertex3f(-5.0f  - 15*i,  0.0f, 0.0f);
-            glVertex3f( 0.0f  - 15*i,  5.0f, 0.0f);
+            glVertex3d( 0.0  - 15*i,  0.0, 0.0);
+            glVertex3d( 0.0  - 15*i,  5.0, 0.0);
+            glVertex3d( 5.0  - 15*i,  0.0, 0.0);
+            glVertex3d( 0.0  - 15*i, -5.0, 0.0);
+            glVertex3d(-5.0  - 15*i,  0.0, 0.0);
+            glVertex3d( 0.0  - 15*i,  5.0, 0.0);
         glEnd();
     }
 
     /* Imprime hp da nave */
-    glColor3f(0.0, 1.0, 0.0); /* Verde */
+    glColor3ub(0, 255, 0); /* Verde */
     glBegin(GL_LINES); {
-        glVertex3f(5.0f, -10.0f, 0.0f);
-        glVertex3f(5.0f - NAVE_HPMAX*nave.base.hp/100.0, -10.0f, 0.0f);
+        glVertex3d(5.0, -10.0, 0.0);
+        glVertex3d(5.0 - NAVE_HPMAX*nave.base.hp/100.0, -10.0, 0.0);
     } glEnd();
 
     /* Imprime score */
-    tam = itoa(score, nave.score);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glRasterPos3f(5.0f, -20.0f, 0.0f);
-    for (i = 0; i < tam; i++)
+    tam = sprintf(score, "Score: %d", nave.score);
+    glColor3d(1.0, 1.0, 1.0);
+    glRasterPos3d(5.0, -20.0, 0.0);
+    for (i = 0; i < tam; i++) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, score[i]);
+    }
 
     glPopMatrix();
 }
@@ -256,36 +259,21 @@ static void hud()
 
 static void ground() {
     glPushMatrix();
-    glTranslatef(0.0f, 0.0f, nave.base.z - DIST_CAMERA);
+    glTranslated(0.0, -Y_MAX/2, nave.base.z - DIST_CAMERA);
 
     /* Desenha o chão com alguns tons diferentes de marrom */
     glBegin(GL_QUADS); {
-        glColor3f(0.8f, 0.25f, 0.1f);
-        glVertex3f(-X_MAX, 0.0f, 0.0f);
-        glColor3f(0.4f, 0.4f, 0.1f);
-        glVertex3f( X_MAX, 0.0f, 0.0f);
-        glColor3f(0.8f, 0.25f, 0.1f);
-        glVertex3f( X_MAX, 0.0f, 400.0f);
-        glColor3f(0.5f, 0.3f, 0.1f);
-        glVertex3f(-X_MAX, 0.0f, 400.0f);
+        glColor3d(0.8f, 0.25f, 0.1f);
+        glVertex3d(2 * -X_MAX, 0.0, 0.0);
+        glColor3d(0.4f, 0.4f, 0.1f);
+        glVertex3d(2 * X_MAX, 0.0, 0.0);
+        glColor3d(0.8f, 0.25f, 0.1f);
+        glVertex3d(2 * X_MAX, 0.0, Z_MAX + DIST_CAMERA);
+        glColor3d(0.5f, 0.3f, 0.1f);
+        glVertex3d(2 * -X_MAX, 0.0, Z_MAX + DIST_CAMERA);
     } glEnd();
 
     glPopMatrix();
-}
-
-/*------------------------------------------------------------------*/
-
-static int itoa(char str[25], unsigned int pontos)
-{
-    int i = 7; /* Considera que já existe "Score: " em str */
-
-    if (pontos > 0) {
-        i = itoa(str, pontos/10);
-        str[i] = pontos % 10 + '0';
-        return ++i;
-    }
-
-    return i;
 }
 
 /*------------------------------------------------------------------*
@@ -313,7 +301,7 @@ static void imprimeElementos()
     printf("Posição: (%.0f, %.0f, %.0f)\n", 
         nave.base.x, nave.base.y, nave.base.z);
     printf("Ângulos: (%.0f°, %.0f°)\n",
-        (180/PI) * nave.angX, (180/PI) * nave.angY);
+        (180/PI) * nave.angHoriz, (180/PI) * nave.angVert);
     
     puts("\n{Inimigos}");
     puts("   ( x, y, z)       Recarga    Precisão    Energia ");

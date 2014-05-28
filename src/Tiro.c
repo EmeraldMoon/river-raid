@@ -121,7 +121,7 @@ static bool projetilColidiu(Projetil *bullet, Corpo corpo)
 bool projetilSaiu(Projetil *bullet)
 {
     return (bullet->x < -X_MAX || bullet->x > X_MAX)
-        || (bullet->y <      0 || bullet->y > Y_MAX)
+        || (bullet->y < 0)
         || (bullet->z < nave.base.z - nave.base.raio
             || bullet->z > nave.base.z + Z_MAX);
 }

@@ -17,8 +17,8 @@ void criaNave(int z, int nVidas)
     nave.base.z = z;
 
     /* Começa apontando para o centro */
-    nave.angX = 0.0;
-    nave.angY = 0.0;
+    nave.angHoriz = 0.0;
+    nave.angVert  = 0.0;
 
     nave.vidas         = nVidas;
     nave.vz            = NAVE_VEL;
@@ -35,8 +35,8 @@ void criaNave(int z, int nVidas)
 
 void moveNave()
 {
-    nave.vx = nave.vz * tan(nave.angX);
-    nave.vy = nave.vz * tan(nave.angY);
+    nave.vx = nave.vz * tan(nave.angHoriz);
+    nave.vy = nave.vz * tan(nave.angVert);
 
     nave.base.x += nave.vx;
     nave.base.y += nave.vy;
@@ -49,8 +49,8 @@ void moveNave()
     else if (nave.base.y <      0) nave.base.y =      0;
 
     /* Direção tende a voltar ao centro */
-    atualizaDirecao(&(nave.angX));
-    atualizaDirecao(&(nave.angY));
+    atualizaDirecao(&(nave.angHoriz));
+    atualizaDirecao(&(nave.angVert));
 }
 
 /*------------------------------------------------------------------*/

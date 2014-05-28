@@ -30,11 +30,11 @@ int main(int argc, char **argv)
 
     /* Inicializa */
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_SINGLE);
 
     /* Desenha e posiciona a janela de jogo */
-    glutInitWindowSize(5 * X_MAX, 5 * Y_MAX);
-    centralizaJanela(5 * X_MAX, 5 * Y_MAX);
+    glutInitWindowSize(5 * 2 * X_MAX, 5 * Y_MAX);
+    centralizaJanela(5 * 2 * X_MAX, 5 * Y_MAX);
     glutCreateWindow("River Raid");
 
     /* ---- Rendering Functions ---- */

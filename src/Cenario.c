@@ -65,7 +65,7 @@ void geraInimigo()
     Inimigo foe;
 
     /* (uniforme(-1, 0) | 1) gera um número que é 1 ou -1 */
-    foe.base.x = uniforme(X_MAX/2, X_MAX) * 1;
+    foe.base.x = uniforme(X_MAX/2, X_MAX) * (uniforme(-1, 0) | 1);
     foe.base.y = uniforme(0, Y_MAX/2);
     foe.base.z = nave.base.z + Z_MAX;
 

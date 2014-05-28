@@ -52,7 +52,7 @@ struct nave
     double vx, vy, vz;
 
     /* Inclinações em relação ao eixo Oz */
-    double angX, angY;
+    double angHoriz, angVert;
 
     /* Guarda pontuação do jogador */
     unsigned int score;

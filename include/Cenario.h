@@ -18,12 +18,12 @@
  *  (Z_MAX em tese é infinito; o valor refere-se apenas
  *  à distância máxima visível a partir da posição da nave)
  */
-#define X_MAX 160 
+#define X_MAX  80 
 #define Y_MAX  90
-#define Z_MAX 400
+#define Z_MAX 800
 
 /* Variação de vy dos projéteis por timestep */
-#define ACEL_GRAVIDADE 0.1
+#define ACEL_GRAVIDADE 0.01
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
