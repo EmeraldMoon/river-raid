@@ -254,12 +254,7 @@ static void hud()
     } glEnd();
 
     /* Desenha lifebar da nave */
-    if (NAVE_HPMAX*nave.base.hp/100.0 > 50.0)
-        glColor3ub(0, 255, 0);   /* verde */
-    else if (NAVE_HPMAX*nave.base.hp/100.0 > 25.0)
-        glColor3ub(255, 255, 0); /* amarelo */
-    else 
-        glColor3ub(255, 0, 0);   /* vermelho */
+    glColor3ub(1 - 255*nave.base.hp/NAVE_HPMAX, 255*nave.base.hp/NAVE_HPMAX, 0);
     glBegin(GL_QUADS); {
         glVertex3d(0.0, -2*RAIO, 0.0);
         glVertex3d(NAVE_HPMAX*nave.base.hp/100.0, -2*RAIO, 0.0);
