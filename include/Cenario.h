@@ -18,7 +18,7 @@
  *  (Z_MAX em tese é infinito; o valor refere-se apenas
  *  à distância máxima visível a partir da posição da nave)
  */
-#define X_MAX  80
+#define X_MAX 160 
 #define Y_MAX  90
 #define Z_MAX 400
 
@@ -32,7 +32,7 @@
 /*
  *  Inicializa nave e outras listas.
  */
-void inicializa();
+void inicializaCenario();
 
 /*
  *  Atualiza a posição dos elementos, eliminando os que

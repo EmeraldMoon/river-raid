@@ -1,8 +1,7 @@
 CC:= gcc
 CFLAGS:= -Wall -O3 -ansi -pedantic
 LM:= -lm
-OPENGL:= -lGL -lGLU -lglut
-M32:= -m32
+GLLIBS:= -lGL -lGLU -lglut
 RM:= rm -f
 RMDIR:= rm -rf
 MKDIR:= mkdir -p
@@ -21,22 +20,16 @@ TAR:= $(BIN).tar
 all: $(BINDIR)/$(BIN)
 
 $(BINDIR)/$(BIN): $(OBJ) | $(BINDIR)
-	$(CC) $(M32) $(LM) $(OPENGL) $^ -o $@
+	$(CC) $(LM) $(GLLIBS) $^ -o $@
 	@echo "Generating C binary \033[1;32m"$@"\033[0m"
 
 $(OBJ): | $(OBJDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) $(CLIBS) $(M32) -c $< -o $@
+	$(CC) $(CFLAGS) $(CLIBS) -c $< -o $@
 
 $(OBJDIR) $(BINDIR):
 	$(MKDIR) $@
-
-clean:
-	$(RMDIR) $(OBJDIR)
-
-distclean: clean
-	$(RMDIR) $(BINDIR)	
 
 dump:
 	@echo "src:" $(SRC)
@@ -49,8 +42,14 @@ tar:
 	rm -rf River/	
 	@echo "Arquivo\033[1;32m" $(TAR) "\033[0mcriado com sucesso"
 
-tarclean:
-	rm -r $(TAR)
-
 count:
 	wc -l src/* include/*
+
+clean:
+	$(RMDIR) $(OBJDIR)
+
+distclean: clean
+	$(RMDIR) $(BINDIR)
+
+tarclean:
+	rm -r $(TAR)

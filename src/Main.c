@@ -12,6 +12,8 @@
 #include "Cenario.h"
 #include "Grafico.h"
 
+
+
 /*----------------*-------------------------------------------------*
  |   M  A  I  N   |
  *----------------*/
@@ -23,16 +25,16 @@ int main(int argc, char **argv)
     if (argc < 2) semente = time(NULL);
     else          semente = atoi(argv[1]);
 
-    inicializa();
+    inicializaCenario();
     srand(semente);
 
     /* Inicializa */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
 
-    /* Desenha a janela do jogo */
-    glutInitWindowSize(500, 500);
-    glutInitWindowPosition(100, 100);
+    /* Desenha e posiciona a janela de jogo */
+    glutInitWindowSize(5 * X_MAX, 5 * Y_MAX);
+    centralizaJanela(5 * X_MAX, 5 * Y_MAX);
     glutCreateWindow("River Raid");
 
     /* ---- Rendering Functions ---- */

@@ -1,6 +1,6 @@
-#include <stdio.h>   /* printf, puts */
-#include <stdbool.h> /* bool, false, true */
-#include <ctype.h>   /* toupper */
+#include <stdio.h>  /* printf, puts */
+#include <ctype.h>  /* toupper */
+#include <stdbool.h>
 #include <GL/glut.h>
 #include "Grafico.h"
 #include "Nave.h"
@@ -8,12 +8,25 @@
 #include "Tiro.h"
 #include "Cenario.h"
 
-/* Vetores para reconhecimento de teclado */
-bool keyStates[256]        = {false};
-bool keySpecialStates[256] = {false};
+/*-------------------------*
+ |   D E F I N I Ç Õ E S   |
+ *-------------------------*/
 
-/* Tempo de espera até gerar um inimigo */
-unsigned int cont  = TEMPO_INIMIGOS;
+/* Macros para teclas */
+#define TECLA_TIRO  ' '
+#define TECLA_SAIDA 'Q'
+
+/* Tempo de espera para criar um inimigo */
+#define TEMPO_INIMIGOS 10
+
+/* OpenGL */
+#define DIST_CAMERA 175 /* Distância da câmera até a nave */
+#define SLICES 15
+#define STACKS 10
+
+/* Vetores para reconhecimento de teclado */
+GLboolean keyStates[128]        = {GL_FALSE};
+GLboolean keySpecialStates[128] = {GL_FALSE};
 
 static void keyOperations();
 static void keySpecialOperations();
@@ -30,15 +43,22 @@ static void imprimeElementos();
  |   F U N Ç Õ E S   |
  *-------------------*/
 
+void centralizaJanela(int width, int height)
+{
+    glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH)  - width)/2,
+                           (glutGet(GLUT_SCREEN_HEIGHT) - height)/2);
+}
+
 /*------------------------------------------------------------------*/
 
 void display()
 {
+    /* Tempo de espera até gerar um inimigo */
+    static int cont = TEMPO_INIMIGOS;
+
     /* Reconhecimento do teclado */
     keyOperations();
     keySpecialOperations();
-
-    imprimeElementos(); /* Para testar o programa */
 
     /* Limpa fundo de tela e prepara para desenhar */
     glClearColor(0.0f, 0.0f, 0.0f, 1.f);
@@ -57,11 +77,11 @@ void display()
 
     /* Atualizações */
     atualizaCenario();
+    imprimeElementos(); 
     if (cont-- == 0) {
-            geraInimigo();
-            cont = TEMPO_INIMIGOS;
+        geraInimigo();
+        cont = TEMPO_INIMIGOS;
     }
-
     if (nave.vidas <= 0) {
         liberaCenario();
         exit(EXIT_SUCCESS);
@@ -113,21 +133,11 @@ void keySpecialUp(int key, int x, int y)
 
 static void keyOperations()
 {
-    if (keyStates['W']) nave.angY += ANG_MANUAL;
-    if (keyStates['S']) nave.angY -= ANG_MANUAL;
-    if (keyStates['D']) nave.angX -= ANG_MANUAL;
-    if (keyStates['A']) nave.angX += ANG_MANUAL;
-    if (keyStates[' ']) naveDispara();
-    if (keyStates['Q']) {
+    if (keyStates[TECLA_TIRO]) naveDispara();
+    if (keyStates[TECLA_SAIDA]) {
         liberaCenario();
         exit(0);
     }
-
-    /* Ângulos devem estar no intervalo [-ANG_MAX, ANG_MAX] */ 
-    if      (nave.angX >  ANG_MAX) nave.angX =  ANG_MAX;
-    else if (nave.angX < -ANG_MAX) nave.angX = -ANG_MAX;
-    if      (nave.angY >  ANG_MAX) nave.angY =  ANG_MAX;
-    else if (nave.angY < -ANG_MAX) nave.angY = -ANG_MAX;
 
     glutPostRedisplay();
 }
@@ -136,7 +146,17 @@ static void keyOperations()
 
 static void keySpecialOperations()
 {
-    /* Nada por enquanto... */
+    if (keySpecialStates[GLUT_KEY_UP])    nave.angY += ANG_MANUAL;
+    if (keySpecialStates[GLUT_KEY_DOWN])  nave.angY -= ANG_MANUAL;
+    if (keySpecialStates[GLUT_KEY_RIGHT]) nave.angX -= ANG_MANUAL;
+    if (keySpecialStates[GLUT_KEY_LEFT])  nave.angX += ANG_MANUAL;
+
+    /* Ângulos devem estar no intervalo [-ANG_MAX, ANG_MAX] */ 
+    if      (nave.angX >  ANG_MAX) nave.angX =  ANG_MAX;
+    else if (nave.angX < -ANG_MAX) nave.angX = -ANG_MAX;
+    if      (nave.angY >  ANG_MAX) nave.angY =  ANG_MAX;
+    else if (nave.angY < -ANG_MAX) nave.angY = -ANG_MAX;
+
     glutPostRedisplay();
 }
 
@@ -165,7 +185,7 @@ static void desenhaInimigos()
         glTranslatef(foe->base.x, foe->base.y, foe->base.z);
         glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
         glColor3f(1.0, 0.0, 0.0); /* Vermelho */
-        glutWireCone(FOE_RAIO, FOE_ALTURA, SLICES, STACKS);
+        glutWireCone(foe->base.raio, foe->base.altura, SLICES, STACKS);
         glPopMatrix();
     }
 
@@ -215,10 +235,10 @@ static void hud()
 
     /* Imprime hp da nave */
     glColor3f(0.0, 1.0, 0.0); /* Verde */
-    glBegin(GL_LINES);
+    glBegin(GL_LINES); {
         glVertex3f(5.0f, -10.0f, 0.0f);
         glVertex3f(5.0f - NAVE_HPMAX*nave.base.hp/100.0, -10.0f, 0.0f);
-    glEnd();
+    } glEnd();
 
     /* Imprime score */
     tam = itoa(score, nave.score);
@@ -246,19 +266,17 @@ static int itoa(char str[25], unsigned int pontos)
 }
 
 /*------------------------------------------------------------------*
-*
-* Mostra informação a respeito de todos os elementos do jogo neste
-* momento. 
-*
-* Para efeitos de clareza, todas as componentes Z, exceto a da
-* nave, são relativas à nave em si (e não absolutas).
-*
-*/
+ *
+ *  Mostra informação a respeito de todos os elementos do jogo neste
+ *  momento. Para efeitos de clareza, todas as componentes Z, exceto
+ *  a da nave, são relativas à nave em si (e não absolutas).
+ *
+ */
 static void imprimeElementos()
 {
     Celula *p;
 
-    /* Limpa a tela */
+    /* Limpa a tela do terminal/prompt */
     #ifdef __linux__
             system("clear");
     #elif _WIN32
@@ -279,7 +297,7 @@ static void imprimeElementos()
     puts("----------------    -------    --------   ---------");
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-        printf(" (%3g, %2g, %3g)      %2d/%2d       %3.0f%%       %2d/%2d\n",
+        printf(" (%3g, %3g, %3g)      %2d/%2d       %3.0f%%       %2d/%2d\n",
             foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
             foe->base.espera, foe->base.cooldown, 100 * foe->precisao,
             foe->base.hp, FOE_HPMAX);

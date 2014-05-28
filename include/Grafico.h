@@ -8,21 +8,10 @@
 #define GRAFICO_H
 
 /*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*/
-
-/* Tempo de espera para criar um inimigo */
-#define TEMPO_INIMIGOS 10 
-
-/* OpenGL */
-#define DIST_CAMERA 175 /* Distância da câmera até a nave */
-#define SLICES 15
-#define STACKS 10
-
-/*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/
 
+void centralizaJanela(int width, int height);
 void display();
 void reshape(int width, int height);
 
