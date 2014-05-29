@@ -112,8 +112,12 @@ void reshape(GLint width, GLint height)
     glMatrixMode(GL_MODELVIEW);
 }
 
-/*------------------------------------------------------------------*/
-
+/*------------------------------------------------------------------*
+ *
+ *  Faz a representação visual dos atributos da nave pertinentes à
+ *  jogabilidade: vidas restantes, hp e score.
+ *
+ */
 static void hud()
 {
     const double RAIO = 5.0;
@@ -143,7 +147,7 @@ static void hud()
         glEnd();
     }
 
-    /* Desenha caixa da lifebar da nave */
+    /* Desenha a caixa da lifebar da nave */
     glColor3ub(0, 0, 60);  /* azul bem escuro */
     glBegin(GL_QUADS); {
         glVertex3d(-1.0, -2*RAIO + 1, 0.0);
@@ -152,7 +156,7 @@ static void hud()
         glVertex3d(-1.0, -2*RAIO - 2, 0.0);
     } glEnd();
 
-    /* Desenha lifebar da nave */
+    /* Desenha a lifebar, que varia de verde a vermelho, dependendo do hp da nave */
     glColor3ub(1 - 255*nave.base.hp/NAVE_HPMAX, 255*nave.base.hp/NAVE_HPMAX, 0);
     glBegin(GL_QUADS); {
         glVertex3d(0.0, -2*RAIO, 0.0);
@@ -172,8 +176,12 @@ static void hud()
     glPopMatrix();
 }
 
-/*------------------------------------------------------------------*/
-
+/*------------------------------------------------------------------*
+ *
+ *  Desenha a representação visual do chão, ou seja, o plano que
+ *  representa o menor valor que y pode assumir no jogo.
+ *
+ */
 static void ground() {
     glPushMatrix();
     glTranslated(0.0, -Y_MAX/2, nave.base.z - DIST_CAMERA);
