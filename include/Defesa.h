@@ -61,4 +61,9 @@ void inimigoDispara(Inimigo *foe);
  */
 bool inimigoSaiu(Inimigo *foe);
 
+/*
+ *  Recebe um inimigo e o desenha na tela.
+ */
+void desenhaInimigo(Inimigo *foe);
+
 #endif

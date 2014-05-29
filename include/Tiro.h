@@ -85,4 +85,9 @@ bool verificaAcerto(Projetil *bullet);
  */
 bool projetilSaiu(Projetil *bullet);
 
+/*
+ *  Recebe um projétil e o desenha na tela.
+ */
+void desenhaProjetil(Projetil *bullet);
+
 #endif

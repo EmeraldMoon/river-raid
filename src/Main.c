@@ -8,11 +8,8 @@
 
 #include <stdlib.h>  /* atoi, srand */
 #include <time.h>    /* time */
-#include <GL/glut.h>
 #include "Cenario.h"
 #include "Grafico.h"
-
-
 
 /*----------------*-------------------------------------------------*
  |   M  A  I  N   |
@@ -25,34 +22,14 @@ int main(int argc, char **argv)
     if (argc < 2) semente = time(NULL);
     else          semente = atoi(argv[1]);
 
+    /* Inicialização de elementos do jogo */
     inicializaCenario();
     srand(semente);
 
-    /* Inicializa */
+    /* Inicializa glut e cuida de todo o resto */
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_SINGLE);
+    inicializaGraficos();
 
-    /* Desenha e posiciona a janela de jogo */
-    glutInitWindowSize(5 * 2 * X_MAX, 5 * Y_MAX);
-    centralizaJanela(5 * 2 * X_MAX, 5 * Y_MAX);
-    glutCreateWindow("River Raid");
-
-    /* ---- Rendering Functions ---- */
-
-    glutDisplayFunc(display);
-    glutIdleFunc(display);
-
-    glutReshapeFunc(reshape);
-
-    glutKeyboardFunc(keyPressed);
-    glutKeyboardUpFunc(keyUp);
-
-    glutSpecialFunc(keySpecial);
-    glutSpecialUpFunc(keySpecialUp);
-
-    /* ---- Rendering Functions ---- */
-
-    glutMainLoop();
-
-    return EXIT_SUCCESS;
+    /* Campanha: adote este return. Ele é inútil. */
+    return 0;
 }

@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <GL/glut.h>
 #include "Grafico.h"
+#include "Teclado.h"
 #include "Nave.h"
 #include "Defesa.h"
 #include "Tiro.h"
@@ -12,28 +13,13 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
-/* Macros para teclas */
-#define TECLA_TIRO  ' '
-#define TECLA_SAIDA 'Q'
-
 /* Tempo de espera para criar um inimigo */
 #define TEMPO_INIMIGOS 10
 
-/* OpenGL */
-#define DIST_CAMERA 175 /* Distância da câmera até a nave */
-#define SLICES 15
-#define STACKS 10
+/* Dimensões da janela */
+#define JANELA_LARGURA 2 * 5 * X_MAX
+#define JANELA_ALTURA      5 * Y_MAX
 
-/* Vetores para reconhecimento de teclado */
-GLboolean keyStates[128]        = {GL_FALSE};
-GLboolean keySpecialStates[128] = {GL_FALSE};
-
-static void keyOperations();
-static void keySpecialOperations();
-
-static void desenhaNave();
-static void desenhaInimigos();
-static void desenhaProjeteis();
 static void hud();
 static void ground();
 
@@ -43,10 +29,35 @@ static void imprimeElementos();
  |   F U N Ç Õ E S   |
  *-------------------*/
 
-void centralizaJanela(int width, int height)
+void inicializaGraficos()
 {
-    glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH)  - width)/2,
-                           (glutGet(GLUT_SCREEN_HEIGHT) - height)/2);
+    /* Inicializa flags */    
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
+
+    /* Desenha e posiciona janela de jogo */
+    glutInitWindowSize(JANELA_LARGURA, JANELA_ALTURA);
+    glutInitWindowPosition(
+        (glutGet(GLUT_SCREEN_WIDTH)  - JANELA_LARGURA)/2,
+        (glutGet(GLUT_SCREEN_HEIGHT) - JANELA_ALTURA)/2);
+    glutCreateWindow("River Raid");    
+
+    /* ---- Funções de renderização ---- */
+
+    glutDisplayFunc(display);
+    glutIdleFunc(display);
+
+    glutReshapeFunc(reshape);
+
+    glutKeyboardFunc(keyPressed);
+    glutKeyboardUpFunc(keyUp);
+
+    glutSpecialFunc(keySpecialPressed);
+    glutSpecialUpFunc(keySpecialUp);
+
+    /* ---- Funções de renderização ---- */
+
+    /* Loop principal que cuidará do resto do jogo */
+    glutMainLoop();
 }
 
 /*------------------------------------------------------------------*/
@@ -60,26 +71,21 @@ void display()
     keyOperations();
     keySpecialOperations();
 
-    /* Limpa fundo de tela e prepara para desenhar */
-    /*glClearColor(0, 0, 0, 255);*/
+    /* Limpa buffer de cores e carrega matriz identidade */
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
-    /* Coloca câmera atrás da nave */
+    /* Coloca câmera atrás da nave.
+       (ponto de visão, ponto de fuga, vertical da câmera) */
     gluLookAt(0.0, Y_MAX/2, nave.base.z - DIST_CAMERA,
               0.0, Y_MAX/2, nave.base.z + Z_MAX,
               0.0, 1.0, 0.0);
-    /*glTranslated(0.0, -Y_MAX/2, nave.base.z - DIST_CAMERA);
-    glRotated(180.0, 0.0, 1.0, 0.0);*/
 
-    /* Desenhos */
-    desenhaNave();
-    desenhaInimigos();
-    desenhaProjeteis();
+    /* Desenha elementos */
     hud();
     /*ground();*/
 
-    /* Atualizações */
+    /* Atualizações não-visuais */
     atualizaCenario();
     imprimeElementos(); 
     if (cont-- == 0) {
@@ -96,128 +102,22 @@ void display()
 
 /*------------------------------------------------------------------*/
 
-void reshape(GLsizei width, GLsizei height)
+void reshape(GLint width, GLint height)
 { 
-    glViewport(0, 0, width, height);
+    /*glViewport(0, 0, width, height);*/ /* inútil? */
     glMatrixMode(GL_PROJECTION); 
     glLoadIdentity();
-    glScaled(-1.0, 1.0, 1.0); /* Espelha o eixo x */
+    glScaled(-1.0, 1.0, 1.0); /* espelha o eixo x */
     gluPerspective(60, (GLdouble) width/height, 1.0, Z_MAX);
     glMatrixMode(GL_MODELVIEW);
 }
 
 /*------------------------------------------------------------------*/
 
-void keyPressed(unsigned char key, int x, int y)
-{
-    keyStates[toupper(key)] = true;
-}
-
-/*------------------------------------------------------------------*/
- 
-void keyUp(unsigned char key, int x, int y)
-{  
-    keyStates[toupper(key)] = false;
-}
-
-/*------------------------------------------------------------------*/
-
-void keySpecial(int key, int x, int y)
-{
-    keySpecialStates[key] = true;
-}
-
-/*------------------------------------------------------------------*/
-
-void keySpecialUp(int key, int x, int y)
-{
-    keySpecialStates[key] = false;
-}
-
-/*------------------------------------------------------------------*/
-
-static void keyOperations()
-{
-    if (keyStates[TECLA_TIRO]) naveDispara();
-    if (keyStates[TECLA_SAIDA]) {
-        liberaCenario();
-        exit(0);
-    }
-
-    glutPostRedisplay();
-}
-
-/*------------------------------------------------------------------*/
-
-static void keySpecialOperations()
-{
-    if (keySpecialStates[GLUT_KEY_UP])    nave.angVert  += ANG_MANUAL;
-    if (keySpecialStates[GLUT_KEY_DOWN])  nave.angVert  -= ANG_MANUAL;
-    if (keySpecialStates[GLUT_KEY_LEFT])  nave.angHoriz -= ANG_MANUAL;
-    if (keySpecialStates[GLUT_KEY_RIGHT]) nave.angHoriz += ANG_MANUAL;
-
-    /* Ângulos devem estar no intervalo [-ANG_MAX, ANG_MAX] */
-    if      (nave.angVert  >  ANG_MAX) nave.angVert  =  ANG_MAX;
-    else if (nave.angVert  < -ANG_MAX) nave.angVert  = -ANG_MAX;
-    if      (nave.angHoriz >  ANG_MAX) nave.angHoriz =  ANG_MAX;
-    else if (nave.angHoriz < -ANG_MAX) nave.angHoriz = -ANG_MAX;
-
-    glutPostRedisplay();
-}
-
-/*------------------------------------------------------------------*/
-
-static void desenhaNave()
-{
-    glPushMatrix();
-    glTranslated(nave.base.x, nave.base.y, nave.base.z);
-    glRotated(nave.angHoriz * 180.0/PI,  0.0, 1.0, 0.0);
-    glRotated(nave.angVert  * 180.0/PI, -1.0, 0.0, 0.0);    
-    glColor3ub(255, 255, 0); /* amarelo */
-    glutWireCone(nave.base.raio, nave.base.altura + 20, SLICES, STACKS);
-    glPopMatrix();
-}
-
-/*------------------------------------------------------------------*/
-
-static void desenhaInimigos()
-{
-    Celula *p;
-
-    for (p = inimigos; p->prox != NULL; p = p->prox) {
-        Inimigo *foe = p->prox->item;
-        glPushMatrix();
-        glTranslated(foe->base.x, foe->base.y, foe->base.z);
-        glRotated(-90.0, 1.0, 0.0, 0.0);
-        glColor3ub(255, 0, 0); /* vermelho */
-        glutWireCone(foe->base.raio, foe->base.altura, SLICES, STACKS);
-        glPopMatrix();
-    }
-}
-
-/*------------------------------------------------------------------*/
-
-static void desenhaProjeteis()
-{
-    Celula *p;
-
-    for (p = projeteis; p->prox != NULL; p = p->prox) {
-        Projetil *bullet = p->prox->item;
-        glPushMatrix();
-        glTranslated(bullet->x, bullet->y, bullet->z);
-        glColor3ub(0, 255, 0); /* verde */
-        glPointSize(20.0);  
-        glutSolidSphere(bullet->raio, SLICES, STACKS);  
-        glPopMatrix();
-    }
-
-}
-
-/*------------------------------------------------------------------*/
-
 static void hud()
 {
-    #define RAIO 5.0
+    /*#define RAIO 5.0*/
+    const double RAIO = 5.0; /* é melhor fazer desse jeito */
 
     int i, tam;
     char score[16];
@@ -297,7 +197,7 @@ static void ground() {
 /*------------------------------------------------------------------*
  *
  *  Mostra informação a respeito de todos os elementos do jogo neste
- *  momento. Para efeitos de clareza, todas as componentes Z, exceto
+ *  timestep. Para efeitos de clareza, todas as componentes Z, exceto
  *  a da nave, são relativas à nave em si (e não absolutas).
  *
  */

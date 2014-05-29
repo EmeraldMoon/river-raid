@@ -5,6 +5,8 @@ River Raid - Changelog
   - Descrever funções do *Grafico.c* e traduzir os nomes das mesmas. Resumindo, polir o módulo *Grafico*.
   - Nave às vezes não se move em duas direções simultaneamente.
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
+  - Verificar com cuidado liberação de projéteis/inimigos; podem estar sumindo cedo demais.
+  - Atualizar decentemente este README.
   - Esperar Gubi lançar a terceira parte.
 
 Terceira parte

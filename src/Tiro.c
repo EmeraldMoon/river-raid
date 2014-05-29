@@ -4,6 +4,7 @@
 #include "Defesa.h"
 #include "Cenario.h"
 #include "Random.h"
+#include "Grafico.h"
 
 static void calculaAngulo(double *a, double *b, double desvio);
 static bool projetilColidiu(Projetil *bullet, Corpo corpo);
@@ -124,4 +125,16 @@ bool projetilSaiu(Projetil *bullet)
         || (bullet->y < 0)
         || (bullet->z < nave.base.z - nave.base.raio
             || bullet->z > nave.base.z + Z_MAX);
+}
+
+/*------------------------------------------------------------------*/
+
+void desenhaProjetil(Projetil *bullet)
+{
+    glPushMatrix();
+    glTranslated(bullet->x, bullet->y, bullet->z);
+    glColor3ub(0, 255, 0); /* verde */
+    glPointSize(20.0);  
+    glutSolidSphere(bullet->raio, SLICES, STACKS);  
+    glPopMatrix();
 }

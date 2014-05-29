@@ -99,4 +99,9 @@ void danificaNave(int dano);
  */
 bool naveColidiu(Inimigo *foe);
 
+/*
+ *  Desenha a representação visual da nave na tela.
+ */
+void desenhaNave(); 
+
 #endif

@@ -29,6 +29,7 @@ void atualizaCenario()
 
     /* Ações relacionadas à nave */
     moveNave();
+    desenhaNave();
     if ((nave.base.espera)-- == 0) {
         nave.base.espera = nave.base.cooldown;
     }
@@ -39,6 +40,7 @@ void atualizaCenario()
     while (p->prox != NULL) {
         Projetil *bullet = p->prox->item;
         moveProjetil(bullet);
+        desenhaProjetil(bullet);
         if (verificaAcerto(bullet) || projetilSaiu(bullet)) exclui(p);
         else p = p->prox;
     }
@@ -49,6 +51,7 @@ void atualizaCenario()
         Inimigo *foe = p->prox->item;
         if (naveColidiu(foe)) danificaNave(DANO_COLISAO);
         if ((foe->base.espera)-- == 0) inimigoDispara(foe);
+        desenhaInimigo(foe);
         if (inimigoSaiu(foe)) exclui(p);
         else p = p->prox;
     }
