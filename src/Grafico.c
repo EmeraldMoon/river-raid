@@ -85,7 +85,7 @@ void display()
     hud();
     /*ground();*/
 
-    /* Atualizações não-visuais */
+    /* Atualizações visuais e não-visuais */
     atualizaCenario();
     imprimeElementos(); 
     if (cont-- == 0) {
@@ -104,7 +104,7 @@ void display()
 
 void reshape(GLint width, GLint height)
 { 
-    /*glViewport(0, 0, width, height);*/ /* inútil? */
+    glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION); 
     glLoadIdentity();
     glScaled(-1.0, 1.0, 1.0); /* espelha o eixo x */
@@ -116,8 +116,7 @@ void reshape(GLint width, GLint height)
 
 static void hud()
 {
-    /*#define RAIO 5.0*/
-    const double RAIO = 5.0; /* é melhor fazer desse jeito */
+    const double RAIO = 5.0;
 
     int i, tam;
     char score[16];
