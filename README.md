@@ -2,7 +2,7 @@ River Raid - Changelog
 ========================
 
 ##### TODO:
-  - Descrever funções no *Grafico.c* e traduzir os nomes das mesmas.
+  - Descrever algumas funções no módulo *Grafico* e traduzir os nomes das mesmas.
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
   - Verificar com cuidado liberação de projéteis/inimigos; podem estar sumindo cedo demais.
   - Atualizar decentemente este README.
