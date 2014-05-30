@@ -26,7 +26,7 @@ void criaNave(int z, int nVidas)
     nave.vz            = NAVE_VEL;
     nave.base.hp       = NAVE_HPMAX;
     nave.base.cooldown = NAVE_COOL;
-    nave.base.espera   = nave.base.cooldown;
+    nave.base.espera   = 0;
     nave.base.raio     = NAVE_RAIO;
     nave.base.altura   = NAVE_ALTURA;
 

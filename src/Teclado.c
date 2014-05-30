@@ -51,7 +51,9 @@ void keySpecialUp(int key, int x, int y)
 
 void keyOperations()
 {
-    if (keyStates[TECLA_TIRO]) naveDispara();
+    if (keyStates[TECLA_TIRO] && (nave.base.espera)-- == 0) {
+        naveDispara();
+    }
     if (keyStates[TECLA_SAIDA]) {
         liberaCenario();
         exit(0);
