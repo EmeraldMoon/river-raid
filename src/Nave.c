@@ -144,7 +144,7 @@ void desenhaNave()
     glTranslated(nave.base.x, nave.base.y, nave.base.z);
     glRotated(nave.angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
     glRotated(-nave.angVert * 180.0/PI, 1.0, 0.0, 0.0);
-    Cor(YELLOW);
+    glColor(YELLOW);
     glutWireCone(nave.base.raio, nave.base.altura + 20, SLICES, STACKS);
     glPopMatrix();
 }

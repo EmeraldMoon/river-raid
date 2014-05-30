@@ -134,7 +134,7 @@ void desenhaProjetil(Projetil *bullet)
 {
     glPushMatrix();
     glTranslated(bullet->x, bullet->y, bullet->z);
-    Cor(LIME);
+    glColor(LIME);
     glPointSize(20.0);  
     glutSolidSphere(bullet->raio, SLICES, STACKS);  
     glPopMatrix();

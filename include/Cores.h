@@ -88,9 +88,10 @@
 #define LIGHT_PINK              255, 182, 193
 #define LIGHT_SALMON            255, 160, 122
 #define LIGHT_SEA_GREEN          31, 177, 170
+#define LIGHT_SKY_BLUE          135, 206, 250
 #define LIGHT_SLATE_GRAY        119, 135, 153
+#define LIGHT_STELL_BLUE        176, 196, 222
 #define LIGHT_YELLOW            255, 255, 224
-#define LIGHTSKY_BLUE           134, 206, 249
 #define LIME                      0, 255,   0
 #define LIME_GREEN               49,  205, 49
 #define LINEN                   249, 239, 230
@@ -143,6 +144,7 @@
 #define SLATE_GRAY              111, 128, 144
 #define SNOW                    255, 249, 249
 #define SPRING_GREEN              0, 255, 126
+#define STELL_BLUE               70, 130, 180
 #define TAN                     210, 180, 139
 #define TEAL                      0, 128, 128
 #define THISTLE                 216, 191, 216

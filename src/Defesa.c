@@ -66,7 +66,7 @@ void desenhaInimigo(Inimigo *foe)
     glPushMatrix();
     glTranslated(foe->base.x, foe->base.y, foe->base.z);
     glRotated(-90.0, 1.0, 0.0, 0.0);
-    Cor(RED);
+    glColor(RED);
     glutWireCone(foe->base.raio, foe->base.altura, SLICES, STACKS);
     /*gluCylinder(gluNewQuadric(), foe->base.raio, foe->base.raio,
                 foe->base.altura, SLICES, STACKS);*/
