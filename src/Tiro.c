@@ -5,6 +5,7 @@
 #include "Cenario.h"
 #include "Random.h"
 #include "Grafico.h"
+#include "Cores.h"
 
 static void calculaAngulo(double *a, double *b, double desvio);
 static bool projetilColidiu(Projetil *bullet, Corpo corpo);
@@ -133,7 +134,7 @@ void desenhaProjetil(Projetil *bullet)
 {
     glPushMatrix();
     glTranslated(bullet->x, bullet->y, bullet->z);
-    glColor3ub(0, 255, 0); /* verde */
+    Cor(LIME);
     glPointSize(20.0);  
     glutSolidSphere(bullet->raio, SLICES, STACKS);  
     glPopMatrix();

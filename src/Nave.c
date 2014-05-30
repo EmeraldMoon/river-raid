@@ -3,6 +3,7 @@
 #include "Tiro.h"
 #include "Cenario.h"
 #include "Grafico.h"
+#include "Cores.h"
 
 static void atualizaDirecao(double *ang);
 
@@ -143,7 +144,7 @@ void desenhaNave()
     glTranslated(nave.base.x, nave.base.y, nave.base.z);
     glRotated(nave.angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
     glRotated(-nave.angVert * 180.0/PI, 1.0, 0.0, 0.0);
-    glColor3ub(255, 255, 0); /* amarelo */
+    Cor(YELLOW);
     glutWireCone(nave.base.raio, nave.base.altura + 20, SLICES, STACKS);
     glPopMatrix();
 }

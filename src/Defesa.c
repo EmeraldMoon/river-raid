@@ -3,6 +3,7 @@
 #include "Nave.h"
 #include "Tiro.h"
 #include "Grafico.h"
+#include "Cores.h"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -65,7 +66,7 @@ void desenhaInimigo(Inimigo *foe)
     glPushMatrix();
     glTranslated(foe->base.x, foe->base.y, foe->base.z);
     glRotated(-90.0, 1.0, 0.0, 0.0);
-    glColor3ub(255, 0, 0); /* vermelho */
+    Cor(RED);
     glutWireCone(foe->base.raio, foe->base.altura, SLICES, STACKS);
     /*gluCylinder(gluNewQuadric(), foe->base.raio, foe->base.raio,
                 foe->base.altura, SLICES, STACKS);*/
