@@ -5,8 +5,7 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#ifndef BASE_H
-#define BASE_H
+#pragma once
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -46,5 +45,3 @@ struct corpo
     unsigned int raio;
     unsigned int altura;
 };
-
-#endif

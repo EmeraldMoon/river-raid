@@ -1,3 +1,4 @@
+#include <stdio.h>  /* puts, printf, system */
 #include "Cenario.h"
 #include "Nave.h"
 #include "Defesa.h"
@@ -85,4 +86,50 @@ void liberaCenario()
 {
     liberaLista(inimigos);
     liberaLista(projeteis);
+}
+
+/*------------------------------------------------------------------*/
+
+void imprimeElementos()
+{
+    Celula *p;
+
+    /* Limpa a tela do terminal/prompt */
+    #ifdef __linux__
+        system("clear");
+    #elif _WIN32
+        system("cls");
+    #endif    
+
+    puts("{Nave}");
+    printf("PONTUAÇÂO: %d\n", nave.score);
+    printf("VIDAS: %d\n", nave.vidas);
+    printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
+    printf("Posição: (%.0f, %.0f, %.0f)\n", 
+        nave.base.x, nave.base.y, nave.base.z);
+    printf("Ângulos: (%.0f°, %.0f°)\n",
+        (180/PI) * nave.angHoriz, (180/PI) * nave.angVert);
+    
+    /* Para efeitos de clareza, todas componentes Z dos inimigos
+       e projéteis são relativas à nave (e não absolutas). */
+    puts("\n{Inimigos}");
+    puts("   ( x, y, z)       Recarga    Precisão    Energia ");
+    puts("----------------    -------    --------   ---------");
+    for (p = inimigos; p->prox != NULL; p = p->prox) {
+        Inimigo *foe = p->prox->item;
+        printf(" (%3g, %3g, %3g)      %2d/%2d       %3.0f%%       %2d/%2d\n",
+            foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
+            foe->base.espera, foe->base.cooldown, 100 * foe->precisao,
+            foe->base.hp, FOE_HPMAX);
+    }
+    puts("\n{Projéteis}");
+    puts("   ( x, y, z)          [ vx, vy, vz]        Amigo? ");
+    puts("----------------    --------------------   --------");
+    for (p = projeteis; p->prox != NULL; p = p->prox) {
+        Projetil *bullet = p->prox->item;
+        printf(" (%3.0f, %3.0f, %3.0f)      [%4.1f, %4.1f, %4.1f]       %s\n",
+            bullet->x, bullet->y, (bullet->z - nave.base.z),
+            bullet->vx, bullet->vy, bullet->vz,
+            (bullet->amigo) ? "sim" : "não");
+    }
 }

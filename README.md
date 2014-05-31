@@ -5,23 +5,43 @@ River Raid - Changelog
   - Descrever algumas funções no módulo *Grafico* e (talvez?) traduzir o nome de algumas funções.
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
   - Verificar com cuidado liberação de projéteis/inimigos; podem estar sumindo cedo demais.
-  - Atualizar decentemente este README.
-  - Esperar Gubi lançar a terceira parte.
+  - Corrigir posicionamento das torres, que aparecem flutuando pelo cenário.
+  - Diferenciar, de alguma forma, tiros da nave e dos inimigos.
+  - Esperar Gubi lançar a terceira parte (ou seja, nunca).
 
 Terceira parte
 --------------
 
+### Versão 0.9
+
+###### 31/05:
+  - Deliberadamente em branco.
+
 ### Versão 0.8
 
+###### 30/05:
+  - ***Cores.h***: Contém constantes RGB para praticamente todas as cores em existência, junto com um macro para *glColor()* reduzido. Assim, é possível inserir cores em outros módulos de maneira mais direta e sem preocupação com comentários adicionais.
+  - Corrigido problema que não estava aplicando cooldown aos tiros da nave. Agora é possível atirar em velocidade normal.
+
+###### 29/05:
+  - ***Teclado.c***: Novo módulo! Cuida da verificação de teclas e interpretação de comandos.
+  - Funções responsáveis pelo desenho de elementos transferidas para seus respectivos módulos.
+
 ###### 28/05:
-  - Ângulos da nave redefinidos, sendo agora chamados de angHoriz e angVert para maior clareza.
-  - Resolvido problema de espelhamento da tela através de um *glScale*.
-  - O score é impresso de um jeito mais direto, usando *sprintf*.
+  - Resolvido problema do espelhamento da tela (e consequentemente, da inversão dos ângulos da nave) através de um *glScale* com valores (-1, 1, 1), que em resumo inverte o eixo X na matriz correspondente.
+  - Trocados alguns tipos de variáveis para o padrão do OpenGL (GLsizei, GLdouble, GLboolean, etc).
+  - Funções *float* trocadas por suas correspondentes em *double*.
+  - Pontuação impressão de um jeito mais direto, usando *sprintf*, o que corrigiu o bug de "Score: 0" não aparecer.
+  - Cor da lifebar varia em gradiente de verde a vermelho, dependendo da vida da nave.
+  - Projéteis não são mais eliminados ao saírem pelo teto do cenário. 
 
 ###### 27/05:
-  - ***Grafico.c***: Novo módulo para funções relacionadas ao OpenGL!
-  - ***Main.c***: Possui agora o objetivo de inicializar o programa e chamar o loop do OpenGL. Algumas funções deste módulo foram usadas no *Grafico.c*.
-  - No momento, a parte gráfica se resume a usar "esqueletos" de cone para a nave e inimigos, e esferas para os tiros. Há também a representação das vidas restantes, hp e score da nave. O usuário pode controlar a nave através do teclado.
+  - ***Grafico.c***: Novo módulo para funções relacionadas ao OpenGL (parte gráfica). Dentre as várias novidades, destacam-se:
+    - *display()*: Cuida do posicionamento da câmera e chamada de funções de atualização. Também herdou parte do loop contido no antigo *main()*.
+    - *reshape()*: Responsável por manter as proporções corretas caso a janela seja redimensionada.
+    - *hud()*: Desenho das vidas, energia e pontuação na tela.
+  - ***Main.c***: Função *main()* limita-se agora à inicialização do jogo e chamado do loop do OpenGL, responsável por todo o resto da execução. Também cuida da criação da janela e seu posicionamento no centro da tela. Leitura via entrada padrão (linha de comando) removida.
+  - No momento, a parte gráfica se resume a usar esferas para os tiros e "esqueletos" de cone para a nave e inimigos. Há também representação na tela de vidas restantes, energia da nave e pontuação. O usuário pode controlá-la através do teclado: direcionais movimentam, barra de espaço atira.
 
 ###### 26/05:
   - ***Tiro.c***: Precisão finalmente corrigida e funcionando. Grande parte disso deve-se à função *atan2()*, extremamente útil na tarefa de encontrar valor de um ângulo baseado em coordenadas euclidianas.

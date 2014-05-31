@@ -4,8 +4,7 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#ifndef CORES_H
-#define CORES_H
+#pragma once
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -156,5 +155,3 @@
 #define WHITE_SMOKE             245, 245, 245
 #define YELLOW                  255, 255,   0
 #define YELLOW_GREEN            154, 205,  49
-
-#endif

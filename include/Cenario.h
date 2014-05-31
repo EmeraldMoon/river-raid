@@ -6,18 +6,14 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#ifndef CENARIO_H
-#define CENARIO_H
+#pragma once
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
-/* 
- *  Coordenadas máximas da área de jogo.
- *  (Z_MAX em tese é infinito; o valor refere-se apenas
- *  à distância máxima visível a partir da posição da nave)
- */
+/* Coordenadas máximas da área de jogo
+   (Z_MAX refere-se á distância máxima visível). */
 #define X_MAX  80 
 #define Y_MAX  90
 #define Z_MAX 800
@@ -53,4 +49,8 @@ void geraInimigo();
  */
 void liberaCenario();
 
-#endif
+/*
+ *  Mostra informação a respeito dos elementos do jogo no
+ *  timestep atual. Usada para depuração.
+ */
+void imprimeElementos();

@@ -4,8 +4,7 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#ifndef TECLADO_H
-#define TECLADO_H
+#pragma once
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -29,5 +28,3 @@ void keySpecialUp(int key, int x, int y);
  */
 void keyOperations();
 void keySpecialOperations();
-
-#endif

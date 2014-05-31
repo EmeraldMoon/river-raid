@@ -7,8 +7,7 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#ifndef TIRO_H
-#define TIRO_H
+#pragma once
 
 #include <stdbool.h>
 #include "Base.h"
@@ -22,7 +21,7 @@
 #define BALA_DANO 20
 #define BALA_RAIO  3
 
-/* Desvio-padrão caso precisão == 0 */
+/* Desvio-padrão caso (precisão == 0) */
 #define DESVIO_MAX PI/2
 
 /*
@@ -43,7 +42,7 @@ struct projetil
     /* Projéteis são esféricos */
     unsigned int raio;
 
-    /* Se true, tiro foi disparado pela nave */
+    /* Se 'true', tiro foi disparado pela nave */
     bool amigo;
 };
 
@@ -89,5 +88,3 @@ bool projetilSaiu(Projetil *bullet);
  *  Recebe um projétil e o desenha na tela.
  */
 void desenhaProjetil(Projetil *bullet);
-
-#endif

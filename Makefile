@@ -1,32 +1,32 @@
 CC:= gcc
 CFLAGS:= -Wall -O3 -ansi -pedantic
-LM:= -lm
-GLLIBS:= -lGL -lGLU -lglut
-RM:= rm -f
-RMDIR:= rm -rf
+LIBS:= -lm -lGL -lGLU -lglut
 MKDIR:= mkdir -p
+RMDIR:= rm -rf
+RM:= rm -rf
 BINDIR:= bin
 SRCDIR:= src
 INCDIR:= include
 OBJDIR:= obj
+DOCDIR:= doc
 BIN:= River
 SRC:= $(wildcard $(SRCDIR)/*.c)
 OBJ:= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
-CLIBS:= -I$(INCDIR)
+INC:= -I$(INCDIR)
 TAR:= $(BIN).tar
 
-.PHONY: clean distclean dump
+.PHONY: dump tar count clean distclean tarclean
 
 all: $(BINDIR)/$(BIN)
 
 $(BINDIR)/$(BIN): $(OBJ) | $(BINDIR)
-	$(CC) $(LM) $(GLLIBS) $^ -o $@
+	$(CC) $(LIBS) $^ -o $@
 	@echo "Generating C binary \033[1;32m"$@"\033[0m"
 
 $(OBJ): | $(OBJDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) $(CLIBS) -c $< -o $@
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 $(OBJDIR) $(BINDIR):
 	$(MKDIR) $@
@@ -36,20 +36,20 @@ dump:
 	@echo "obj:" $(OBJ)
 
 tar:
-	mkdir River/
-	cp -r include/ src/ doc/ Makefile *.md River/
-	tar -czf $(TAR) River/
-	rm -rf River/	
+	$(MKDIR) $(BIN)/
+	cp -r $(INCDIR)/ $(SRCDIR)/ $(DOCDIR)/ Makefile *.md $(BIN)/
+	tar -czf $(TAR) $(BIN)/
+	$(RM) $(BIN)/
 	@echo "Arquivo\033[1;32m" $(TAR) "\033[0mcriado com sucesso"
 
 count:
-	wc -l src/* include/*
+	wc -l $(SRCDIR)/* $(INCDIR)/*
 
 clean:
-	$(RMDIR) $(OBJDIR)
+	$(RMDIR) $(OBJDIR)/
 
 distclean: clean
-	$(RMDIR) $(BINDIR)
+	$(RMDIR) $(BINDIR)/
 
 tarclean:
-	rm -r $(TAR)
+	$(RM) $(TAR)

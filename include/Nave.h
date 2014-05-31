@@ -4,8 +4,7 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#ifndef NAVE_H
-#define NAVE_H
+#pragma once
 
 #include <stdbool.h>
 #include "Defesa.h"
@@ -103,5 +102,3 @@ bool naveColidiu(Inimigo *foe);
  *  Desenha a representação visual da nave na tela.
  */
 void desenhaNave(); 
-
-#endif

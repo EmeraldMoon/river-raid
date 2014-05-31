@@ -4,8 +4,7 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#ifndef GRAFICO_H
-#define GRAFICO_H
+#pragma once
 
 #include <GL/glut.h>
 
@@ -25,5 +24,3 @@
 void inicializaGraficos();
 void display();
 void reshape(int width, int height);
-
-#endif

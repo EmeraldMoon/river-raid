@@ -6,8 +6,7 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#ifndef LISTA_H
-#define LISTA_H
+#pragma once
 
 #include <stdlib.h>  /* size_t, malloc, free, exit */
 
@@ -55,5 +54,3 @@ void exclui(Celula *cel);
  *  Libera toda a memória alocada para a lista.
  */
 void liberaLista(Celula *ini);
-
-#endif

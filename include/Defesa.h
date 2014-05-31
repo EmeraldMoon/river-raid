@@ -5,8 +5,7 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#ifndef DEFESA_H
-#define DEFESA_H
+#pragma once
 
 #include <stdbool.h>
 #include "Lista.h"
@@ -65,5 +64,3 @@ bool inimigoSaiu(Inimigo *foe);
  *  Recebe um inimigo e o desenha na tela.
  */
 void desenhaInimigo(Inimigo *foe);
-
-#endif

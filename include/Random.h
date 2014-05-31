@@ -5,8 +5,7 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#ifndef RANDOM_H
-#define RANDOM_H
+#pragma once
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -29,5 +28,3 @@ double uniformeD(double a, double b);
  *  média e desvio padrão estipulados.
  */
 double normal(double media, double desvpadr);
-
-#endif
