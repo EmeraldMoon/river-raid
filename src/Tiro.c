@@ -134,7 +134,11 @@ void desenhaProjetil(Projetil *bullet)
 {
     glPushMatrix();
     glTranslated(bullet->x, bullet->y, bullet->z);
-    glColor(LIME);
+
+    /* Provisório, no futuro cada tiro terá sua estrutura */
+    if (bullet->amigo) glColor(WHITE);
+    else               glColor(LIME);
+
     glPointSize(20.0);  
     glutSolidSphere(bullet->raio, SLICES, STACKS);  
     glPopMatrix();

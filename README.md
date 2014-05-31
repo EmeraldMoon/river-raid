@@ -15,13 +15,13 @@ Terceira parte
 ### Versão 0.9
 
 ###### 31/05:
-  - Deliberadamente em branco.
+  - Diferenciação provisória das cores dos tiros de nave e inimigos, para maior clareza.
 
 ### Versão 0.8
 
 ###### 30/05:
   - ***Cores.h***: Contém constantes RGB para praticamente todas as cores em existência, junto com um macro para *glColor()* reduzido. Assim, é possível inserir cores em outros módulos de maneira mais direta e sem preocupação com comentários adicionais.
-  - Corrigido problema que não estava aplicando cooldown aos tiros da nave. Agora é possível atirar em velocidade normal.
+  - Corrigido problema de cooldown não estar sendo aplicado aos tiros da nave. Agora é possível atirar em velocidade normal.
 
 ###### 29/05:
   - ***Teclado.c***: Novo módulo! Cuida da verificação de teclas e interpretação de comandos.
@@ -30,8 +30,8 @@ Terceira parte
 ###### 28/05:
   - Resolvido problema do espelhamento da tela (e consequentemente, da inversão dos ângulos da nave) através de um *glScale* com valores (-1, 1, 1), que em resumo inverte o eixo X na matriz correspondente.
   - Trocados alguns tipos de variáveis para o padrão do OpenGL (GLsizei, GLdouble, GLboolean, etc).
-  - Funções *float* trocadas por suas correspondentes em *double*.
-  - Pontuação impressão de um jeito mais direto, usando *sprintf*, o que corrigiu o bug de "Score: 0" não aparecer.
+  - Funções *float* trocadas por suas análogas em *double*.
+  - Pontuação impressa de um jeito mais direto, usando *sprintf()*, o que corrigiu o bug de "Score: 0" não aparecer no começo do jogo.
   - Cor da lifebar varia em gradiente de verde a vermelho, dependendo da vida da nave.
   - Projéteis não são mais eliminados ao saírem pelo teto do cenário. 
 
