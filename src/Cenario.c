@@ -10,9 +10,6 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
-/* Tempo de espera até criar um inimigo */
-#define TEMPO_INIMIGOS 10
-
 /* Elementos básicos do jogo */
 Nave nave;
 Lista *inimigos;
@@ -34,7 +31,8 @@ void inicializaCenario()
 
 void atualiza()
 {
-    static int cont = 1;
+    static int cont = TEMPO_INIMIGOS;
+
     Celula *p;
 
     /* Reconhecimento do teclado */
@@ -64,45 +62,15 @@ void atualiza()
         else p = p->prox;
     }
 
-    if (cont++ % TEMPO_INIMIGOS == 0) geraInimigo();
+    if (--cont == 0) {
+        geraInimigo();
+        cont = TEMPO_INIMIGOS;
+    }
     if (nave.vidas <= 0) {
         liberaCenario();
         exit(EXIT_SUCCESS);
     }
     imprimeElementos();
-}
-
-/*------------------------------------------------------------------*
- *  
- *  Esta função é um modelo de testes. No futuro, a geração
- *  de inimigos deve ser feita de forma pré-determinada.
- *
- */
-void geraInimigo()
-{
-    Inimigo foe;
-
-    /* (uniforme(-1, 0) | 1) gera um número que é 1 ou -1 */
-    foe.base.x = uniforme(X_MAX/2, X_MAX) * (uniforme(-1, 0) | 1);
-    foe.base.y = uniforme(0, Y_MAX/2);
-    foe.base.z = nave.base.z + Z_MAX;
-
-    foe.base.hp       = FOE_HPMAX;
-    foe.base.cooldown = uniforme(10, 20);
-    foe.base.espera   = foe.base.cooldown;
-    foe.base.raio     = FOE_RAIO;
-    foe.base.altura   = 2 * foe.base.y;
-    foe.precisao      = uniformeD(0.5, 1.0);
-
-    criaInimigo(foe);
-}
-
-/*------------------------------------------------------------------*/
-
-void liberaCenario()
-{
-    liberaLista(inimigos);
-    liberaLista(projeteis);
 }
 
 /*------------------------------------------------------------------*/
@@ -149,4 +117,12 @@ void imprimeElementos()
             bullet->vx, bullet->vy, bullet->vz,
             (bullet->amigo) ? "sim" : "não");
     }
+}
+
+/*------------------------------------------------------------------*/
+
+void liberaCenario()
+{
+    liberaLista(inimigos);
+    liberaLista(projeteis);
 }

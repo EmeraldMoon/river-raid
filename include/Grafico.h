@@ -8,6 +8,7 @@
 #pragma once
 
 #include <GL/freeglut.h>
+#include "Cores.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

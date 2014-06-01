@@ -13,14 +13,16 @@ Terceira parte
 
 ### Versão 0.9
 
+###### 01/05:
+  - Corrigidos inimigos que apareciam flutuando em relação ao solo.
+  - Corrigida detecção de colisão entre naves e inimigos, antes com problemas na verificação de altura.
+
 ###### 31/05:
   - Comentários e documentação a respeito das funções da terceira parte concluídos.
   - *Include guards* nos headers foram todos substituídos por *#pragma once*. Ajuda a manter os cabeçalhos mais limpos.
   - Diferenciação provisória das cores dos tiros da nave e dos inimigos.
-  - ***Grafico.c***: 
-    - Desenho da barra de energia pôde ser simplificado usando a função *glRect()*, cujo papel é desenhar retângulos.
-    - Funçaõ *desenha()* limita-se agora apenas a cuidar da parte visual.
-  - ***Cenario.c***: Função ***atualiza()***, antiga *atualizaCenario()*, passa a cuidar do callback de comandos outras verificações. Será basicamente o loop responsável pelo processamento interno do jogo.  
+  - ***Grafico.c***: Desenho da barra de energia pôde ser simplificado usando a função *glRect()*, cujo papel é desenhar retângulos. Funçaõ *desenha()* limita-se agora apenas a cuidar da parte visual.
+  - ***Cenario.c***: Função ***atualiza()***, antiga *atualizaCenario()*, passa a cuidar do callback de comandos e de outras verificações. Será basicamente o loop responsável pelo processamento interno do jogo.  
 
 ### Versão 0.8
 

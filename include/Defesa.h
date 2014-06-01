@@ -15,6 +15,9 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
+/* Tempo de espera até criar um inimigo */
+#define TEMPO_INIMIGOS 20
+
 /* Atributos padrão */
 #define FOE_HPMAX   50
 #define FOE_RAIO    30
@@ -46,6 +49,12 @@ extern Lista *inimigos;
  *  Insere um inimigo na respectiva lista.
  */
 void criaInimigo(Inimigo foe);
+
+/*
+ *  Gera uma torre ao fundo do cenário, com altura, posição
+ *  horizontal e outros atributos aleatórios.
+ */
+void geraInimigo();
 
 /*
  *  Dispara um projétil em direção à nave e atualiza o tempo

@@ -135,7 +135,7 @@ bool naveColidiu(Inimigo *foe)
     if (dx >= somaRaios || dz >= somaRaios) return false;
 
     return (hipot(dx, dz) < somaRaios)
-        && (dy < (nave.base.altura + foe->base.altura)/2);
+        && (abs(dy) < (nave.base.altura + foe->base.altura)/2);
 }
 
 /*------------------------------------------------------------------*/

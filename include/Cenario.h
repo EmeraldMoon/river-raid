@@ -39,19 +39,12 @@ void inicializaCenario();
 void atualiza();
 
 /*
- *  Gera um inimigo no fundo do cenário, com altura aleatória
- *  e posição horizontal em um dos quartos extremos da tela.
- *  Inicializa aleatoriamente os atributos básicos do mesmo.
+ *  Mostra informação a respeito dos elementos do jogo no
+ *  timestep atual. Usada para depuração.
  */
-void geraInimigo();
+void imprimeElementos();
 
 /*
  *  Libera toda a memória alocada para as listas.
  */
 void liberaCenario();
-
-/*
- *  Mostra informação a respeito dos elementos do jogo no
- *  timestep atual. Usada para depuração.
- */
-void imprimeElementos();
