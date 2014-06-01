@@ -68,7 +68,7 @@ void keySpecialOperations()
     if (keySpecialStates[GLUT_KEY_LEFT])  nave.angHoriz -= ANG_MANUAL;
     if (keySpecialStates[GLUT_KEY_RIGHT]) nave.angHoriz += ANG_MANUAL;
 
-    /* Ângulos devem permanecer no GLintervalo [-ANG_MAX, ANG_MAX] */
+    /* Ângulos devem permanecer no intervalo [-ANG_MAX, ANG_MAX] */
     if      (nave.angVert  >  ANG_MAX) nave.angVert  =  ANG_MAX;
     else if (nave.angVert  < -ANG_MAX) nave.angVert  = -ANG_MAX;
     if      (nave.angHoriz >  ANG_MAX) nave.angHoriz =  ANG_MAX;

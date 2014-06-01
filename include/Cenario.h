@@ -33,8 +33,8 @@ void inicializaCenario();
 /*
  *  Loop principal de processamento do jogo. Cuida direta
  *  ou indiretamente de todos os elementos, sendo responsável
- *  atualizar posições, verificar ações do usuário, tratar
- *  interações entre objetos e encerrar o jogo quando cabível.s
+ *  por atualizar posições, verificar ações do usuário, tratar
+ *  interações entre objetos e encerrar o jogo quando cabível.
  */
 void atualiza();
 

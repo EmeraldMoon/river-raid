@@ -105,7 +105,7 @@ static void hud()
         } glEnd();
     }
 
-    /* Desenha a barra de energia da nave */
+    /* Desenha a caixa da lifebar */
     glColor(DARK_BLUE);
     glRectd(-1.0, -2*RAIO - 2,
             NAVE_HPMAX + 1, -2*RAIO + 1);

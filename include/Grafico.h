@@ -25,8 +25,7 @@
  *-------------------------*/
 
 /*
- *  Loop principal do jogo. Faz a verificação do teclado,
- *  redesenha os elementos, atualiza posições e cuida de ações.
+ *  Loop principal da parte visual. Cuida 
  */
 void desenha();
 
