@@ -5,7 +5,6 @@
 #include "Defesa.h"
 #include "Tiro.h"
 #include "Cenario.h"
-#include "Teclado.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

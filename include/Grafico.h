@@ -26,7 +26,8 @@
  *-------------------------*/
 
 /*
- *  Loop principal da parte visual. Cuida 
+ *  Loop principal da parte visual. Cuida do posicionamento
+ *  da câmera e chamada de funções de atualização.
  */
 void desenha();
 

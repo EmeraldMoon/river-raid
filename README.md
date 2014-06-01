@@ -4,7 +4,6 @@ River Raid - Changelog
 ##### TODO:
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
   - Verificar com cuidado liberação de projéteis/inimigos; podem estar sumindo cedo demais.
-  - Corrigir posicionamento das torres, que aparecem flutuando pelo cenário.
   - Fazer a sincronização entre velocidade do jogo e framerate (***importantíssimo***)
   - Esperar Gubi lançar a terceira parte (ou seja, nunca).
 
@@ -21,7 +20,7 @@ Terceira parte
   - Comentários e documentação a respeito das funções da terceira parte concluídos.
   - *Include guards* nos headers foram todos substituídos por *#pragma once*. Ajuda a manter os cabeçalhos mais limpos.
   - Diferenciação provisória das cores dos tiros da nave e dos inimigos.
-  - ***Grafico.c***: Desenho da barra de energia pôde ser simplificado usando a função *glRect()*, cujo papel é desenhar retângulos. Funçaõ *desenha()* limita-se agora apenas a cuidar da parte visual.
+  - ***Grafico.c***: Desenho da barra de energia pôde ser simplificado usando a função *glRect()*, cujo papel é desenhar retângulos. Função *desenha()* limita-se agora apenas a cuidar da parte visual.
   - ***Cenario.c***: Função ***atualiza()***, antiga *atualizaCenario()*, passa a cuidar do callback de comandos e de outras verificações. Será basicamente o loop responsável pelo processamento interno do jogo.  
 
 ### Versão 0.8
