@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <GL/freeglut.h>
+
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/
@@ -14,17 +16,17 @@
  *  Funções chamadas pelo glut toda vez que uma tecla é
  *  pressionada ou solta, alterando seu registro de estado.
  *
- *  OBS: Inteiros x e y devem estar presentes como parâmetros
- *  pela especificação do glut, porém não são usados.
+ *  OBS: Inteiros x e y correspondem à posição do mouse e
+ *  precisam estar presentes, porém não são usados.
  */
-void keyPressed(unsigned char key, int x, int y);
-void keyUp(unsigned char key, int x, int y);
-void keySpecialPressed(int key, int x, int y);
-void keySpecialUp(int key, int x, int y);
+void keyPressed(GLubyte key, GLint x, GLint y);
+void keyUp(GLubyte key, GLint x, GLint y);
+void keySpecialPressed(GLint key, GLint x, GLint y);
+void keySpecialUp(GLint key, GLint x, GLint y);
 
 /*
- *  Verificam quais teclas estão pressionadas no momento
- *  e realizam as devidas ações correspondentes.
+ *  Funções responsáveis por verificar quais teclas estão
+ *  pressionadas no momento e realizar as ações correspondentes.
  */
 void keyOperations();
 void keySpecialOperations();

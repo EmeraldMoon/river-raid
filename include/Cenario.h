@@ -26,16 +26,17 @@
  *-------------------------*/
 
 /*
- *  Inicializa nave e outras listas.
+ *  Inicializa nave, pontuação e outras listas.
  */
 void inicializaCenario();
 
 /*
- *  Atualiza a posição dos elementos, eliminando os que
- *  saírem da tela ou acertarem a nave, e atualizando
- *  outros valores em decorrência dos acontecimentos.
+ *  Loop principal de processamento do jogo. Cuida direta
+ *  ou indiretamente de todos os elementos, sendo responsável
+ *  atualizar posições, verificar ações do usuário, tratar
+ *  interações entre objetos e encerrar o jogo quando cabível.s
  */
-void atualizaCenario();
+void atualiza();
 
 /*
  *  Gera um inimigo no fundo do cenário, com altura aleatória

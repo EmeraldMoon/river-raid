@@ -3,6 +3,10 @@
 #include <stdbool.h>
 #include "Lista.h"
 
+/*-------------------------*
+ |   D E F I N I Ç Õ E S   |
+ *-------------------------*/
+
 /* 'static' pois são usadas somente aqui */
 static void * mallocSafe(size_t nbytes);
 static void liberaListaR(Celula *cel);

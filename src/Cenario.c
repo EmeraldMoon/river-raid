@@ -4,6 +4,14 @@
 #include "Defesa.h"
 #include "Tiro.h"
 #include "Random.h"
+#include "Teclado.h"
+
+/*-------------------------*
+ |   D E F I N I Ç Õ E S   |
+ *-------------------------*/
+
+/* Tempo de espera até criar um inimigo */
+#define TEMPO_INIMIGOS 10
 
 /* Elementos básicos do jogo */
 Nave nave;
@@ -24,24 +32,18 @@ void inicializaCenario()
 
 /*------------------------------------------------------------------*/
 
-void atualizaCenario()
+void atualiza()
 {
+    static int cont = 1;
     Celula *p;
+
+    /* Reconhecimento do teclado */
+    keyOperations();
+    keySpecialOperations();
 
     /* Ações relacionadas à nave */
     moveNave();
-    desenhaNave();
     if (nave.invencibilidade > 0) (nave.invencibilidade)--;
-
-    /* Loop para verificar estado dos projéteis */
-    p = projeteis;
-    while (p->prox != NULL) {
-        Projetil *bullet = p->prox->item;
-        moveProjetil(bullet);
-        desenhaProjetil(bullet);
-        if (verificaAcerto(bullet) || projetilSaiu(bullet)) exclui(p);
-        else p = p->prox;
-    }
 
     /* Loop para tratar de inimigos */
     p = inimigos;
@@ -49,10 +51,25 @@ void atualizaCenario()
         Inimigo *foe = p->prox->item;
         if (naveColidiu(foe)) danificaNave(DANO_COLISAO);
         if ((foe->base.espera)-- == 0) inimigoDispara(foe);
-        desenhaInimigo(foe);
         if (inimigoSaiu(foe)) exclui(p);
         else p = p->prox;
     }
+
+    /* Loop para verificar estado dos projéteis */
+    p = projeteis;
+    while (p->prox != NULL) {
+        Projetil *bullet = p->prox->item;
+        moveProjetil(bullet);
+        if (verificaAcerto(bullet) || projetilSaiu(bullet)) exclui(p);
+        else p = p->prox;
+    }
+
+    if (cont++ % TEMPO_INIMIGOS == 0) geraInimigo();
+    if (nave.vidas <= 0) {
+        liberaCenario();
+        exit(EXIT_SUCCESS);
+    }
+    imprimeElementos();
 }
 
 /*------------------------------------------------------------------*
@@ -110,8 +127,8 @@ void imprimeElementos()
     printf("Ângulos: (%.0f°, %.0f°)\n",
         (180/PI) * nave.angHoriz, (180/PI) * nave.angVert);
     
-    /* Para efeitos de clareza, todas componentes Z dos inimigos
-       e projéteis são relativas à nave (e não absolutas). */
+    /* Para efeitos de clareza, todas as componentes z dos
+       inimigos e projéteis são relativas à nave (e não absolutas). */
     puts("\n{Inimigos}");
     puts("   ( x, y, z)       Recarga    Precisão    Energia ");
     puts("----------------    -------    --------   ---------");

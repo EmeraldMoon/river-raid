@@ -2,11 +2,10 @@ River Raid - Changelog
 ========================
 
 ##### TODO:
-  - Descrever algumas funções no módulo *Grafico* e (talvez?) traduzir o nome de algumas funções.
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
   - Verificar com cuidado liberação de projéteis/inimigos; podem estar sumindo cedo demais.
   - Corrigir posicionamento das torres, que aparecem flutuando pelo cenário.
-  - Diferenciar, de alguma forma, tiros da nave e dos inimigos.
+  - Fazer a sincronização entre velocidade do jogo e framerate (***importantíssimo***)
   - Esperar Gubi lançar a terceira parte (ou seja, nunca).
 
 Terceira parte
@@ -15,7 +14,13 @@ Terceira parte
 ### Versão 0.9
 
 ###### 31/05:
-  - Diferenciação provisória das cores dos tiros de nave e inimigos, para maior clareza.
+  - Comentários e documentação a respeito das funções da terceira parte concluídos.
+  - *Include guards* foram substituídos por *#pragma once*. Ajuda a manter os headers mais limpos.
+  - Diferenciação provisória das cores dos tiros da nave e dos inimigos.
+  - ***Grafico.c***: 
+    - Desenho da barra de energia pôde ser simplificado usando a função *glRect()*, responsável por desenhar retângulos.
+    - Funçaõ *desenha()* limita-se agora apenas a cuidar da parte visual.
+  - ***Cenario.c***: Função ***atualiza()***, antiga *atualizaCenario()*, passa a cuidar do callback de comandos e do encerramento do jogo, quando cabível. Será basicamente o loop responsável pelo processamento interno do jogo.  
 
 ### Versão 0.8
 
@@ -28,19 +33,20 @@ Terceira parte
   - Funções responsáveis pelo desenho de elementos transferidas para seus respectivos módulos.
 
 ###### 28/05:
-  - Resolvido problema do espelhamento da tela (e consequentemente, da inversão dos ângulos da nave) através de um *glScale* com valores (-1, 1, 1), que em resumo inverte o eixo X na matriz correspondente.
+  - ***Grafico.c***:
+    - Resolvido problema do espelhamento da tela (e consequentemente, da inversão dos ângulos da nave) através de um *glScale* com valores (-1, 1, 1), que em resumo inverte o eixo X na matriz correspondente.
+    - Pontuação impressa de um jeito mais direto, usando *sprintf()*, o que corrigiu o bug de "Score: 0" não aparecer no começo do jogo.
+    - Cor da lifebar varia em gradiente de verde a vermelho, dependendo da vida da nave.
   - Trocados alguns tipos de variáveis para o padrão do OpenGL (GLsizei, GLdouble, GLboolean, etc).
-  - Funções *float* trocadas por suas análogas em *double*.
-  - Pontuação impressa de um jeito mais direto, usando *sprintf()*, o que corrigiu o bug de "Score: 0" não aparecer no começo do jogo.
-  - Cor da lifebar varia em gradiente de verde a vermelho, dependendo da vida da nave.
-  - Projéteis não são mais eliminados ao saírem pelo teto do cenário. 
+  - Funções do OpenGL terminadas em "f" (*float*) foram trocadas por suas análogas em *double*, terminadas em "d".
+  - ***Tiro.c***:Projéteis não são mais eliminados ao saírem pelo teto do cenário. 
 
 ###### 27/05:
   - ***Grafico.c***: Novo módulo para funções relacionadas ao OpenGL (parte gráfica). Dentre as várias novidades, destacam-se:
-    - *display()*: Cuida do posicionamento da câmera e chamada de funções de atualização. Também herdou parte do loop contido no antigo *main()*.
-    - *reshape()*: Responsável por manter as proporções corretas caso a janela seja redimensionada.
-    - *hud()*: Desenho das vidas, energia e pontuação na tela.
-  - ***Main.c***: Função *main()* limita-se agora à inicialização do jogo e chamado do loop do OpenGL, responsável por todo o resto da execução. Também cuida da criação da janela e seu posicionamento no centro da tela. Leitura via entrada padrão (linha de comando) removida.
+    - *desenha()*: Cuida do posicionamento da câmera e chamada de funções de atualização. Também herdou parte do loop contido no antigo *main()*.
+    - *remaneja()*: Responsável por redesenhar a tela caso a janela seja redimensionada.
+    - *hud()*: Desenho das vidas, energia e pontuação.
+  - ***Main.c***: Função *main()* limita-se agora à inicialização do jogo e chamada do loop do OpenGL, responsável por todo o resto da execução. Também cuida da criação da janela e seu posicionamento no centro da tela. Leitura via entrada padrão (linha de comando) removida.
   - No momento, a parte gráfica se resume a usar esferas para os tiros e "esqueletos" de cone para a nave e inimigos. Há também representação na tela de vidas restantes, energia da nave e pontuação. O usuário pode controlá-la através do teclado: direcionais movimentam, barra de espaço atira.
 
 ###### 26/05:

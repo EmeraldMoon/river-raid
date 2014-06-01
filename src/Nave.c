@@ -5,6 +5,10 @@
 #include "Grafico.h"
 #include "Cores.h"
 
+/*-------------------------*
+ |   D E F I N I Ç Õ E S   |
+ *-------------------------*/
+
 static void atualizaDirecao(double *ang);
 
 /*-------------------*
@@ -53,6 +57,22 @@ void moveNave()
     /* Direção tende a voltar ao centro */
     atualizaDirecao(&(nave.angHoriz));
     atualizaDirecao(&(nave.angVert));
+}
+
+/*
+ *  Recebe um ponteiro para um ângulo de inclinação da nave e diminui
+ *  seu valor em módulo. Caso chegue a 0°, direção é mantida.
+ */
+static void atualizaDirecao(double *ang)
+{
+    if (*ang > 0.0) {
+        *ang -= ANG_AUTO;
+        if (*ang < 0.0) *ang = 0.0;
+    }
+    else if (*ang < 0.0) {
+        *ang += ANG_AUTO;
+        if (*ang > 0.0) *ang = 0.0;
+    }
 }
 
 /*------------------------------------------------------------------*/
@@ -116,24 +136,6 @@ bool naveColidiu(Inimigo *foe)
 
     return (hipot(dx, dz) < somaRaios)
         && (dy < (nave.base.altura + foe->base.altura)/2);
-}
-
-/*------------------------------------------------------------------*
- *
- *  Recebe um ponteiro para um ângulo de inclinação da nave e diminui
- *  seu valor em módulo. Caso chegue a 0°, direção é mantida.
- *
- */
-static void atualizaDirecao(double *ang)
-{
-    if (*ang > 0.0) {
-        *ang -= ANG_AUTO;
-        if (*ang < 0.0) *ang = 0.0;
-    }
-    else if (*ang < 0.0) {
-        *ang += ANG_AUTO;
-        if (*ang > 0.0) *ang = 0.0;
-    }
 }
 
 /*------------------------------------------------------------------*/

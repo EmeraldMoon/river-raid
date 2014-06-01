@@ -7,6 +7,10 @@
 #include "Grafico.h"
 #include "Cores.h"
 
+/*-------------------------*
+ |   D E F I N I Ç Õ E S   |
+ *-------------------------*/
+
 static void calculaAngulo(double *a, double *b, double desvio);
 static bool projetilColidiu(Projetil *bullet, Corpo corpo);
 
@@ -136,10 +140,9 @@ void desenhaProjetil(Projetil *bullet)
     glTranslated(bullet->x, bullet->y, bullet->z);
 
     /* Provisório, no futuro cada tiro terá sua estrutura */
-    if (bullet->amigo) glColor(WHITE);
+    if (bullet->amigo) glColor(LIGHT_GRAY);
     else               glColor(LIME);
-
-    glPointSize(20.0);  
+  
     glutSolidSphere(bullet->raio, SLICES, STACKS);  
     glPopMatrix();
 }

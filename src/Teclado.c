@@ -1,16 +1,15 @@
 #include <ctype.h>  /* toupper */
-#include <stdbool.h>
-#include <GL/glut.h>
-#include "Grafico.h"
-#include "Cenario.h"
+#include "Teclado.h"
 #include "Nave.h"
+#include "Cenario.h"
+#include "Grafico.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
 /* Constantes para teclas */
-#define TECLA_TIRO  ' '
+#define TECLA_TIRO  ' '  /* barra de espaços */
 #define TECLA_SAIDA 'Q'
 
 /* Vetores para reconhecimento de teclado */
@@ -21,28 +20,28 @@ GLboolean keySpecialStates[128] = {GL_FALSE};
  |   F U N Ç Õ E S   |
  *-------------------*/
 
-void keyPressed(unsigned char key, int x, int y)
+void keyPressed(GLubyte key, GLint x, GLint y)
 {
     keyStates[toupper(key)] = GL_TRUE;
 }
 
 /*------------------------------------------------------------------*/
  
-void keyUp(unsigned char key, int x, int y)
+void keyUp(GLubyte key, GLint x, GLint y)
 {  
     keyStates[toupper(key)] = GL_FALSE;
 }
 
 /*------------------------------------------------------------------*/
 
-void keySpecialPressed(int key, int x, int y)
+void keySpecialPressed(GLint key, GLint x, GLint y)
 {
     keySpecialStates[key] = GL_TRUE;
 }
 
 /*------------------------------------------------------------------*/
 
-void keySpecialUp(int key, int x, int y)
+void keySpecialUp(GLint key, GLint x, GLint y)
 {
     keySpecialStates[key] = GL_FALSE;
 }
@@ -58,8 +57,6 @@ void keyOperations()
         liberaCenario();
         exit(0);
     }
-
-    glutPostRedisplay();
 }
 
 /*------------------------------------------------------------------*/
@@ -71,11 +68,9 @@ void keySpecialOperations()
     if (keySpecialStates[GLUT_KEY_LEFT])  nave.angHoriz -= ANG_MANUAL;
     if (keySpecialStates[GLUT_KEY_RIGHT]) nave.angHoriz += ANG_MANUAL;
 
-    /* Ângulos devem estar no intervalo [-ANG_MAX, ANG_MAX] */
+    /* Ângulos devem permanecer no GLintervalo [-ANG_MAX, ANG_MAX] */
     if      (nave.angVert  >  ANG_MAX) nave.angVert  =  ANG_MAX;
     else if (nave.angVert  < -ANG_MAX) nave.angVert  = -ANG_MAX;
     if      (nave.angHoriz >  ANG_MAX) nave.angHoriz =  ANG_MAX;
     else if (nave.angHoriz < -ANG_MAX) nave.angHoriz = -ANG_MAX;
-
-    glutPostRedisplay();
 }
