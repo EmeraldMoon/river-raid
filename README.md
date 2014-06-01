@@ -15,12 +15,12 @@ Terceira parte
 
 ###### 31/05:
   - Comentários e documentação a respeito das funções da terceira parte concluídos.
-  - *Include guards* foram substituídos por *#pragma once*. Ajuda a manter os headers mais limpos.
+  - *Include guards* nos headers foram todos substituídos por *#pragma once*. Ajuda a manter os cabeçalhos mais limpos.
   - Diferenciação provisória das cores dos tiros da nave e dos inimigos.
   - ***Grafico.c***: 
-    - Desenho da barra de energia pôde ser simplificado usando a função *glRect()*, responsável por desenhar retângulos.
+    - Desenho da barra de energia pôde ser simplificado usando a função *glRect()*, cujo papel é desenhar retângulos.
     - Funçaõ *desenha()* limita-se agora apenas a cuidar da parte visual.
-  - ***Cenario.c***: Função ***atualiza()***, antiga *atualizaCenario()*, passa a cuidar do callback de comandos e do encerramento do jogo, quando cabível. Será basicamente o loop responsável pelo processamento interno do jogo.  
+  - ***Cenario.c***: Função ***atualiza()***, antiga *atualizaCenario()*, passa a cuidar do callback de comandos outras verificações. Será basicamente o loop responsável pelo processamento interno do jogo.  
 
 ### Versão 0.8
 
@@ -39,7 +39,7 @@ Terceira parte
     - Cor da lifebar varia em gradiente de verde a vermelho, dependendo da vida da nave.
   - Trocados alguns tipos de variáveis para o padrão do OpenGL (GLsizei, GLdouble, GLboolean, etc).
   - Funções do OpenGL terminadas em "f" (*float*) foram trocadas por suas análogas em *double*, terminadas em "d".
-  - ***Tiro.c***:Projéteis não são mais eliminados ao saírem pelo teto do cenário. 
+  - ***Tiro.c***: Projéteis não são mais eliminados ao saírem pelo teto do cenário. 
 
 ###### 27/05:
   - ***Grafico.c***: Novo módulo para funções relacionadas ao OpenGL (parte gráfica). Dentre as várias novidades, destacam-se:
