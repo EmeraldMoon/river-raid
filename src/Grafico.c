@@ -1,4 +1,5 @@
 #include <stdio.h>   /* sprintf */
+#include <stdlib.h>  /* EXIT_FAILURE */
 #include <string.h>  /* strcmp */
 #include "Grafico.h"
 #include "Cores.h"
@@ -15,6 +16,7 @@ GLuint texture; /* Imagem do plano de fundo */
 
 static void hud();
 static void ground();
+static void fundo();
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -46,8 +48,9 @@ void desenha()
         Projetil *bullet = p->prox->item;
         desenhaProjetil(bullet);
     }
-    desenhaNave(); 
+    desenhaNave();
     hud();
+    /*fundo();*/
     /* ground(); */    
 
     glutSwapBuffers();
@@ -75,32 +78,39 @@ void remodela(GLsizei largura, GLsizei altura)
 
 /*------------------------------------------------------------------*/
 
+static void ignoraComentario(FILE *file);
+static void leValor(FILE *file, void *valor);
+
 GLuint carregaTextura(const char * filename)
 {
-    GLubyte * data;
+    GLubyte * dados;
     char aux[2];
-    int largura, altura;
+    GLsizei largura, altura, n;
     FILE * file;
 
     file = fopen(filename, "rb");
     if (file == NULL) {
         perror("carregaTextura()");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
+    ignoraComentario(file);
     fscanf(file, "%2s", aux);
     if (strcmp(aux, "P6") != 0) {
         fprintf(stderr, "carregaTextura(): Não é um arquivo PPM\n");
+        fclose(file);
+        exit(EXIT_FAILURE);
     }
-    while (!feof(file)) {
-        if (fgetc(file) == '#') {
-            while (fgetc(file) != '\n');
-        }
 
-    }
-    data = malloc(width * height * 3);
-    fread(data, width * height * 3, 1, file);
-    fclose(file);
+    leValor(file, &largura);
+    leValor(file, &altura);
 
+    n = largura * altura * 3;
+    dados = mallocSafe(sizeof (GLubyte) * n);
+    for (int i = 0; i < n; i++) {
+        leValor(file, &dados[i]);
+    }    
+
+    /* DOOM: Hell begins here */
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -110,10 +120,28 @@ GLuint carregaTextura(const char * filename)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    free(data); 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, largura, altura,
+                 0, GL_RGB, GL_UNSIGNED_BYTE, dados);
+    free(dados); 
+    /* Hell ends here */
 
     return texture; 
+}
+
+static void ignoraComentario(FILE *file)
+{
+    if (fgetc(file) == '#') {
+        while (fgetc(file) != '\n');
+    }
+    else fseek(file, -1, SEEK_CUR);
+}
+
+static void leValor(FILE *file, void *valorptr)
+{
+    int *valor = valorptr;
+    ignoraComentario(file);
+    fscanf(file, "%d", valor);
+    valorptr = valor;
 }
 
 /*------------------------------------------------------------------*/
