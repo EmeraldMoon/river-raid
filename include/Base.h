@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <stdlib.h>  /* size_t, malloc, exit */
+
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
@@ -45,3 +47,13 @@ struct corpo
     unsigned int raio;
     unsigned int altura;
 };
+
+/*-------------------------*
+ |   P R O T Ó T I P O S   |
+ *-------------------------*/
+
+/*
+ *  Versão segura de malloc(). Caso não haja memória disponível,
+ *  exibe uma mensagem de erro e encerra o programa.
+ */
+void * mallocSafe(size_t nBytes);

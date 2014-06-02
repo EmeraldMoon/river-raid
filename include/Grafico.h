@@ -21,6 +21,8 @@
 #define SLICES 15
 #define STACKS 10
 
+extern GLuint texture;
+
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/
@@ -36,3 +38,16 @@ void desenha();
  *  (e enquanto) janela for redimensionada. 
  */
 void remodela(GLsizei width, GLsizei height);
+
+/*
+ *  Carrega a textura de um arquivo "filename", de tamanho
+ *  width x height. Retorna uma variável do tipo GLuint, que
+ *  representa a textura lida.
+ */
+GLuint carregaTextura(const char * filename);
+
+/*
+ *  Libera a memória alocada por
+ *  todas as variáveis texture.
+ */
+void liberaTextura();

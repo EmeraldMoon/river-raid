@@ -4,6 +4,7 @@
 #include "Defesa.h"
 #include "Tiro.h"
 #include "Random.h"
+#include "Grafico.h"
 #include "Teclado.h"
 
 /*-------------------------*
@@ -125,4 +126,5 @@ void liberaCenario()
 {
     liberaLista(inimigos);
     liberaLista(projeteis);
+    liberaTextura();
 }

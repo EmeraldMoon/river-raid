@@ -1,4 +1,5 @@
 #include <math.h>  /* tan */
+#include <GL/freeglut.h>
 #include "Nave.h"
 #include "Tiro.h"
 #include "Cenario.h"

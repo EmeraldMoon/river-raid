@@ -1,4 +1,5 @@
-#include <stdio.h>  /* sprintf */
+#include <stdio.h>   /* sprintf */
+#include <string.h>  /* strcmp */
 #include "Grafico.h"
 #include "Cores.h"
 #include "Nave.h"
@@ -9,6 +10,8 @@
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
+
+GLuint texture; /* Imagem do plano de fundo */
 
 static void hud();
 static void ground();
@@ -23,6 +26,9 @@ void desenha()
 
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
+
+    /* Permite o uso de texturas 2D */
+    glEnable(GL_TEXTURE_2D);
 
     /* Coloca câmera atrás da nave.
        (ponto de visão, ponto de fuga, vertical da câmera) */
@@ -65,6 +71,56 @@ void remodela(GLsizei largura, GLsizei altura)
 
     /* Volta ao modo original */
     glMatrixMode(GL_MODELVIEW);
+}
+
+/*------------------------------------------------------------------*/
+
+GLuint carregaTextura(const char * filename)
+{
+    GLubyte * data;
+    char aux[2];
+    int largura, altura;
+    FILE * file;
+
+    file = fopen(filename, "rb");
+    if (file == NULL) {
+        perror("carregaTextura()");
+        exit(1);
+    }
+    fscanf(file, "%2s", aux);
+    if (strcmp(aux, "P6") != 0) {
+        fprintf(stderr, "carregaTextura(): Não é um arquivo PPM\n");
+    }
+    while (!feof(file)) {
+        if (fgetc(file) == '#') {
+            while (fgetc(file) != '\n');
+        }
+
+    }
+    data = malloc(width * height * 3);
+    fread(data, width * height * 3, 1, file);
+    fclose(file);
+
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    free(data); 
+
+    return texture; 
+}
+
+/*------------------------------------------------------------------*/
+
+void liberaTextura()
+{
+    glDeleteTextures(1, &texture);
 }
 
 /*------------------------------------------------------------------*
@@ -144,4 +200,22 @@ static void ground() {
     } glEnd();
 
     glPopMatrix();
+}
+
+/*------------------------------------------------------------------*
+ *
+ *
+ *
+ */
+static void fundo() {
+    glPushMatrix();
+    glTranslated(-X_MAX, -Y_MAX/2, nave.base.z + Z_MAX-1);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glBegin(GL_QUADS); {
+        glTexCoord2d(0.0,0.0); glVertex3d(0, 0, 0); 
+        glTexCoord2d(1.0,0.0); glVertex3d(2*X_MAX, 0, 0); 
+        glTexCoord2d(1.0,1.0); glVertex3d(2*X_MAX, Y_MAX, 0);
+        glTexCoord2d(0.0,1.0); glVertex3d(0, Y_MAX, 0);
+    } glEnd();
 }

@@ -43,6 +43,9 @@ int main(int argc, char **argv)
         (glutGet(GLUT_SCREEN_HEIGHT) - JANELA_ALTURA)/2);
     glutCreateWindow("River Raid");
 
+    /* Carrega texturas */
+    texture = carregaTextura("jpBridge.ppm", 960, 928);
+
     /* ---- Loop principal ---- */
 
     glutIdleFunc(atualiza);

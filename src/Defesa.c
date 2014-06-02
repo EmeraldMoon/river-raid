@@ -1,4 +1,5 @@
 #include <math.h>  /* sqrt */
+#include <GL/freeglut.h>
 #include "Defesa.h"
 #include "Nave.h"
 #include "Tiro.h"
@@ -89,8 +90,6 @@ void desenhaInimigo(Inimigo *foe)
     glTranslated(foe->base.x, 0.0, foe->base.z);
     glRotated(-90.0, 1.0, 0.0, 0.0);
     glColor(RED);
-    glutWireCone(foe->base.raio, foe->base.altura, SLICES, STACKS);
-    /*gluCylinder(gluNewQuadric(), foe->base.raio, foe->base.raio,
-                foe->base.altura, SLICES, STACKS);*/
+    glutWireCylinder(foe->base.raio, foe->base.altura, SLICES, STACKS);
     glPopMatrix();
 }
