@@ -21,7 +21,6 @@ void desenha()
 {
     Celula *p;
 
-    /* Limpa buffer de cores e carrega matriz identidade */
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
@@ -31,7 +30,8 @@ void desenha()
               0.0, Y_MAX/2, nave.base.z + Z_MAX,
               0.0, 1.0, 0.0);
 
-    /* Desenha elementos */
+    /* É necessário que nave seja desenhada depois dos outros
+       elementos, pois senão inimigos aparecerão na sua frente */
     for (p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         desenhaInimigo(foe);
@@ -40,8 +40,6 @@ void desenha()
         Projetil *bullet = p->prox->item;
         desenhaProjetil(bullet);
     }
-    /* É importante que nave seja desenhada depois dos outros;
-       caso contrário, inimigos aparecerão na sua frente */
     desenhaNave(); 
     hud();
     /* ground(); */    

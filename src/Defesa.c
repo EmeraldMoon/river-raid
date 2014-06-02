@@ -27,11 +27,11 @@ void geraInimigo()
     foe.base.z = nave.base.z + Z_MAX;
 
     foe.base.hp       = FOE_HPMAX;
-    foe.base.cooldown = uniforme(1000, 2000);
+    foe.base.cooldown = uniforme(15, 30);
     foe.base.espera   = foe.base.cooldown;
     foe.base.raio     = FOE_RAIO;
     foe.base.altura   = 2 * foe.base.y;
-    foe.precisao      = uniformeD(0.5, 1.0);
+    foe.precisao      = uniformeD(0.8, 1.0);
 
     criaInimigo(foe);
 }
@@ -78,7 +78,7 @@ void inimigoDispara(Inimigo *foe)
 
 bool inimigoSaiu(Inimigo *foe)
 {
-    return (foe->base.z < nave.base.z);
+    return (foe->base.z < nave.base.z - DIST_CAMERA);
 }
 
 /*------------------------------------------------------------------*/

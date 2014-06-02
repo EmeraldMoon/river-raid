@@ -114,7 +114,7 @@ static bool projetilColidiu(Projetil *bullet, Corpo corpo)
     if (dx >= somaRaios || dz >= somaRaios) return false;
 
     return (hipot(dx, dz) < somaRaios)
-        && (dy < corpo.altura/2 + bullet->raio);
+        && (abs(dy) < corpo.altura/2 + bullet->raio);
 }
 
 /*------------------------------------------------------------------*

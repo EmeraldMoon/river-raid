@@ -15,6 +15,7 @@ Terceira parte
 ###### 01/05:
   - Corrigidos inimigos que apareciam flutuando em relação ao solo.
   - Corrigida detecção de colisão entre naves e inimigos, antes com problemas na verificação de altura.
+  - Corrigido mesmo problema que o anterior, porém no caso de acerto dos projéteis.
 
 ###### 31/05:
   - Comentários e documentação a respeito das funções da terceira parte concluídos.
