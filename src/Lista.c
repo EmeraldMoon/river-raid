@@ -8,6 +8,7 @@
  *-------------------------*/
 
 static void liberaListaR(Celula *cel);
+static void * mallocSafe(size_t nbytes);
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -62,4 +63,20 @@ static void liberaListaR(Celula *cel) {
     liberaListaR(cel->prox);
     free(cel->item); cel->item = NULL;
     free(cel); cel = NULL;
+}
+
+/*------------------------------------------------------------------*
+ *
+ *  Versão segura de malloc(). Caso não haja memória disponível,
+ *  exibe uma mensagem de erro e encerra o programa.
+ *
+ */
+static void * mallocSafe(size_t nbytes)
+{
+    void *ptr = malloc(nbytes);
+    if (ptr == NULL) {
+        perror("ERRO");
+        exit(EXIT_FAILURE);
+    }
+    return ptr;
 }

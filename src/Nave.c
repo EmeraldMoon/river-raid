@@ -81,7 +81,6 @@ static void atualizaDirecao(double *ang)
 void naveDispara()
 {
     Projetil bullet;
-    double k, r;
     double modulo = norma(nave.vx, nave.vy, nave.vz);
 
     bullet.dano = BALA_DANO;
@@ -89,13 +88,13 @@ void naveDispara()
     bullet.amigo = true;
 
     /* Componentes da velocidade da bala são proporcionais à nave */
-    k = BALA_VEL/modulo;
+    double k = BALA_VEL/modulo;
     bullet.vx = k * nave.vx;
     bullet.vy = k * nave.vy;
     bullet.vz = k * nave.vz;
 
     /* Posição inicial será colinear ao centro da nave e ao destino */
-    r = (nave.base.raio + bullet.raio)/modulo;
+    double r = (nave.base.raio + bullet.raio)/modulo;
     bullet.x = nave.base.x + (r * nave.vx);
     bullet.y = nave.base.y + (r * nave.vy);
     bullet.z = nave.base.z + (r * nave.vz);

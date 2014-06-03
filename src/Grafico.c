@@ -24,8 +24,6 @@ static void fundo();
 
 void desenha()
 {
-    Celula *p;
-
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
@@ -40,11 +38,11 @@ void desenha()
 
     /* É necessário que nave seja desenhada depois dos outros
        elementos, pois senão inimigos aparecerão na sua frente */
-    for (p = inimigos; p->prox != NULL; p = p->prox) {
+    for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         desenhaInimigo(foe);
     }
-    for (p = projeteis; p->prox != NULL; p = p->prox) {
+    for (Celula *p = projeteis; p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
         desenhaProjetil(bullet);
     }
@@ -54,7 +52,7 @@ void desenha()
     /* ground(); */    
 
     glutSwapBuffers();
-    glutPostRedisplay(); /* solução temporária */
+    glutPostRedisplay();
 }
 
 /*------------------------------------------------------------------*/
@@ -83,17 +81,13 @@ static void leValor(FILE *file, void *valor);
 
 GLuint carregaTextura(const char * filename)
 {
-    GLubyte * dados;
-    char aux[2];
-    GLsizei largura, altura, n;
-    FILE * file;
-
-    file = fopen(filename, "rb");
+    FILE *file = fopen(filename, "rb");
     if (file == NULL) {
         perror("carregaTextura()");
         exit(EXIT_FAILURE);
     }
     ignoraComentario(file);
+    char aux[2];
     fscanf(file, "%2s", aux);
     if (strcmp(aux, "P6") != 0) {
         fprintf(stderr, "carregaTextura(): Não é um arquivo PPM\n");
@@ -101,11 +95,12 @@ GLuint carregaTextura(const char * filename)
         exit(EXIT_FAILURE);
     }
 
+    GLsizei largura, altura;
     leValor(file, &largura);
     leValor(file, &altura);
 
-    n = largura * altura * 3;
-    dados = mallocSafe(sizeof (GLubyte) * n);
+    GLint n = largura * altura * 3;
+    GLubyte dados[n];   
     for (int i = 0; i < n; i++) {
         leValor(file, &dados[i]);
     }    
@@ -161,15 +156,12 @@ static void hud()
 {
     static const double RAIO = 5.0;
 
-    int i;
-    char score[16];
-
     /* Posiciona hud no local apropriado */
     glPushMatrix();
     glTranslated(-150, 100, nave.base.z); /* PROVISÓRIO */
 
     /* Desenha vidas restantes da nave */
-    for (i = 0; i < nave.vidas; i++) {
+    for (int i = 0; i < nave.vidas; i++) {
         glBegin(GL_TRIANGLE_FAN); {
             glColor(CYAN);
             glVertex3d( 0.0  + 3*RAIO*i,   0.0, 0.0);
@@ -197,6 +189,7 @@ static void hud()
             NAVE_HPMAX*nave.base.hp/100.0, -2*RAIO);
 
     /* Imprime pontuação */
+    char score[16];
     sprintf(score, "Score: %d", nave.score);
     glColor(WHITE);
     glRasterPos3d(0.0, -2*RAIO - 10, 0.0);

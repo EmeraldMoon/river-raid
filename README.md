@@ -3,7 +3,6 @@ River Raid - Changelog
 
 ##### TODO:
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
-  - Verificar com cuidado liberação de projéteis/inimigos; podem estar sumindo cedo demais.
   - Fazer a sincronização entre velocidade do jogo e framerate (***importantíssimo***)
   - Esperar Gubi lançar a terceira parte (ou seja, nunca).
 
@@ -11,6 +10,10 @@ Terceira parte
 --------------
 
 ### Versão 0.9
+
+###### 02/05:
+  - ***Grafico.c***: Leitura de texturas a partir de um arquivo, aparentemente funcionando.
+  - Mudamos para o padrão C99. A flag *-std=c99* do gcc permite fazer códigos mais próximos ao padrão Java, com suporte a comentários começados com "//", declaração de variáveis no meio do código e vetores de tamanho dinâmico (!).
 
 ###### 01/05:
   - Corrigidos inimigos que apareciam flutuando em relação ao solo.

@@ -74,8 +74,6 @@ void moveProjetil(Projetil *bullet)
  */
 bool verificaAcerto(Projetil *bullet)
 {
-    Celula *p;
-
     /* Verificação de colisão com a nave */
     if (projetilColidiu(bullet, nave.base)) {
         danificaNave(bullet->dano);
@@ -83,7 +81,7 @@ bool verificaAcerto(Projetil *bullet)
     }
 
     /* Verificação de colisão com algum inimigo */
-    for (p = inimigos; p->prox != NULL; p = p->prox) {
+    for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
 
         if (projetilColidiu(bullet, foe->base)) {

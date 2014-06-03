@@ -34,8 +34,6 @@ void atualiza()
 {
     static int cont = TEMPO_INIMIGOS;
 
-    Celula *p;
-
     /* Reconhecimento do teclado */
     keyOperations();
     keySpecialOperations();
@@ -45,7 +43,7 @@ void atualiza()
     if (nave.invencibilidade > 0) (nave.invencibilidade)--;
 
     /* Loop para tratar de inimigos */
-    p = inimigos;
+    Celula *p = inimigos;
     while (p->prox != NULL) {
         Inimigo *foe = p->prox->item;
         if (naveColidiu(foe)) danificaNave(DANO_COLISAO);
@@ -78,8 +76,6 @@ void atualiza()
 
 void imprimeElementos()
 {
-    Celula *p;
-
     /* Limpa a tela do terminal/prompt */
     #ifdef __linux__
         system("clear");
@@ -101,7 +97,7 @@ void imprimeElementos()
     puts("\n{Inimigos}");
     puts("   ( x, y, z)       Recarga    Precisão    Energia ");
     puts("----------------    -------    --------   ---------");
-    for (p = inimigos; p->prox != NULL; p = p->prox) {
+    for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         printf(" (%3g, %3g, %3g)      %2d/%2d       %3.0f%%       %2d/%2d\n",
             foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
@@ -111,7 +107,7 @@ void imprimeElementos()
     puts("\n{Projéteis}");
     puts("   ( x, y, z)          [ vx, vy, vz]        Amigo? ");
     puts("----------------    --------------------   --------");
-    for (p = projeteis; p->prox != NULL; p = p->prox) {
+    for (Celula *p = projeteis; p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
         printf(" (%3.0f, %3.0f, %3.0f)      [%4.1f, %4.1f, %4.1f]       %s\n",
             bullet->x, bullet->y, (bullet->z - nave.base.z),

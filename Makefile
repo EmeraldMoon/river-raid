@@ -1,5 +1,5 @@
 CC:= gcc
-CFLAGS:= -Wall -O3 -ansi -pedantic -std=c99
+CFLAGS:= -Wall -O3 -std=c99 -pedantic
 LIBS:= -lm -lGL -lGLU -lglut
 MKDIR:= mkdir -p
 RMDIR:= rm -rf
