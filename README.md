@@ -4,7 +4,7 @@ River Raid - Changelog
 ##### TODO:
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
   - Fazer a sincronização entre velocidade do jogo e framerate (***importantíssimo***)
-  - Esperar Gubi lançar a terceira parte (ou seja, nunca).
+  - Adaptar todo o código ao novo padrão OpenGL.
 
 Terceira parte
 --------------
