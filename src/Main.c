@@ -17,6 +17,11 @@
 #define JANELA_LARGURA 2 * 5 * X_MAX
 #define JANELA_ALTURA      5 * Y_MAX
 
+/* Arquivos de textura */
+#define FUNDO_TEXTURA  "sky1.ppm"
+#define RIO_TEXTURA    "magma.ppm"
+#define PAREDE_TEXTURA "brick.ppm"
+
 /*----------------*-------------------------------------------------*
  |   M  A  I  N   |
  *----------------*/
@@ -44,9 +49,9 @@ int main(int argc, char **argv)
     glutCreateWindow("River Raid");
 
     /* Carrega texturas */
-    carregaTextura("jpBridge.ppm", &fundoTextura);
-    carregaTextura("magma.ppm", &rioTextura);
-    carregaTextura("brick.ppm", &paredeTextura);
+    carregaTextura(FUNDO_TEXTURA,  &fundoTextura);
+    carregaTextura(RIO_TEXTURA,    &rioTextura);
+    carregaTextura(PAREDE_TEXTURA, &paredeTextura);
 
     /* ---- Loop principal ---- */
 

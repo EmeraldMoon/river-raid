@@ -69,7 +69,7 @@ void atualiza()
         liberaCenario();
         exit(EXIT_SUCCESS);
     }
-    imprimeElementos();
+    /*imprimeElementos();*/
 }
 
 /*------------------------------------------------------------------*/

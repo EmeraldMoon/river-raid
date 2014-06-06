@@ -7,7 +7,6 @@
 #include "Defesa.h"
 #include "Tiro.h"
 #include "Cenario.h"
-#include "Base.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -85,7 +84,7 @@ void remodela(GLsizei largura, GLsizei altura)
 
 static void ignoraComentario(FILE *file);
 
-void carregaTextura(const char * filename, GLuint *texture)
+void carregaTextura(const char *filename, GLuint *texture)
 {
     FILE *file = fopen(filename, "rb");
     if (file == NULL) {
@@ -93,26 +92,28 @@ void carregaTextura(const char * filename, GLuint *texture)
         exit(EXIT_FAILURE);
     }
 
-    ignoraComentario(file);
     char aux[2];
     fscanf(file, "%2s", aux);
+    ignoraComentario(file);
     if (strcmp(aux, "P6") != 0) {
         fprintf(stderr, "carregaTextura(): Não é um arquivo PPM\n");
         fclose(file);
         exit(EXIT_FAILURE);
     }
-    getc(file); /* Pula o \n da primeira linha */
 
-    GLsizei largura, altura, profundidade;
+    GLsizei largura, altura;
     ignoraComentario(file);
-    if (fscanf(file, "%d %d %d", &largura, &altura, &profundidade) != 3) {
+    if (fscanf(file, "%d %d", &largura, &altura) != 2) {
         fputs("carregaTextura(): Não é um arquivo PPM\n", stderr);
         exit(EXIT_FAILURE);
     }
-    printf("%dx%d (Maxval = %d)\n", largura, altura, profundidade);
 
-    fseek(file, 0, SEEK_SET); /* Volta para o início do arquivo */
-    int n = largura * altura * 3;
+    /* Obtém tamanho do arquivo */
+    fseek(file, 0, SEEK_END);
+    GLsizei n = ftell(file);
+    rewind(file);
+
+    /* Lê dados para uma string */
     GLubyte dados[n];
     fread(dados, sizeof(GLubyte), n, file);
     fclose(file);
@@ -130,13 +131,15 @@ void carregaTextura(const char * filename, GLuint *texture)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, largura, altura,
                  0, GL_RGB, GL_UNSIGNED_BYTE, dados); 
     /* Hell ends here */
-
 }
 
 static void ignoraComentario(FILE *file)
 {
-    if (fgetc(file) == '#') {
-        while (fgetc(file) != '\n');
+    while (getc(file) == '\n');
+    fseek(file, -1, SEEK_CUR);
+
+    if (getc(file) == '#') {
+        while (getc(file) != '\n');
     }
     else fseek(file, -1, SEEK_CUR);
 }
@@ -162,7 +165,6 @@ static void hud()
 
     /* Posiciona hud no local apropriado */
     glPushMatrix();
-    /* glTranslated(-150, 100, nave.base.z); PROVISÓRIO */
     glTranslated(-1.75*X_MAX, 1.25*Y_MAX, nave.base.z);
 
     /* Desenha vidas restantes da nave */
