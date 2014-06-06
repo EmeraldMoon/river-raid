@@ -48,7 +48,7 @@ void desenha()
     }
     desenhaNave();
     hud();
-    /*fundo();*/
+    fundo();
     /* ground(); */    
 
     glutSwapBuffers();
@@ -77,7 +77,6 @@ void remodela(GLsizei largura, GLsizei altura)
 /*------------------------------------------------------------------*/
 
 static void ignoraComentario(FILE *file);
-static void leValor(FILE *file, void *valor);
 
 GLuint carregaTextura(const char * filename)
 {
@@ -95,15 +94,16 @@ GLuint carregaTextura(const char * filename)
         exit(EXIT_FAILURE);
     }
 
-    GLsizei largura, altura;
-    leValor(file, &largura);
-    leValor(file, &altura);
+    GLsizei largura, altura, profundidade;
+    getc(file);
+    ignoraComentario(file);
+    fscanf(file, "%d %d %d", &largura, &altura, &profundidade); 
+    printf("%dx%d (Maxval = %d)\n", largura, altura, profundidade);
 
     GLint n = largura * altura * 3;
-    GLubyte dados[n];   
-    for (int i = 0; i < n; i++) {
-        leValor(file, &dados[i]);
-    }    
+    unsigned char dados[n];
+    fread(dados, sizeof(GLubyte), n, file);
+    fclose(file);
 
     /* DOOM: Hell begins here */
     glGenTextures(1, &texture);
@@ -116,8 +116,7 @@ GLuint carregaTextura(const char * filename)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, largura, altura,
-                 0, GL_RGB, GL_UNSIGNED_BYTE, dados);
-    free(dados); 
+                 0, GL_RGB, GL_UNSIGNED_BYTE, dados); 
     /* Hell ends here */
 
     return texture; 
@@ -129,14 +128,6 @@ static void ignoraComentario(FILE *file)
         while (fgetc(file) != '\n');
     }
     else fseek(file, -1, SEEK_CUR);
-}
-
-static void leValor(FILE *file, void *valorptr)
-{
-    int *valor = valorptr;
-    ignoraComentario(file);
-    fscanf(file, "%d", valor);
-    valorptr = valor;
 }
 
 /*------------------------------------------------------------------*/
@@ -225,18 +216,20 @@ static void ground() {
 
 /*------------------------------------------------------------------*
  *
- *
+ *  Desenha o plano de fundo, atribuindo-lhe uma textura.
  *
  */
 static void fundo() {
     glPushMatrix();
-    glTranslated(-X_MAX, -Y_MAX/2, nave.base.z + Z_MAX-1);
+    glTranslated(-X_MAX, -Y_MAX/2, 20);
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glBegin(GL_QUADS); {
-        glTexCoord2d(0.0,0.0); glVertex3d(0, 0, 0); 
-        glTexCoord2d(1.0,0.0); glVertex3d(2*X_MAX, 0, 0); 
+        glTexCoord2d(0.0,0.0); glVertex3d(0, 0, 0);
+        glTexCoord2d(1.0,0.0); glVertex3d(2*X_MAX, 0, 0);
         glTexCoord2d(1.0,1.0); glVertex3d(2*X_MAX, Y_MAX, 0);
         glTexCoord2d(0.0,1.0); glVertex3d(0, Y_MAX, 0);
     } glEnd();
+
+    glPopMatrix();
 }

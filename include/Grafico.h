@@ -40,14 +40,12 @@ void desenha();
 void remodela(GLsizei width, GLsizei height);
 
 /*
- *  Carrega a textura de um arquivo "filename", de tamanho
- *  width x height. Retorna uma variável do tipo GLuint, que
- *  representa a textura lida.
+ *  Carrega a textura de um arquivo "filename". Retorna uma
+ *  variável do tipo GLuint, que representa a textura lida.
  */
 GLuint carregaTextura(const char * filename);
 
 /*
- *  Libera a memória alocada por
- *  todas as variáveis texture.
+ *  Libera a memória alocada por todas as variáveis texture.
  */
 void liberaTextura();

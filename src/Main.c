@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     glutCreateWindow("River Raid");
 
     /* Carrega texturas */
-    /*texture = carregaTextura("jpBridge.ppm");*/
+    texture = carregaTextura("bricks.ppm");
 
     /* ---- Loop principal ---- */
 
