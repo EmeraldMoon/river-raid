@@ -21,7 +21,10 @@
 #define SLICES 15
 #define STACKS 10
 
-extern GLuint texture;
+/* Variáveis de textura */
+extern GLuint fundoTextura;
+extern GLuint rioTextura;
+extern GLuint paredeTextura;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -40,10 +43,10 @@ void desenha();
 void remodela(GLsizei width, GLsizei height);
 
 /*
- *  Carrega a textura de um arquivo "filename". Retorna uma
- *  variável do tipo GLuint, que representa a textura lida.
+ *  Carrega a textura de um arquivo "filename", guardando-a
+ *  em texture.
  */
-GLuint carregaTextura(const char * filename);
+void carregaTextura(const char * filename, GLuint *texture);
 
 /*
  *  Libera a memória alocada por todas as variáveis texture.

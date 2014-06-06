@@ -14,9 +14,9 @@
 
 /* Coordenadas máximas da área de jogo
    (Z_MAX refere-se á distância máxima visível). */
-#define X_MAX  80 
-#define Y_MAX  90
-#define Z_MAX 800
+#define X_MAX  120 // 80 
+#define Y_MAX  100 // 90
+#define Z_MAX  1200 // 800
 
 /* Variação de vy dos projéteis por timestep */
 #define ACEL_GRAVIDADE 0.01
