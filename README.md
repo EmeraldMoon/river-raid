@@ -3,19 +3,19 @@ River Raid - Changelog
 
 ##### TODO:
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
-  - Fazer a sincronização entre velocidade do jogo e framerate (***importantíssimo***)
-  - Adaptar todo o código ao novo padrão OpenGL.
+  - Fazer a sincronização entre velocidade do jogo e framerate (***importantíssimo***).
+  - Textura fica negativa ao ser aplicada ao plano de fundo.
 
 Terceira parte
 --------------
 
 ### Versão 0.9
 
-###### 02/05:
+###### 02/06:
   - ***Grafico.c***: Leitura de texturas a partir de um arquivo, aparentemente funcionando.
   - Mudamos para o padrão C99. A flag *-std=c99* do gcc permite fazer códigos mais próximos ao padrão Java, com suporte a comentários começados com "//", declaração de variáveis no meio do código e vetores de tamanho dinâmico (!).
 
-###### 01/05:
+###### 01/06:
   - Corrigidos inimigos que apareciam flutuando em relação ao solo.
   - Corrigida detecção de colisão entre naves e inimigos, antes com problemas na verificação de altura.
   - Corrigido mesmo problema que o anterior, porém no caso de acerto dos projéteis.
