@@ -12,7 +12,7 @@ Terceira parte
 
 ### Versão 0.9
 
-#####  06/06:
+###### 06/06:
   - Texturas implementadas: fundo, paredes e rio! Usaremos arquivos com formato ***ppm***.
   - ***Grafico.c***: Função *tempo* para atualizações a cada certo número de milisegundos. A sensação de movimento através das texturas é devida a essa implementação.
 
