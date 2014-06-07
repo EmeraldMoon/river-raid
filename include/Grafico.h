@@ -16,7 +16,7 @@
 
 /* Distância da câmera à nave */
 #define DIST_CAMERA 100 
-
+ 
 /* Constantes para os poliedros */
 #define SLICES 15
 #define STACKS 10
@@ -41,6 +41,12 @@ void desenha();
  *  (e enquanto) janela for redimensionada. 
  */
 void remodela(GLsizei width, GLsizei height);
+
+/*
+ *  Realiza determinadas ações a cada determindo número
+ *  de milisegundos.
+ */
+void tempo();
 
 /*
  *  Carrega a textura de um arquivo "filename", guardando-a

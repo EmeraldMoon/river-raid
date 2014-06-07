@@ -4,12 +4,17 @@ River Raid - Changelog
 ##### TODO:
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
   - Fazer a sincronização entre velocidade do jogo e framerate (***importantíssimo***).
-  - Textura fica negativa ao ser aplicada ao plano de fundo.
+  - Posição do hud em relação ao tamanho da tela.
+  - Ver se faltou relatar alguma atualização entre 02/06 e 06/06.
 
 Terceira parte
 --------------
 
 ### Versão 0.9
+
+#####  06/06:
+  - Texturas implementadas: fundo, paredes e rio! Usaremos arquivos com formato ***ppm***.
+  - ***Grafico.c***: Função *tempo* para atualizações a cada certo número de milisegundos. A sensação de movimento através das texturas é devida a essa implementação.
 
 ###### 02/06:
   - ***Grafico.c***: Leitura de texturas a partir de um arquivo, aparentemente funcionando.
