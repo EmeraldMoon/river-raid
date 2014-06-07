@@ -31,7 +31,7 @@
 
 int main(int argc, char **argv)
 {
-    int semente = time(NULL);
+    int semente;
 
     if (argc < 2) semente = time(NULL);
     else          semente = atoi(argv[1]);

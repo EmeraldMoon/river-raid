@@ -252,14 +252,10 @@ static void rio() {
     glBindTexture(GL_TEXTURE_2D, rioTextura);
 
     glBegin(GL_QUADS); {
-        glTexCoord2d(0.0, 16.0 + t/128.);
-        glVertex3d(0.0, 0.0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(8.0, 16.0 + t/128.);
-        glVertex3d(4*X_MAX, 0.0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(8.0, 0.0  + t/128.);
-        glVertex3d(4*X_MAX, 0.0, 0.0);
-        glTexCoord2d(0.0, 0.0  + t/128.);
-        glVertex3d(0.0, 0.0, 0.0);
+        glTexCoord2d(0.0, 16.0 + t/128.); glVertex3d(0.0, 0.0, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(8.0, 16.0 + t/128.); glVertex3d(4*X_MAX, 0.0, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(8.0, 0.0  + t/128.); glVertex3d(4*X_MAX, 0.0, 0.0);
+        glTexCoord2d(0.0, 0.0  + t/128.); glVertex3d(0.0, 0.0, 0.0);
     } glEnd();
 
     glPopMatrix();
@@ -282,26 +278,18 @@ static void parede() {
 
     /* Parede esquerda */
     glBegin(GL_QUADS); {
-        glTexCoord2d(0.0  + t/128., 1.0);
-        glVertex3d(-DIST_PAREDE, Y_MAX, 0);
-        glTexCoord2d(16.0 + t/128., 1.0);
-        glVertex3d(-DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(16.0 + t/128., 0.0);
-        glVertex3d(-DIST_PAREDE, 0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(0.0  + t/128., 0.0);
-        glVertex3d(-DIST_PAREDE, 0, 0);
+        glTexCoord2d(0.0  + t/128., 1.0); glVertex3d(-DIST_PAREDE, Y_MAX, 0);
+        glTexCoord2d(16.0 + t/128., 1.0); glVertex3d(-DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(16.0 + t/128., 0.0); glVertex3d(-DIST_PAREDE, 0, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(0.0  + t/128., 0.0); glVertex3d(-DIST_PAREDE, 0, 0);
     } glEnd();
 
     /* Parede direita */
     glBegin(GL_QUADS); {
-        glTexCoord2d(0.0  + t/128., 1.0);
-        glVertex3d(DIST_PAREDE, Y_MAX, 0);
-        glTexCoord2d(16.0 + t/128., 1.0);
-        glVertex3d(DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(16.0 + t/128., 0.0);
-        glVertex3d(DIST_PAREDE, 0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(0.0  + t/128., 0.0);
-        glVertex3d(DIST_PAREDE, 0, 0);
+        glTexCoord2d(0.0  + t/128., 1.0); glVertex3d(DIST_PAREDE, Y_MAX, 0);
+        glTexCoord2d(16.0 + t/128., 1.0); glVertex3d(DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(16.0 + t/128., 0.0); glVertex3d(DIST_PAREDE, 0, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(0.0  + t/128., 0.0); glVertex3d(DIST_PAREDE, 0, 0);
     } glEnd();
 
     glPopMatrix();
