@@ -136,11 +136,13 @@ bool naveColidiu(Inimigo *foe)
  
 void desenhaNave()
 {
+    const GLdouble naveCor = 255 - 190.0/INVENCIVEL_VIDA * nave.invencibilidade;
+
     glPushMatrix();
     glTranslated(nave.base.x, nave.base.y, nave.base.z);
     glRotated(nave.angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
     glRotated(-nave.angVert * 180.0/PI, 1.0, 0.0, 0.0);
-    glColor(YELLOW);
+    glColorAlpha(naveCor, naveCor, 0, naveCor);
     glutWireCone(nave.base.raio, nave.base.altura + 20, SLICES, STACKS);
     glPopMatrix();
 }
