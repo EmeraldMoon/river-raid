@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <stdlib.h>  /* size_t, malloc, free, exit */
+#include <stdlib.h>  /* size_t, free */
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

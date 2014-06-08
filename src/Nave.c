@@ -1,16 +1,8 @@
-#include <math.h>  /* tan */
+#include <math.h>  /* tan, abs */
 #include <GL/freeglut.h>
 #include "Nave.h"
-#include "Tiro.h"
 #include "Cenario.h"
 #include "Grafico.h"
-#include "Cores.h"
-
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*/
-
-static void atualizaDirecao(double *ang);
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -39,6 +31,8 @@ void criaNave(int z, int nVidas)
 }
 
 /*------------------------------------------------------------------*/
+
+static void atualizaDirecao(double *ang);
 
 void moveNave()
 {
@@ -118,7 +112,7 @@ void danificaNave(int dano)
     if (nave.base.hp <= 0) {
         nave.base.hp = 0;
         (nave.vidas)--;        
-        if (nave.vidas > 0) criaNave(nave.base.z, nave.vidas);
+        if (nave.vidas >= 0) criaNave(nave.base.z, nave.vidas);
     }
 }
 

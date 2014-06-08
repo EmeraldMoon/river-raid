@@ -21,7 +21,7 @@
 #define SLICES 15
 #define STACKS 10
 
-/* Variáveis de textura */
+/* Identificadores das texturas */
 extern GLuint fundoTextura;
 extern GLuint rioTextura;
 extern GLuint paredeTextura;
@@ -37,24 +37,19 @@ extern GLuint paredeTextura;
 void desenha();
 
 /*
- *  Redesenha a área de jogo quando 
- *  (e enquanto) janela for redimensionada. 
+ *  Redesenha a área de jogo quando (e enquanto)
+ *  janela for redimensionada.
  */
-void remodela(GLsizei width, GLsizei height);
+void remodela(GLsizei largura, GLsizei altura);
 
 /*
- *  Realiza determinadas ações a cada determindo número
- *  de milisegundos.
+ *  Recebe um arquivo em formato PPM contendo uma textura e
+ *  um identificador para a mesma. Carrega-a para a memória
+ *  a fim de ser usada posteriormente.
  */
-void tempo();
-
-/*
- *  Carrega a textura de um arquivo "filename", guardando-a
- *  em texture.
- */
-void carregaTextura(const char * filename, GLuint *texture);
+void carregaTextura(const char *filename, GLuint *textura);
 
 /*
  *  Libera a memória alocada por todas as variáveis texture.
  */
-void liberaTextura();
+void liberaTexturas();

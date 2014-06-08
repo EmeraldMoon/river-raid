@@ -18,11 +18,11 @@
  *-------------------------*/
 
 #define BALA_VEL  10  /* módulo da velocidade */
-#define BALA_DANO 20
+#define BALA_DANO 15
 #define BALA_RAIO  3
 
 /* Desvio-padrão caso (precisão == 0) */
-#define DESVIO_MAX PI/2
+#define DESVIO_MAX PI/4
 
 /*
  *  Representa um projétil causador de dano.
@@ -70,9 +70,9 @@ void moveProjetil(Projetil *bullet);
 
 /*
  *  Recebe um projétil. Se colisão for verificada com algum elemento,
- *  remove HP do mesmo e, caso seja um inimigo, verifica também se o mesmo
- *  foi destruído. Caso tiro tenho sido dado pela nave, são dados pontos
- *  ao jogador por acerto e por destruição.
+ *  remove energia deste e, caso seja um inimigo, verifica também
+ *  se o mesmo foi destruído. Caso tiro tenho sido dado pela nave,
+ *  são dados pontos ao jogador por acerto e por destruição.
  *
  *  A função devolve true caso haja um acerto qualquer, ou false caso contrário.
  */

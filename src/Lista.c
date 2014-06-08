@@ -1,14 +1,6 @@
-#include <stdio.h>   /* perror */
 #include <string.h>  /* memcpy */
-#include <stdbool.h>
 #include "Lista.h"
-
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*/
-
-static void liberaListaR(Celula *cel);
-static void * mallocSafe(size_t nbytes);
+#include "Base.h"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -54,29 +46,12 @@ void exclui(Celula *cel)
  */
 void liberaLista(Celula *ini)
 {
-    liberaListaR(ini->prox);
-    free(ini); ini = NULL;
-}
-
-static void liberaListaR(Celula *cel) {
-    if (cel == NULL) return;
-    liberaListaR(cel->prox);
-    free(cel->item); cel->item = NULL;
-    free(cel); cel = NULL;
-}
-
-/*------------------------------------------------------------------*
- *
- *  Versão segura de malloc(). Caso não haja memória disponível,
- *  exibe uma mensagem de erro e encerra o programa.
- *
- */
-static void * mallocSafe(size_t nbytes)
-{
-    void *ptr = malloc(nbytes);
-    if (ptr == NULL) {
-        perror("ERRO");
-        exit(EXIT_FAILURE);
+    Celula *cel = ini->prox;
+    while (cel != NULL) {
+        Celula *aux = cel->prox;
+        free(cel->item); cel->item = NULL;
+        free(cel); cel = NULL;
+        cel = aux;
     }
-    return ptr;
+    free(ini); ini = NULL;
 }

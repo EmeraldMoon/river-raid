@@ -9,7 +9,7 @@ void * mallocSafe(size_t nbytes)
 {
     void *ptr = malloc(nbytes);
     if (ptr == NULL) {
-        perror("ERRO");
+        perror("mallocSafe()");
         exit(EXIT_FAILURE);
     }
     return ptr;

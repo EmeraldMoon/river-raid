@@ -1,24 +1,22 @@
 #include <stdio.h>   /* sprintf */
-#include <stdlib.h>  /* EXIT_FAILURE */
 #include <string.h>  /* strcmp */
 #include "Grafico.h"
-#include "Cores.h"
-#include "Nave.h"
-#include "Defesa.h"
-#include "Tiro.h"
 #include "Cenario.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
-/* Variáveis de textura */
+/* Identificadores de textura */
 GLuint fundoTextura;
 GLuint rioTextura;
 GLuint paredeTextura;
 
-/* Contagem de timestep */
-static unsigned int tick = 0;
+/* Contagem de timesteps */
+static GLuint tick = 0;
+
+static void ignoraComentario(FILE *file);
+static void erro(FILE *file, const char *filename);
 
 static void hud();
 static void fundo();
@@ -31,24 +29,24 @@ static void parede();
 
 void desenha()
 {
+    /* Faz a limpeza dos buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-
-    /* Permite o uso de texturas 2D */
-    glEnable(GL_TEXTURE_2D);
 
     /* Coloca câmera atrás da nave.
        (ponto de visão, ponto de fuga, vertical da câmera) */
+    glLoadIdentity();
     gluLookAt(0.0, Y_MAX/2, nave.base.z - DIST_CAMERA,
               0.0, Y_MAX/2, nave.base.z + Z_MAX,
               0.0, 1.0, 0.0);
 
-    /* É necessário que nave seja desenhada depois dos outros
-       elementos, pois senão inimigos aparecerão na sua frente */
+    /* Elementos estáticos do cenário, com texturas */
+    glEnable(GL_TEXTURE_2D);
     fundo();
     rio();
-    parede(); 
-    glDisable(GL_TEXTURE_2D); /* Não entrar em conflito com os desenhos abaixo */
+    parede();    
+    glDisable(GL_TEXTURE_2D); 
+
+    /* Elementos dinâmicos do jogo, ainda sem texturas */    
     for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         desenhaInimigo(foe);
@@ -58,8 +56,9 @@ void desenha()
         desenhaProjetil(bullet);
     }
     desenhaNave();
-    hud();
-
+    hud();  
+    
+    /* Atualiza o cronômetro */
     tick++;
 
     glutSwapBuffers();
@@ -90,32 +89,25 @@ void remodela(GLsizei largura, GLsizei altura)
 
 /*------------------------------------------------------------------*/
 
-static void ignoraComentario(FILE *file);
-
-void carregaTextura(const char *filename, GLuint *texture)
+void carregaTextura(const char *filename, GLuint *textura)
 {
+    /* Abre o arquivo */
     FILE *file = fopen(filename, "rb");
     if (file == NULL) {
         perror("carregaTextura()");
         exit(EXIT_FAILURE);
     }
 
+    /* Faz verificação da chave mágica */
     char aux[3];
     fscanf(file, "%2s", aux);
     ignoraComentario(file);
-    if (strcmp(aux, "P6") != 0) {
-        fputs("carregaTextura(): Não é um arquivo PPM\n", stderr);
-        fclose(file);
-        exit(EXIT_FAILURE);
-    }
+    if (strcmp(aux, "P6") != 0) erro(file, filename);
 
+    /* Obtém largura e altura */
     GLsizei largura, altura;
     ignoraComentario(file);
-    if (fscanf(file, "%d %d", &largura, &altura) != 2) {
-        fputs("carregaTextura(): Não é um arquivo PPM\n", stderr);
-        fclose(file);
-        exit(EXIT_FAILURE);
-    }
+    if (fscanf(file, "%d %d", &largura, &altura) != 2) erro(file, filename);
 
     /* Obtém tamanho do arquivo */
     fseek(file, 0, SEEK_END);
@@ -123,13 +115,13 @@ void carregaTextura(const char *filename, GLuint *texture)
     rewind(file);
 
     /* Lê dados para uma string */
-    GLubyte dados[n];
+    GLubyte *dados = mallocSafe(sizeof (GLubyte) * n);
     fread(dados, sizeof (GLubyte), n, file);
     fclose(file);
 
     /* DOOM: Hell begins here */
-    glGenTextures(1, texture);
-    glBindTexture(GL_TEXTURE_2D, *texture);
+    glGenTextures(1, textura);
+    glBindTexture(GL_TEXTURE_2D, *textura);
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -153,9 +145,17 @@ static void ignoraComentario(FILE *file)
     else fseek(file, -1, SEEK_CUR);
 }
 
+static void erro(FILE *file, const char *filename)
+{
+    fprintf(stderr, "carregaTextura(): "
+        "%s não é um arquivo PPM\n", filename);
+    fclose(file);
+    exit(EXIT_FAILURE);
+}
+
 /*------------------------------------------------------------------*/
 
-void liberaTextura()
+void liberaTexturas()
 {
     glDeleteTextures(1, &fundoTextura);
     glDeleteTextures(1, &rioTextura);
@@ -164,21 +164,20 @@ void liberaTextura()
 
 /*------------------------------------------------------------------*
  *
- *  Faz a representação visual dos atributos da nave pertinentes à
- *  jogabilidade: vidas restantes, energia e pontuação.
+ *  Desenha num ponto fixo da tela um mostrador de atributos da nave
+ *  pertinentes à jogabilidade: vidas restantes, energia e pontuação.
  *
  */
 static void hud()
 {
-    static const double RAIO = 5.0;
+    static const GLdouble RAIO = 5.0;
 
     /* Posiciona hud no local apropriado */
     glPushMatrix();
-    /* glTranslated(-1.75*X_MAX, 1.25*Y_MAX, nave.base.z); */
     glTranslated(-GLUT_SCREEN_WIDTH/1.25, GLUT_SCREEN_HEIGHT/1.5, nave.base.z);
 
     /* Desenha vidas restantes da nave */
-    for (int i = 0; i < nave.vidas - 1; i++) {
+    for (int i = 0; i < nave.vidas; i++) {
         glBegin(GL_TRIANGLE_FAN); {
             glColor(CYAN);
             glVertex3d( 0.0  + 3*RAIO*i,   0.0, 0.0);
@@ -200,7 +199,7 @@ static void hud()
     glRectd(-1.0, -2*RAIO - 2,
             NAVE_HPMAX + 1, -2*RAIO + 1);
 
-    /* Desenha a lifebar, que varia de verde a vermelho, dependendo do hp da nave */
+    /* Desenha a lifebar, que varia de cor dependendo da energia da nave */
     glColor3ub(1 - 255*nave.base.hp/NAVE_HPMAX, 255*nave.base.hp/NAVE_HPMAX, 0);
     glRectd(0.0, -2*RAIO - 1,
             NAVE_HPMAX*nave.base.hp/100.0, -2*RAIO);
@@ -220,7 +219,8 @@ static void hud()
  *  Desenha o plano de fundo, atribuindo-lhe uma textura.
  *
  */
-static void fundo() {
+static void fundo()
+{
     glPushMatrix();
     glTranslated(0, 0, nave.base.z + Z_MAX);
     glBindTexture(GL_TEXTURE_2D, fundoTextura);
@@ -237,22 +237,27 @@ static void fundo() {
 
 /*------------------------------------------------------------------*
  *
- *  Desenha a representação visual do chão, ou seja, o plano que
- *  representa o menor valor que y pode assumir no jogo.
+ *  Desenha o "chão" do cenário, o limite inferior do jogo. Faz o
+ *  rio se movimentar, a fim de produzir uma sensação de movimento.
  *
  */
-static void rio() {
-    unsigned int t = tick % 10000; /* Sensação de movimento */
+static void rio()
+{
+    unsigned int t = tick % 10000;
 
     glPushMatrix();
     glTranslated(2 * -X_MAX, 0, nave.base.z - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, rioTextura);
 
     glBegin(GL_QUADS); {
-        glTexCoord2d(0.0, 16.0 + t/128.); glVertex3d(0.0, 0.0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(8.0, 16.0 + t/128.); glVertex3d(4*X_MAX, 0.0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(8.0, 0.0  + t/128.); glVertex3d(4*X_MAX, 0.0, 0.0);
-        glTexCoord2d(0.0, 0.0  + t/128.); glVertex3d(0.0, 0.0, 0.0);
+        glTexCoord2d(0.0, 16.0 + t/128.);
+        glVertex3d(0.0, 0.0, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(8.0, 16.0 + t/128.);
+        glVertex3d(4*X_MAX, 0.0, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(8.0, 0.0  + t/128.);
+        glVertex3d(4*X_MAX, 0.0, 0.0);
+        glTexCoord2d(0.0, 0.0  + t/128.);
+        glVertex3d(0.0, 0.0, 0.0);
     } glEnd();
 
     glPopMatrix();
@@ -260,14 +265,14 @@ static void rio() {
 
 /*------------------------------------------------------------------*
  *
- *  Desenha as paredes que limitam lateralmente o jogo, atribuindo-lhes
- *  uma textura.
+ *  Desenha as paredes que limitam lateralmente o jogo, 
+ *  atribuindo-lhes uma textura e também produzindo movimento.
  *
  */
-static void parede() {
-
-    static const double DIST_PAREDE = 1.1*X_MAX;
-    unsigned int t = tick % 10000; /* Sensação de movimento */
+static void parede()
+{
+    static const double DIST_PAREDE = X_MAX;
+    unsigned int t = tick % 10000;
     
     glPushMatrix();
     glTranslated(0, 0, nave.base.z - DIST_CAMERA);
@@ -275,18 +280,26 @@ static void parede() {
 
     /* Parede esquerda */
     glBegin(GL_QUADS); {
-        glTexCoord2d(0.0  + t/128., 1.0); glVertex3d(-DIST_PAREDE, Y_MAX, 0);
-        glTexCoord2d(16.0 + t/128., 1.0); glVertex3d(-DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(16.0 + t/128., 0.0); glVertex3d(-DIST_PAREDE, 0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(0.0  + t/128., 0.0); glVertex3d(-DIST_PAREDE, 0, 0);
+        glTexCoord2d(0.0  + t/128., 1.0);
+        glVertex3d(-DIST_PAREDE, Y_MAX, 0);
+        glTexCoord2d(16.0 + t/128., 1.0);
+        glVertex3d(-DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(16.0 + t/128., 0.0);
+        glVertex3d(-DIST_PAREDE, 0, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(0.0  + t/128., 0.0);
+        glVertex3d(-DIST_PAREDE, 0, 0);
     } glEnd();
 
     /* Parede direita */
     glBegin(GL_QUADS); {
-        glTexCoord2d(0.0  + t/128., 1.0); glVertex3d(DIST_PAREDE, Y_MAX, 0);
-        glTexCoord2d(16.0 + t/128., 1.0); glVertex3d(DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(16.0 + t/128., 0.0); glVertex3d(DIST_PAREDE, 0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(0.0  + t/128., 0.0); glVertex3d(DIST_PAREDE, 0, 0);
+        glTexCoord2d(0.0  + t/128., 1.0);
+        glVertex3d(DIST_PAREDE, Y_MAX, 0);
+        glTexCoord2d(16.0 + t/128., 1.0);
+        glVertex3d(DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(16.0 + t/128., 0.0);
+        glVertex3d(DIST_PAREDE, 0, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(0.0  + t/128., 0.0);
+        glVertex3d(DIST_PAREDE, 0, 0);
     } glEnd();
 
     glPopMatrix();

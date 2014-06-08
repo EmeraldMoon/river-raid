@@ -1,8 +1,6 @@
 #include <ctype.h>  /* toupper */
 #include "Teclado.h"
-#include "Nave.h"
 #include "Cenario.h"
-#include "Grafico.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -53,10 +51,7 @@ void keyOperations()
     if (keyStates[TECLA_TIRO] && (nave.base.espera)-- == 0) {
         naveDispara();
     }
-    if (keyStates[TECLA_SAIDA]) {
-        liberaCenario();
-        exit(0);
-    }
+    if (keyStates[TECLA_SAIDA]) encerraJogo();
 }
 
 /*------------------------------------------------------------------*/

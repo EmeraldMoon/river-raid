@@ -1,11 +1,8 @@
 #include <math.h>  /* sqrt */
-#include <GL/freeglut.h>
 #include "Defesa.h"
-#include "Nave.h"
-#include "Tiro.h"
 #include "Cenario.h"
-#include "Random.h"
 #include "Grafico.h"
+#include "Random.h"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -23,7 +20,7 @@ void geraInimigo()
     Inimigo foe;
 
     /* (uniforme(-1, 0) | 1) gera um número que é 1 ou -1 */
-    foe.base.x = uniforme(2*X_MAX/3, X_MAX) * (uniforme(-1, 0) | 1);
+    foe.base.x = uniforme(3 * X_MAX/4, X_MAX) * (uniforme(-1, 0) | 1);
     foe.base.y = uniforme(Y_MAX/8, Y_MAX/2);
     foe.base.z = nave.base.z + Z_MAX;
 
@@ -86,7 +83,7 @@ bool inimigoSaiu(Inimigo *foe)
 
 void desenhaInimigo(Inimigo *foe)
 {
-    glPushMatrix();
+    glPushMatrix();    
     glTranslated(foe->base.x, 0.0, foe->base.z);
     glRotated(-90.0, 1.0, 0.0, 0.0);
     glColor(RED);

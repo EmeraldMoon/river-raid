@@ -1,10 +1,6 @@
-#include <stdio.h>  /* puts, printf, system */
+#include <stdio.h>   /* puts, printf, system */
+#include <stdlib.h>  /* exit */
 #include "Cenario.h"
-#include "Nave.h"
-#include "Defesa.h"
-#include "Tiro.h"
-#include "Random.h"
-#include "Grafico.h"
 #include "Teclado.h"
 
 /*-------------------------*
@@ -63,24 +59,23 @@ void atualiza()
         else p = p->prox;
     }
 
+    if (nave.vidas <= 0) encerraJogo();
     if (--cont == 0) {
         geraInimigo();
         cont = TEMPO_INIMIGOS;
-    }
-    if (nave.vidas <= 0) {
-        liberaCenario();
-        exit(EXIT_SUCCESS);
     }
     imprimeElementos();
 }
 
 /*------------------------------------------------------------------*/
 
-void liberaCenario()
+void encerraJogo()
 {
     liberaLista(inimigos);
     liberaLista(projeteis);
-    liberaTextura();
+    liberaTexturas();
+
+    exit(EXIT_SUCCESS);
 }
 
 /*------------------------------------------------------------------*
@@ -110,21 +105,21 @@ static void imprimeElementos()
     /* Para efeitos de clareza, todas as componentes z dos
        inimigos e projéteis são relativas à nave (e não absolutas). */
     puts("\n{Inimigos}");
-    puts("   ( x, y, z)       Recarga    Precisão    Energia ");
-    puts("----------------    -------    --------   ---------");
+    puts("    ( x, y, z)          Recarga    Precisão    Energia ");
+    puts("-------------------     -------    --------   ---------");
     for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-        printf(" (%3g, %3g, %3g)      %2d/%2d       %3.0f%%       %2d/%2d\n",
+        printf(" (%4g, %3g, %4g)       %2d/%2d       %3.0f%%       %2d/%2d\n",
             foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
             foe->base.espera, foe->base.cooldown, 100 * foe->precisao,
             foe->base.hp, FOE_HPMAX);
     }
     puts("\n{Projéteis}");
-    puts("   ( x, y, z)          [ vx, vy, vz]        Amigo? ");
-    puts("----------------    --------------------   --------");
+    puts("    ( x, y, z)           [ vx, vy, vz]        Amigo? ");
+    puts("------------------    -------------------    --------");
     for (Celula *p = projeteis; p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
-        printf(" (%3.0f, %3.0f, %3.0f)      [%4.1f, %4.1f, %4.1f]       %s\n",
+        printf(" (%3.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %4.1f]       %s\n",
             bullet->x, bullet->y, (bullet->z - nave.base.z),
             bullet->vx, bullet->vy, bullet->vz,
             (bullet->amigo) ? "sim" : "não");

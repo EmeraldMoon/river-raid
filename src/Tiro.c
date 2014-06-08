@@ -1,11 +1,8 @@
-#include <math.h>  /* sqrt, abs, sin, cos, atan */
+#include <math.h>  /* abs, sin, cos, atan2 */
 #include "Tiro.h"
-#include "Nave.h"
-#include "Defesa.h"
 #include "Cenario.h"
-#include "Random.h"
 #include "Grafico.h"
-#include "Cores.h"
+#include "Random.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -83,7 +80,6 @@ bool verificaAcerto(Projetil *bullet)
     /* Verificação de colisão com algum inimigo */
     for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-
         if (projetilColidiu(bullet, foe->base)) {
             foe->base.hp -= bullet->dano;
             if (bullet->amigo) nave.score += PONTOS_ACERTO;

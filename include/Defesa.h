@@ -16,15 +16,15 @@
  *-------------------------*/
 
 /* Tempo de espera até criar um inimigo */
-#define TEMPO_INIMIGOS 20
+#define TEMPO_INIMIGOS 30
 
 /* Atributos padrão */
-#define FOE_HPMAX   50
+#define FOE_HPMAX   80
 #define FOE_RAIO    30
 #define FOE_ALTURA 100
 
 /* Pontuação */
-#define PONTOS_ACERTO     10
+#define PONTOS_ACERTO    100
 #define PONTOS_DESTRUCT 1000
 
 /*

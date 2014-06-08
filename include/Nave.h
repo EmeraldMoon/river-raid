@@ -53,7 +53,7 @@ struct nave
     /* Inclinações em relação ao eixo Oz */
     double angHoriz, angVert;
 
-    /* Guarda pontuação do jogador */
+    /* Pontuação do jogador */
     unsigned int score;
 
     /* Enquanto > 0, nave é imune a tiros e colisões */
@@ -87,7 +87,7 @@ void naveDispara();
 
 /*
  *  Recebe uma quantidade de dano, remove a energia em questão
- *  da nave e ativa o período de invencibilidade. Caso hp <= 0,
+ *  da nave e ativa o período de invencibilidade. Caso (hp <= 0),
  *  jogador perde uma vida.
  */
 void danificaNave(int dano);

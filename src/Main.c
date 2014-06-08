@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------*
  |                                                                  |
  |  Módulo principal do projeto.                                    |
- |  Inicializa o programa e chama o loop do OpenGL.                 |
+ |  Inicializa o programa e chama o loop do glut.                   |
  |                                                                  |
  |  Uso: ./bin/River [semente]                                      |
  |                                                                  |
@@ -22,19 +22,14 @@
 #define RIO_TEXTURA    "texture/water.ppm"
 #define PAREDE_TEXTURA "texture/brick.ppm"
 
-/* Intervalo de milisegundos para chamar tempo() */
-#define MILISEG 5
-
 /*----------------*-------------------------------------------------*
  |   M  A  I  N   |
  *----------------*/
 
 int main(int argc, char **argv)
 {
-    int semente;
-
-    if (argc < 2) semente = time(NULL);
-    else          semente = atoi(argv[1]);
+    int semente = (argc < 2) ? time(NULL)
+                             : atoi(argv[1]);
 
     /* Inicialização dos elementos */
     inicializaCenario();
@@ -66,8 +61,6 @@ int main(int argc, char **argv)
     */
 
     /* ---- Loop principal ---- */
-
-    /*glutIdleFunc(atualiza);*/
 
     glutDisplayFunc(desenha);
     glutReshapeFunc(remodela);

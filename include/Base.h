@@ -47,3 +47,13 @@ struct corpo
     unsigned int raio;
     unsigned int altura;
 };
+
+/*-------------------------*
+ |   P R O T Ó T I P O S   |
+ *-------------------------*/
+
+/*
+ *  Versão segura de malloc(). Caso não haja memória disponível,
+ *  exibe uma mensagem de erro e encerra o programa.
+ */
+void * mallocSafe(size_t nbytes);
