@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 
     /* Inicializa glut e ativa flags */
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 
     /* Desenha e centraliza janela de jogo */
     glutInitWindowSize(JANELA_LARGURA, JANELA_ALTURA);

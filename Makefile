@@ -3,7 +3,7 @@ CFLAGS:= -Wall -O3 -std=c99 -pedantic -Wno-unused-result
 LIBS:= -lm -lGL -lGLU -lglut
 MKDIR:= mkdir -p
 RMDIR:= rm -rf
-RM:= rm -rf
+RM:= rm -f
 BINDIR:= bin
 SRCDIR:= src
 INCDIR:= include
@@ -39,7 +39,7 @@ tar:
 	$(MKDIR) $(BIN)/
 	cp -r $(INCDIR)/ $(SRCDIR)/ $(DOCDIR)/ Makefile *.md $(BIN)/
 	tar -czf $(TAR) $(BIN)/
-	$(RM) $(BIN)/
+	$(RMDIR) $(BIN)/
 	@echo "Arquivo\033[1;32m" $(TAR) "\033[0mcriado com sucesso"
 
 count:
