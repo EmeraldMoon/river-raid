@@ -13,6 +13,7 @@ Terceira parte
 
 ###### 08/06:
   - Uso de mipmaps nas texturas, produzindo um efeito mais suave ao desenhá-las à distância.
+  - Adicionado efeito de transparência quando nave é atingida ou destruída.
 
 ### Versão 0.9
 
