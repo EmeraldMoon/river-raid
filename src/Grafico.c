@@ -17,8 +17,8 @@ GLuint fundoTextura;
 GLuint rioTextura;
 GLuint paredeTextura;
 
-/* Para determinadas ações após certo tempo */
-unsigned int tick = 0;
+/* Contagem de timestep */
+static unsigned int tick = 0;
 
 static void hud();
 static void fundo();
@@ -60,8 +60,13 @@ void desenha()
     desenhaNave();
     hud();
 
+    tick++;
+
     glutSwapBuffers();
-    glutPostRedisplay();
+    
+    /* TEMPORÀRIO */
+    glutTimerFunc(1000/60, desenha,  1);
+    glutTimerFunc(1000/60, atualiza, 1);
 }
 
 /*------------------------------------------------------------------*/
@@ -85,15 +90,6 @@ void remodela(GLsizei largura, GLsizei altura)
 
 /*------------------------------------------------------------------*/
 
-void tempo()
-{
-  tick++;
-  glutTimerFunc(5, tempo, 1);
-  glutPostRedisplay();
-}
-
-/*------------------------------------------------------------------*/
-
 static void ignoraComentario(FILE *file);
 
 void carregaTextura(const char *filename, GLuint *texture)
@@ -104,11 +100,11 @@ void carregaTextura(const char *filename, GLuint *texture)
         exit(EXIT_FAILURE);
     }
 
-    char aux[2];
+    char aux[3];
     fscanf(file, "%2s", aux);
     ignoraComentario(file);
     if (strcmp(aux, "P6") != 0) {
-        fprintf(stderr, "carregaTextura(): Não é um arquivo PPM\n");
+        fputs("carregaTextura(): Não é um arquivo PPM\n", stderr);
         fclose(file);
         exit(EXIT_FAILURE);
     }
@@ -117,6 +113,7 @@ void carregaTextura(const char *filename, GLuint *texture)
     ignoraComentario(file);
     if (fscanf(file, "%d %d", &largura, &altura) != 2) {
         fputs("carregaTextura(): Não é um arquivo PPM\n", stderr);
+        fclose(file);
         exit(EXIT_FAILURE);
     }
 
@@ -127,7 +124,7 @@ void carregaTextura(const char *filename, GLuint *texture)
 
     /* Lê dados para uma string */
     GLubyte dados[n];
-    fread(dados, sizeof(GLubyte), n, file);
+    fread(dados, sizeof (GLubyte), n, file);
     fclose(file);
 
     /* DOOM: Hell begins here */

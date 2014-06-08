@@ -16,6 +16,8 @@ Nave nave;
 Lista *inimigos;
 Lista *projeteis;
 
+static void imprimeElementos();
+
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*/
@@ -69,12 +71,25 @@ void atualiza()
         liberaCenario();
         exit(EXIT_SUCCESS);
     }
-    /*imprimeElementos();*/
+    imprimeElementos();
 }
 
 /*------------------------------------------------------------------*/
 
-void imprimeElementos()
+void liberaCenario()
+{
+    liberaLista(inimigos);
+    liberaLista(projeteis);
+    liberaTextura();
+}
+
+/*------------------------------------------------------------------*
+ *
+ *  Mostra informação a respeito dos elementos do jogo no
+ *  timestep atual. Usada para depuração.
+ *
+ */
+static void imprimeElementos()
 {
     /* Limpa a tela do terminal/prompt */
     #ifdef __linux__
@@ -114,13 +129,4 @@ void imprimeElementos()
             bullet->vx, bullet->vy, bullet->vz,
             (bullet->amigo) ? "sim" : "não");
     }
-}
-
-/*------------------------------------------------------------------*/
-
-void liberaCenario()
-{
-    liberaLista(inimigos);
-    liberaLista(projeteis);
-    liberaTextura();
 }

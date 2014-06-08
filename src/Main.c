@@ -67,12 +67,10 @@ int main(int argc, char **argv)
 
     /* ---- Loop principal ---- */
 
-    glutIdleFunc(atualiza);
+    /*glutIdleFunc(atualiza);*/
 
     glutDisplayFunc(desenha);
     glutReshapeFunc(remodela);
-
-    glutTimerFunc(MILISEG, tempo, 1);
 
     glutKeyboardFunc(keyPressed);
     glutKeyboardUpFunc(keyUp);

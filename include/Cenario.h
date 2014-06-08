@@ -14,9 +14,9 @@
 
 /* Coordenadas máximas da área de jogo
    (Z_MAX refere-se á distância máxima visível). */
-#define X_MAX   120  /*  80 */
-#define Y_MAX   100  /*  90 */
-#define Z_MAX  1200  /* 800 */
+#define X_MAX   120
+#define Y_MAX   100
+#define Z_MAX  1200
 
 /* Variação de vy dos projéteis por timestep */
 #define ACEL_GRAVIDADE 0.01
@@ -37,12 +37,6 @@ void inicializaCenario();
  *  interações entre objetos e encerrar o jogo quando cabível.
  */
 void atualiza();
-
-/*
- *  Mostra informação a respeito dos elementos do jogo no
- *  timestep atual. Usada para depuração.
- */
-void imprimeElementos();
 
 /*
  *  Libera toda a memória alocada para as listas.
