@@ -64,7 +64,7 @@ void atualiza()
         geraInimigo();
         cont = TEMPO_INIMIGOS;
     }
-    imprimeElementos();
+    /*imprimeElementos();*/
 }
 
 /*------------------------------------------------------------------*/
@@ -115,11 +115,11 @@ static void imprimeElementos()
             foe->base.hp, FOE_HPMAX);
     }
     puts("\n{Projéteis}");
-    puts("    ( x, y, z)           [ vx, vy, vz]        Amigo? ");
-    puts("------------------    -------------------    --------");
+    puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
+    puts("-------------------    --------------------     --------");
     for (Celula *p = projeteis; p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
-        printf(" (%3.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %4.1f]       %s\n",
+        printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
             bullet->x, bullet->y, (bullet->z - nave.base.z),
             bullet->vx, bullet->vy, bullet->vz,
             (bullet->amigo) ? "sim" : "não");

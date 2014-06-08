@@ -131,6 +131,7 @@ void carregaTextura(const char *filename, GLuint *textura)
 
     gluBuild2DMipmaps(GL_TEXTURE_2D, 3, largura, altura,
                       GL_RGB, GL_UNSIGNED_BYTE, dados);
+    free(dados);
     /* Hell ends here */
 }
 

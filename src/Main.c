@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     carregaTextura(PAREDE_TEXTURA, &paredeTextura);
 
     /* Ativa o uso de transparência */
-    glEnable(GL_BLEND);
+    /*glEnable(GL_BLEND);*/
 
     /* Inicializa efeitos de luz (com alguns problemas) */
     /*

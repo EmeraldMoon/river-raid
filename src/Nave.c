@@ -111,7 +111,7 @@ void danificaNave(int dano)
     /* Verifica se nave perdeu vida */
     if (nave.base.hp <= 0) {
         nave.base.hp = 0;
-        (nave.vidas)--;        
+        (nave.vidas)--;
         if (nave.vidas >= 0) criaNave(nave.base.z, nave.vidas);
     }
 }
