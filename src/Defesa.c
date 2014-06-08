@@ -83,7 +83,7 @@ bool inimigoSaiu(Inimigo *foe)
 
 void desenhaInimigo(Inimigo *foe)
 {
-    glPushMatrix();    
+    glPushMatrix();
     glTranslated(foe->base.x, 0.0, foe->base.z);
     glRotated(-90.0, 1.0, 0.0, 0.0);
     glColor(RED);

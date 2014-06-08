@@ -124,13 +124,13 @@ void carregaTextura(const char *filename, GLuint *textura)
     glBindTexture(GL_TEXTURE_2D, *textura);
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, largura, altura,
-                 0, GL_RGB, GL_UNSIGNED_BYTE, dados); 
+
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, largura, altura,
+                      GL_RGB, GL_UNSIGNED_BYTE, dados);
     /* Hell ends here */
 }
 

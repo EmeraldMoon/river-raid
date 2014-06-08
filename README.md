@@ -10,7 +10,7 @@ Terceira parte
 --------------
 
 ### Versão 1.0
-  - Quase lá.
+  - Uso de mipmaps nas texturas, produzindo um efeito mais suave ao desenhá-las à distância.
 
 ### Versão 0.9
 
