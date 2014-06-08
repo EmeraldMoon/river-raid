@@ -9,6 +9,7 @@ SRCDIR:= src
 INCDIR:= include
 OBJDIR:= obj
 DOCDIR:= doc
+TEXDIR:= texture
 BIN:= River
 SRC:= $(wildcard $(SRCDIR)/*.c)
 OBJ:= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
@@ -37,7 +38,7 @@ dump:
 
 tar:
 	$(MKDIR) $(BIN)/
-	cp -r $(INCDIR)/ $(SRCDIR)/ $(DOCDIR)/ Makefile *.md $(BIN)/
+	cp -r $(INCDIR)/ $(SRCDIR)/ $(DOCDIR)/ $(TEXDIR)/ Makefile *.md $(BIN)/
 	tar -czf $(TAR) $(BIN)/
 	$(RMDIR) $(BIN)/
 	@echo "Arquivo\033[1;32m" $(TAR) "\033[0mcriado com sucesso"
