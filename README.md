@@ -5,6 +5,8 @@ River Raid - Changelog
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
   - Fazer a sincronização entre velocidade do jogo e framerate (***importantíssimo***).
   - Posição do hud em relação ao tamanho da tela.
+  - Hud não fica "fixo" na câmera em primeira pessoa.
+  - Limites do cenário com a câmera em primeira pessoa.
 
 Terceira parte
 --------------
@@ -15,10 +17,13 @@ Terceira parte
   - ***Tiro.c***: Liberação dos tiros agora ocorre apenas quando passam da câmera, gerando um efeito "cool".
   - Frequência dos desenhos limitada a 60FPS. Jogo não deverá mais rodar na velocidade da luz em alguns PCs.
   - Tentativa de sincronizar o jogo para ter a mesma velocidade independente do fps atual. Funciona em partes, exceto quando o slowdown for grande demais.
+  - Opção de mudar a câmera de terceira para primeira pessoa e vice-versa com uma tecla.
+  - Possibilidade de pausar o jogo através de uma tecla, congelando as atualizações enquanto a mesma tecla não for pressionada novamente.
+  - ***Grafico.c***: Corrigido o tamanho do plano na função *rio()*. Criou-se a impressão de que o rio está "mais rápido" que a nave.
 
 ###### 08/06:
-  - Uso de mipmaps nas texturas, produzindo um efeito mais suave ao desenhá-las à distância.
-  - Adicionado efeito de transparência quando nave é atingida ou destruída.
+  - ***Grafico.c***: Uso de mipmaps nas texturas, produzindo um efeito mais suave ao desenhá-las à distância.
+  - ***Nave.c***: Adicionado efeito de transparência quando nave é atingida ou destruída.
 
 ### Versão 0.9
 

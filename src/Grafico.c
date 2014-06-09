@@ -12,6 +12,12 @@ GLuint fundoTextura;
 GLuint rioTextura;
 GLuint paredeTextura;
 
+/* Posição da câmera (1ª ou 3ª pessoa) */
+bool cameraAtras = true;
+
+/* Determina se o jogo está pausado */
+bool pausa = false;
+
 /* Contagem de timesteps */
 static GLuint tick = 0;
 
@@ -44,13 +50,20 @@ void desenha()
     
     /* Faz a limpeza dos buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    /* Coloca câmera atrás da nave.
-       (ponto de visão, ponto de fuga, vertical da câmera) */
     glLoadIdentity();
-    gluLookAt(0.0, Y_MAX/2, nave.base.z - DIST_CAMERA,
-              0.0, Y_MAX/2, nave.base.z + Z_MAX,
-              0.0, 1.0, 0.0);
+
+    /* Configura a posição da câmera.
+       (ponto de visão, ponto de fuga, vertical da câmera) */
+    if (cameraAtras) {
+        gluLookAt(0.0, Y_MAX/2, nave.base.z - DIST_CAMERA,
+                  0.0, Y_MAX/2, nave.base.z + Z_MAX,
+                  0.0, 1.0, 0.0);
+    }
+    else {
+        gluLookAt(nave.base.x, nave.base.y, nave.base.z,
+                  0.0, Y_MAX/2, nave.base.z + Z_MAX,
+                  0.0, 1.0, 0.0);   
+    }
 
     /* Elementos estáticos do cenário, com texturas */
     glEnable(GL_TEXTURE_2D);
@@ -71,12 +84,15 @@ void desenha()
     desenhaNave();
     hud();
 
-    /* Atualiza o cronômetro */
-    tick++;
+    if (!pausa) {
+        /* Atualiza o cronômetro */
+        tick++;
 
-    tExtra = glutGet(GLUT_ELAPSED_TIME) - t0;
-    t0 += tExtra;
-    /*printf("%.2f fps\n", (double) 1000/dt);*/
+        tExtra = glutGet(GLUT_ELAPSED_TIME) - t0;
+        t0 += tExtra;
+        /*printf("%.2f fps\n", (double) 1000/dt);*/
+    }
+    
 }
 
 /*------------------------------------------------------------------*/
@@ -184,9 +200,15 @@ static void hud()
 {
     static const GLdouble RAIO = 5.0;
 
-    /* Posiciona hud no local apropriado */
     glPushMatrix();
-    glTranslated(-GLUT_SCREEN_WIDTH/1.25, GLUT_SCREEN_HEIGHT/1.5, nave.base.z);
+
+    /* Posiciona hud no local apropriado */
+    if (cameraAtras)
+        glTranslated(-GLUT_SCREEN_WIDTH/1.25, GLUT_SCREEN_HEIGHT/1.5, nave.base.z);
+    else {
+        glTranslated(nave.base.x - 6, nave.base.y + 4, nave.base.z + 5);
+        glScaled(0.05, 0.05, 0.05);
+    }
 
     /* Desenha vidas restantes da nave */
     for (int i = 0; i < nave.vidas; i++) {
@@ -218,10 +240,16 @@ static void hud()
 
     /* Imprime pontuação */
     char score[16];
-    sprintf(score, "Score: %d", nave.score);
+    sprintf(score, "Score: %d ", nave.score);
     glColor(WHITE);
     glRasterPos3d(0.0, -2*RAIO - 10, 0.0);
     glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) score);
+
+    /* Informa se jogo está pausado */
+    if (pausa) {
+        glColor(WHITE);
+        glutBitmapString(GLUT_BITMAP_HELVETICA_18, PAUSA_MENSAGEM);
+    }
 
     glPopMatrix();
 }
@@ -258,16 +286,16 @@ static void rio()
     unsigned int t = tick % 10000;
 
     glPushMatrix();
-    glTranslated(2 * -X_MAX, 0, nave.base.z - DIST_CAMERA);
+    glTranslated(-X_MAX, 0, nave.base.z - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, rioTextura);
 
     glBegin(GL_QUADS); {
-        glTexCoord2d(0.0, 16.0 + t/128.);
+        glTexCoord2d(0.0, 8.0 + t/128.);
         glVertex3d(0.0, 0.0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(8.0, 16.0 + t/128.);
-        glVertex3d(4*X_MAX, 0.0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(8.0, 0.0  + t/128.);
-        glVertex3d(4*X_MAX, 0.0, 0.0);
+        glTexCoord2d(4.0, 8.0 + t/128.);
+        glVertex3d(2*X_MAX, 0.0, Z_MAX + DIST_CAMERA);
+        glTexCoord2d(4.0, 0.0  + t/128.);
+        glVertex3d(2*X_MAX, 0.0, 0.0);
         glTexCoord2d(0.0, 0.0  + t/128.);
         glVertex3d(0.0, 0.0, 0.0);
     } glEnd();

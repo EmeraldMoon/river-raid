@@ -8,6 +8,7 @@
 #pragma once
 
 #include <GL/freeglut.h>
+#include <stdbool.h>
 #include "Cores.h"
 
 /*-------------------------*
@@ -20,13 +21,22 @@
 #define DIST_CAMERA 100 
  
 /* Constantes para os poliedros */
-#define SLICES 15
+#define SLICES 16
 #define STACKS 10
+
+/* Mensagem quando jogo está pausado */
+#define PAUSA_MENSAGEM (unsigned char *) "(Pausa)"
 
 /* Identificadores das texturas */
 extern GLuint fundoTextura;
 extern GLuint rioTextura;
 extern GLuint paredeTextura;
+
+/* Posição da câmera (1ª ou 3ª pessoa) */
+extern bool cameraAtras;
+
+/* Determina se o jogo está pausado */
+extern bool pausa;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |

@@ -7,8 +7,10 @@
  *-------------------------*/
 
 /* Constantes para teclas */
-#define TECLA_TIRO  ' '  /* barra de espaços */
-#define TECLA_SAIDA 'Q'
+#define TECLA_TIRO   ' '  /* barra de espaços */
+#define TECLA_CAMERA 'C'
+#define TECLA_PAUSA  'P'
+#define TECLA_SAIDA  'Q'
 
 /* Vetores para reconhecimento de teclado */
 GLboolean keyStates[128]        = {GL_FALSE};
@@ -21,6 +23,8 @@ GLboolean keySpecialStates[128] = {GL_FALSE};
 void keyPressed(GLubyte key, GLint x, GLint y)
 {
     keyStates[toupper(key)] = GL_TRUE;
+    if (keyStates[TECLA_CAMERA]) cameraAtras = !cameraAtras;
+    if (keyStates[TECLA_PAUSA]) pausa = !pausa;
 }
 
 /*------------------------------------------------------------------*/
@@ -48,7 +52,7 @@ void keySpecialUp(GLint key, GLint x, GLint y)
 
 void keyOperations()
 {
-    if (keyStates[TECLA_TIRO] && (nave.base.espera)-- == 0) {
+    if (keyStates[TECLA_TIRO] && !pausa && (nave.base.espera)-- == 0) {
         naveDispara();
     }
     if (keyStates[TECLA_SAIDA]) encerraJogo();
