@@ -11,6 +11,11 @@ Terceira parte
 
 ### Versão 1.0
 
+###### 09/06:
+  - ***Tiro.c***: Liberação dos tiros agora ocorre apenas quando passam da câmera, gerando um efeito "cool".
+  - Frequência dos desenhos limitada a 60FPS. Jogo não deverá mais rodar na velocidade da luz em alguns PCs.
+  - Tentativa de sincronizar o jogo para ter a mesma velocidade independente do fps atual. Funciona em partes, exceto quando o slowdown for grande demais.
+
 ###### 08/06:
   - Uso de mipmaps nas texturas, produzindo um efeito mais suave ao desenhá-las à distância.
   - Adicionado efeito de transparência quando nave é atingida ou destruída.

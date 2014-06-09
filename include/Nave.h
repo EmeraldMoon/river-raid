@@ -45,7 +45,7 @@ struct nave
     Corpo base;
 
     /* Número de chances do jogador */
-    unsigned int vidas;
+    int vidas;
 
     /* Componentes da velocidade da nave */
     double vx, vy, vz;

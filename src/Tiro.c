@@ -122,7 +122,7 @@ bool projetilSaiu(Projetil *bullet)
 {
     return (bullet->x < -X_MAX || bullet->x > X_MAX)
         || (bullet->y < 0)
-        || (bullet->z < nave.base.z - nave.base.raio
+        || (bullet->z < nave.base.z - DIST_CAMERA
             || bullet->z > nave.base.z + Z_MAX);
 }
 

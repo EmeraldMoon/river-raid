@@ -53,6 +53,7 @@ int main(int argc, char **argv)
 
     /* Ativa o uso de transparência */
     /*glEnable(GL_BLEND);*/
+    /*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 
     /* Inicializa efeitos de luz (com alguns problemas) */
     /*
@@ -63,12 +64,14 @@ int main(int argc, char **argv)
     glShadeModel(GL_SMOOTH);
     */
 
+    atualiza();
+
     /* ---- Loop principal ---- */
+
+    glutIdleFunc(atualiza);
 
     glutDisplayFunc(desenha);
     glutReshapeFunc(remodela);
-
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glutKeyboardFunc(keyPressed);
     glutKeyboardUpFunc(keyUp);

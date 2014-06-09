@@ -29,6 +29,19 @@ static void parede();
 
 void desenha()
 {
+    static int t0, dt, tExtra = 0;
+
+    if (tExtra > 1000/FPS) {
+        dt = glutGet(GLUT_ELAPSED_TIME) - t0;
+        tExtra -= dt;
+        t0 += dt;
+        if (tExtra > 1000/FPS) return;
+    }
+
+    t0 = glutGet(GLUT_ELAPSED_TIME);
+
+    glutSwapBuffers();
+    
     /* Faz a limpeza dos buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -56,16 +69,14 @@ void desenha()
         desenhaProjetil(bullet);
     }
     desenhaNave();
-    hud();  
-    
+    hud();
+
     /* Atualiza o cronômetro */
     tick++;
 
-    glutSwapBuffers();
-    
-    /* TEMPORÀRIO */
-    glutTimerFunc(1000/60, desenha,  1);
-    glutTimerFunc(1000/60, atualiza, 1);
+    tExtra = glutGet(GLUT_ELAPSED_TIME) - t0;
+    t0 += tExtra;
+    /*printf("%.2f fps\n", (double) 1000/dt);*/
 }
 
 /*------------------------------------------------------------------*/

@@ -14,6 +14,8 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
+#define FPS 60
+
 /* Distância da câmera à nave */
 #define DIST_CAMERA 100 
  

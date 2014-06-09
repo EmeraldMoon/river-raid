@@ -31,6 +31,12 @@ void inicializaCenario()
 void atualiza()
 {
     static int cont = TEMPO_INIMIGOS;
+    static int t0 = 0;
+
+    int dt = glutGet(GLUT_ELAPSED_TIME) - t0;
+
+    if (dt < 1000/FPS) return;
+    t0 += dt;
 
     /* Reconhecimento do teclado */
     keyOperations();
@@ -64,7 +70,9 @@ void atualiza()
         geraInimigo();
         cont = TEMPO_INIMIGOS;
     }
-    /*imprimeElementos();*/
+    imprimeElementos();
+
+    glutPostRedisplay();
 }
 
 /*------------------------------------------------------------------*/
