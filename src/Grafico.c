@@ -14,17 +14,11 @@ GLuint rioTextura;
 GLuint paredeTextura;
 
 /* Posição da câmera (1ª ou 3ª pessoa) */
-bool cameraAtras = true;
-
-/* Contagem de timesteps */
-static GLuint tick = 0;
-
-static void ignoraComentario(FILE *file);
-static void erro(FILE *file, const char *filename);
+bool primeiraPessoa = true;
 
 static void fundo();
-static void rio();
-static void parede();
+static void rio(GLuint tick);
+static void parede(GLuint tick);
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -32,7 +26,10 @@ static void parede();
 
 void desenha()
 {
-    static int t0, dt, tExtra = 0;
+    /* Contagem de timesteps */
+    static GLuint tick = 0;
+
+    static GLint t0, dt, tExtra = 0;
 
     if (tExtra > 1000/FPS) {
         dt = glutGet(GLUT_ELAPSED_TIME) - t0;
@@ -51,7 +48,7 @@ void desenha()
 
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */
-    if (cameraAtras) {
+    if (primeiraPessoa) {
         gluLookAt(0.0, Y_MAX/2, nave.base.z - DIST_CAMERA,
                   0.0, Y_MAX/2, nave.base.z + Z_MAX,
                   0.0, 1.0, 0.0);
@@ -64,8 +61,8 @@ void desenha()
     /* Elementos estáticos do cenário, com texturas */
     glEnable(GL_TEXTURE_2D);
     fundo();
-    rio();
-    parede();    
+    rio(tick);
+    parede(tick);    
     glDisable(GL_TEXTURE_2D); 
 
     /* Elementos dinâmicos do jogo, ainda sem texturas */    
@@ -78,7 +75,7 @@ void desenha()
         desenhaProjetil(bullet);
     }
     desenhaNave();
-    hud();
+    hud(GL_FALSE);
 
     /* Atualiza o cronômetro */
     tick++;
@@ -107,6 +104,9 @@ void remodela(GLsizei largura, GLsizei altura)
 }
 
 /*------------------------------------------------------------------*/
+
+static void ignoraComentario(FILE *file);
+static void erro(FILE *file, const char *filename);
 
 void carregaTextura(const char *filename, GLuint *textura)
 {
@@ -182,38 +182,32 @@ void liberaTexturas()
     glDeleteTextures(1, &paredeTextura);
 }
 
-/*------------------------------------------------------------------*
- *
- *  Desenha num ponto fixo da tela um mostrador de atributos da nave
- *  pertinentes à jogabilidade: vidas restantes, energia e pontuação.
- *
- */
-void hud()
+/*------------------------------------------------------------------*/
+
+void hud(GLboolean pausado)
 {
     static const GLdouble RAIO = 5.0;
 
     glPushMatrix();
 
     /* Posiciona hud no local apropriado */
-    if (cameraAtras)
+    if (primeiraPessoa) {
         glTranslated(-GLUT_SCREEN_WIDTH/1.25, GLUT_SCREEN_HEIGHT/1.5, nave.base.z);
-    else {
+    } else {
         glTranslated(nave.base.x - 6, nave.base.y + 4, nave.base.z + 5);
         glScaled(0.05, 0.05, 0.05);
     }
 
     /* Desenha vidas restantes da nave */
-    for (int i = 0; i < nave.vidas; i++) {
+    for (GLint i = 0; i < nave.vidas; i++) {
         glBegin(GL_TRIANGLE_FAN); {
             glColor(CYAN);
             glVertex3d( 0.0  + 3*RAIO*i,   0.0, 0.0);
             glColor(WHITE);
             glVertex3d( 0.0  + 3*RAIO*i,  RAIO, 0.0);
-            glColor(WHITE);
             glVertex3d( RAIO + 3*RAIO*i,   0.0, 0.0);
             glColor(CYAN);
             glVertex3d( 0.0  + 3*RAIO*i, -RAIO, 0.0);
-            glColor(CYAN);
             glVertex3d(-RAIO + 3*RAIO*i,   0.0, 0.0);
             glColor(WHITE);
             glVertex3d( 0.0  + 3*RAIO*i,  RAIO, 0.0);
@@ -273,9 +267,9 @@ static void fundo()
  *  rio se movimentar, a fim de produzir uma sensação de movimento.
  *
  */
-static void rio()
+static void rio(GLuint tick)
 {
-    unsigned int t = tick % 10000;
+    GLuint t = tick % 10000;
 
     glPushMatrix();
     glTranslated(-X_MAX, 0, nave.base.z - DIST_CAMERA);
@@ -301,13 +295,13 @@ static void rio()
  *  atribuindo-lhes uma textura e também produzindo movimento.
  *
  */
-static void parede()
+static void parede(GLuint tick)
 {
-    static const double DIST_PAREDE = X_MAX;
-    unsigned int t = tick % 10000;
+    static const GLdouble DIST_PAREDE = X_MAX;
+    GLuint t = tick % 10000;
     
     glPushMatrix();
-    glTranslated(0, 0, nave.base.z - DIST_CAMERA);
+    glTranslated(0.0, 0.0, nave.base.z - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, paredeTextura);
 
     /* Parede esquerda */

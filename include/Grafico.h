@@ -32,8 +32,8 @@ extern GLuint fundoTextura;
 extern GLuint rioTextura;
 extern GLuint paredeTextura;
 
-/* Posição da câmera (1ª ou 3ª pessoa) */
-extern bool cameraAtras;
+/* Indica se câmera está em modo 1ª pessoa */
+extern bool primeiraPessoa;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -63,4 +63,10 @@ void carregaTextura(const char *filename, GLuint *textura);
  */
 void liberaTexturas();
 
-void hud();
+/*
+ *  Mostra na tela os indicadores básicos do jogo:
+ *  energia, vidas restantes e pontuação.
+ *
+ *  Caso 'pausado' seja true, indica isso na tela.
+ */
+void hud(GLboolean pausado);

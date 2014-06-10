@@ -5,8 +5,9 @@ River Raid - Changelog
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
   - Fazer a sincronização entre velocidade do jogo e framerate (***importantíssimo***).
   - Posição do hud em relação ao tamanho da tela.
-  - Hud não fica "fixo" na câmera em primeira pessoa.
+  - Hud não fica "fixo" na câmera em primeira pessoa (isso seria um problema mesmo?).
   - Limites do cenário com a câmera em primeira pessoa.
+  - Velocidade do rio não está de acordo com velocidade em que as torres se aproximam.
 
 Terceira parte
 --------------

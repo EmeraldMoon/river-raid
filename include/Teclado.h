@@ -25,8 +25,8 @@ extern GLboolean pausado;
  *  OBS: Inteiros x e y correspondem à posição do mouse e
  *  precisam estar presentes, porém não são usados.
  */
-void keyPressed(GLubyte key, GLint x, GLint y);
-void keyUp(GLubyte key, GLint x, GLint y);
+void keyPressed(unsigned char key, GLint x, GLint y);
+void keyUp(unsigned char key, GLint x, GLint y);
 void keySpecialPressed(GLint key, GLint x, GLint y);
 void keySpecialUp(GLint key, GLint x, GLint y);
 

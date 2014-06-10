@@ -24,18 +24,18 @@ static void pausa();
  |   F U N Ç Õ E S   |
  *-------------------*/
 
-void keyPressed(GLubyte key, GLint x, GLint y)
+void keyPressed(unsigned char key, GLint x, GLint y)
 {
     keyStates[toupper(key)] = GL_TRUE;
 
-    if (keyStates[TECLA_CAMERA]) cameraAtras = !cameraAtras;
+    if (keyStates[TECLA_CAMERA]) primeiraPessoa = !primeiraPessoa;
     if (keyStates[TECLA_PAUSA]) pausa();
     if (keyStates[TECLA_SAIDA]) encerraJogo();
 }
 
 /*------------------------------------------------------------------*/
  
-void keyUp(GLubyte key, GLint x, GLint y)
+void keyUp(unsigned char key, GLint x, GLint y)
 {  
     keyStates[toupper(key)] = GL_FALSE;
 }
@@ -86,7 +86,7 @@ static void pausa()
     pausado = !pausado;
 
     if (pausado) {
-        hud();
+        hud(GL_TRUE);
         glutSwapBuffers();
         glutIdleFunc(NULL);
     }
