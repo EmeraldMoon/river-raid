@@ -35,9 +35,6 @@ extern GLuint paredeTextura;
 /* Posição da câmera (1ª ou 3ª pessoa) */
 extern bool cameraAtras;
 
-/* Determina se o jogo está pausado */
-extern bool pausa;
-
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/
@@ -65,3 +62,5 @@ void carregaTextura(const char *filename, GLuint *textura);
  *  Libera a memória alocada por todas as variáveis texture.
  */
 void liberaTexturas();
+
+void hud();

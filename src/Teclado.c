@@ -16,6 +16,10 @@
 GLboolean keyStates[128]        = {GL_FALSE};
 GLboolean keySpecialStates[128] = {GL_FALSE};
 
+GLboolean pausado = GL_FALSE;
+
+static void pausa();
+
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*/
@@ -23,8 +27,10 @@ GLboolean keySpecialStates[128] = {GL_FALSE};
 void keyPressed(GLubyte key, GLint x, GLint y)
 {
     keyStates[toupper(key)] = GL_TRUE;
+
     if (keyStates[TECLA_CAMERA]) cameraAtras = !cameraAtras;
-    if (keyStates[TECLA_PAUSA]) pausa = !pausa;
+    if (keyStates[TECLA_PAUSA]) pausa();
+    if (keyStates[TECLA_SAIDA]) encerraJogo();
 }
 
 /*------------------------------------------------------------------*/
@@ -52,24 +58,37 @@ void keySpecialUp(GLint key, GLint x, GLint y)
 
 void keyOperations()
 {
-    if (keyStates[TECLA_TIRO] && !pausa && (nave.base.espera)-- == 0) {
+    if (keyStates[TECLA_TIRO] && (nave.base.espera)-- == 0) {
         naveDispara();
     }
-    if (keyStates[TECLA_SAIDA]) encerraJogo();
 }
 
 /*------------------------------------------------------------------*/
 
 void keySpecialOperations()
 {
-    if (keySpecialStates[GLUT_KEY_UP])    nave.angVert  += ANG_MANUAL;
-    if (keySpecialStates[GLUT_KEY_DOWN])  nave.angVert  -= ANG_MANUAL;
-    if (keySpecialStates[GLUT_KEY_LEFT])  nave.angHoriz -= ANG_MANUAL;
-    if (keySpecialStates[GLUT_KEY_RIGHT]) nave.angHoriz += ANG_MANUAL;
+    if      (keySpecialStates[GLUT_KEY_UP])    nave.angVert  += ANG_MANUAL;
+    else if (keySpecialStates[GLUT_KEY_DOWN])  nave.angVert  -= ANG_MANUAL;
+    if      (keySpecialStates[GLUT_KEY_LEFT])  nave.angHoriz -= ANG_MANUAL;
+    else if (keySpecialStates[GLUT_KEY_RIGHT]) nave.angHoriz += ANG_MANUAL;
 
     /* Ângulos devem permanecer no intervalo [-ANG_MAX, ANG_MAX] */
     if      (nave.angVert  >  ANG_MAX) nave.angVert  =  ANG_MAX;
     else if (nave.angVert  < -ANG_MAX) nave.angVert  = -ANG_MAX;
     if      (nave.angHoriz >  ANG_MAX) nave.angHoriz =  ANG_MAX;
     else if (nave.angHoriz < -ANG_MAX) nave.angHoriz = -ANG_MAX;
+}
+
+/*------------------------------------------------------------------*/
+
+static void pausa()
+{
+    pausado = !pausado;
+
+    if (pausado) {
+        hud();
+        glutSwapBuffers();
+        glutIdleFunc(NULL);
+    }
+    else glutIdleFunc(atualiza);
 }

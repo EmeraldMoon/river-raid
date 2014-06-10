@@ -40,39 +40,37 @@ void atualiza()
 
     /* Reconhecimento do teclado */
     keyOperations();
-    if (!pausa) keySpecialOperations();
+    keySpecialOperations();
 
-    if (!pausa) {
-        /* Ações relacionadas à nave */
-        moveNave();
-        if (nave.invencibilidade > 0) (nave.invencibilidade)--;
+    /* Ações relacionadas à nave */
+    moveNave();
+    if (nave.invencibilidade > 0) (nave.invencibilidade)--;
 
-        /* Loop para tratar de inimigos */
-        Celula *p = inimigos;
-        while (p->prox != NULL) {
-            Inimigo *foe = p->prox->item;
-            if (naveColidiu(foe)) danificaNave(DANO_COLISAO);
-            if ((foe->base.espera)-- == 0) inimigoDispara(foe);
-            if (inimigoSaiu(foe)) exclui(p);
-            else p = p->prox;
-        }
-
-        /* Loop para verificar estado dos projéteis */
-        p = projeteis;
-        while (p->prox != NULL) {
-            Projetil *bullet = p->prox->item;
-            moveProjetil(bullet);
-            if (verificaAcerto(bullet) || projetilSaiu(bullet)) exclui(p);
-            else p = p->prox;
-        }
-
-        if (nave.vidas <= 0) encerraJogo();
-        if (--cont == 0) {
-            geraInimigo();
-            cont = TEMPO_INIMIGOS;
-        }
-        /*imprimeElementos();*/
+    /* Loop para tratar de inimigos */
+    Celula *p = inimigos;
+    while (p->prox != NULL) {
+        Inimigo *foe = p->prox->item;
+        if (naveColidiu(foe)) danificaNave(DANO_COLISAO);
+        if ((foe->base.espera)-- == 0) inimigoDispara(foe);
+        if (inimigoSaiu(foe)) exclui(p);
+        else p = p->prox;
     }
+
+    /* Loop para verificar estado dos projéteis */
+    p = projeteis;
+    while (p->prox != NULL) {
+        Projetil *bullet = p->prox->item;
+        moveProjetil(bullet);
+        if (verificaAcerto(bullet) || projetilSaiu(bullet)) exclui(p);
+        else p = p->prox;
+    }
+
+    if (nave.vidas <= 0) encerraJogo();
+    if (--cont == 0) {
+        geraInimigo();
+        cont = TEMPO_INIMIGOS;
+    }
+    /*imprimeElementos();*/
     
     glutPostRedisplay();
 }

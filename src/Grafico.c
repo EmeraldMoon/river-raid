@@ -2,6 +2,7 @@
 #include <string.h>  /* strcmp */
 #include "Grafico.h"
 #include "Cenario.h"
+#include "Teclado.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -15,16 +16,12 @@ GLuint paredeTextura;
 /* Posição da câmera (1ª ou 3ª pessoa) */
 bool cameraAtras = true;
 
-/* Determina se o jogo está pausado */
-bool pausa = false;
-
 /* Contagem de timesteps */
 static GLuint tick = 0;
 
 static void ignoraComentario(FILE *file);
 static void erro(FILE *file, const char *filename);
 
-static void hud();
 static void fundo();
 static void rio();
 static void parede();
@@ -58,8 +55,7 @@ void desenha()
         gluLookAt(0.0, Y_MAX/2, nave.base.z - DIST_CAMERA,
                   0.0, Y_MAX/2, nave.base.z + Z_MAX,
                   0.0, 1.0, 0.0);
-    }
-    else {
+    } else {
         gluLookAt(nave.base.x, nave.base.y, nave.base.z,
                   0.0, Y_MAX/2, nave.base.z + Z_MAX,
                   0.0, 1.0, 0.0);   
@@ -84,15 +80,11 @@ void desenha()
     desenhaNave();
     hud();
 
-    if (!pausa) {
-        /* Atualiza o cronômetro */
-        tick++;
+    /* Atualiza o cronômetro */
+    tick++;
 
-        tExtra = glutGet(GLUT_ELAPSED_TIME) - t0;
-        t0 += tExtra;
-        /*printf("%.2f fps\n", (double) 1000/dt);*/
-    }
-    
+    tExtra = glutGet(GLUT_ELAPSED_TIME) - t0;
+    t0 += tExtra;    
 }
 
 /*------------------------------------------------------------------*/
@@ -196,7 +188,7 @@ void liberaTexturas()
  *  pertinentes à jogabilidade: vidas restantes, energia e pontuação.
  *
  */
-static void hud()
+void hud()
 {
     static const GLdouble RAIO = 5.0;
 
@@ -246,7 +238,7 @@ static void hud()
     glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) score);
 
     /* Informa se jogo está pausado */
-    if (pausa) {
+    if (pausado) {
         glColor(WHITE);
         glutBitmapString(GLUT_BITMAP_HELVETICA_18, PAUSA_MENSAGEM);
     }
