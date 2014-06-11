@@ -7,12 +7,7 @@
 #pragma once
 
 #include <GL/freeglut.h>
-
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*/
-
-extern GLboolean pausado;
+#include <stdbool.h>
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -36,3 +31,9 @@ void keySpecialUp(GLint key, GLint x, GLint y);
  */
 void keyOperations();
 void keySpecialOperations();
+
+/*
+ *  Devolvem condições auto-explicativas.
+ */
+GLboolean estaEmPrimeiraPessoa();
+GLboolean estaPausado();

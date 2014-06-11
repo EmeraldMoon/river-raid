@@ -9,12 +9,14 @@
 
 #include <GL/freeglut.h>
 #include <stdbool.h>
+#include "Teclado.h"
 #include "Cores.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
+/* Taxa de atualização padrão */
 #define FPS 60
 
 /* Distância da câmera à nave */
@@ -24,16 +26,13 @@
 #define SLICES 16
 #define STACKS 10
 
-/* Mensagem quando jogo está pausado */
+/* Mensagem a ser exibida quando jogo está pausado */
 #define PAUSA_MENSAGEM (unsigned char *) "(Pausa)"
 
 /* Identificadores das texturas */
 extern GLuint fundoTextura;
 extern GLuint rioTextura;
 extern GLuint paredeTextura;
-
-/* Indica se câmera está em modo 1ª pessoa */
-extern bool primeiraPessoa;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -66,7 +65,5 @@ void liberaTexturas();
 /*
  *  Mostra na tela os indicadores básicos do jogo:
  *  energia, vidas restantes e pontuação.
- *
- *  Caso 'pausado' seja true, indica isso na tela.
  */
-void hud(GLboolean pausado);
+void hud();

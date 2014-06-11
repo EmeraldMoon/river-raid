@@ -2,7 +2,6 @@
 #include <string.h>  /* strcmp */
 #include "Grafico.h"
 #include "Cenario.h"
-#include "Teclado.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -12,9 +11,6 @@
 GLuint fundoTextura;
 GLuint rioTextura;
 GLuint paredeTextura;
-
-/* Posição da câmera (1ª ou 3ª pessoa) */
-bool primeiraPessoa = true;
 
 static void fundo();
 static void rio(GLuint tick);
@@ -48,14 +44,14 @@ void desenha()
 
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */
-    if (primeiraPessoa) {
-        gluLookAt(0.0, Y_MAX/2, nave.base.z - DIST_CAMERA,
+    if (estaEmPrimeiraPessoa()) {
+        gluLookAt(nave.base.x, nave.base.y, nave.base.z,
                   0.0, Y_MAX/2, nave.base.z + Z_MAX,
                   0.0, 1.0, 0.0);
     } else {
-        gluLookAt(nave.base.x, nave.base.y, nave.base.z,
+        gluLookAt(0.0, Y_MAX/2, nave.base.z - DIST_CAMERA,
                   0.0, Y_MAX/2, nave.base.z + Z_MAX,
-                  0.0, 1.0, 0.0);   
+                  0.0, 1.0, 0.0);
     }
 
     /* Elementos estáticos do cenário, com texturas */
@@ -75,7 +71,7 @@ void desenha()
         desenhaProjetil(bullet);
     }
     desenhaNave();
-    hud(GL_FALSE);
+    hud();
 
     /* Atualiza o cronômetro */
     tick++;
@@ -184,18 +180,19 @@ void liberaTexturas()
 
 /*------------------------------------------------------------------*/
 
-void hud(GLboolean pausado)
+void hud()
 {
     static const GLdouble RAIO = 5.0;
 
     glPushMatrix();
 
     /* Posiciona hud no local apropriado */
-    if (primeiraPessoa) {
-        glTranslated(-GLUT_SCREEN_WIDTH/1.25, GLUT_SCREEN_HEIGHT/1.5, nave.base.z);
-    } else {
+    if (estaEmPrimeiraPessoa()) {
         glTranslated(nave.base.x - 6, nave.base.y + 4, nave.base.z + 5);
         glScaled(0.05, 0.05, 0.05);
+    } else {
+        glTranslated(-GLUT_SCREEN_WIDTH/1.25, 
+                      GLUT_SCREEN_HEIGHT/1.5, nave.base.z);
     }
 
     /* Desenha vidas restantes da nave */
@@ -232,7 +229,7 @@ void hud(GLboolean pausado)
     glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) score);
 
     /* Informa se jogo está pausado */
-    if (pausado) {
+    if (estaPausado()) {
         glColor(WHITE);
         glutBitmapString(GLUT_BITMAP_HELVETICA_18, PAUSA_MENSAGEM);
     }

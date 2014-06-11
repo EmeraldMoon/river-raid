@@ -7,7 +7,7 @@ River Raid - Changelog
   - Posição do hud em relação ao tamanho da tela.
   - Hud não fica "fixo" na câmera em primeira pessoa (isso seria um problema mesmo?).
   - Limites do cenário com a câmera em primeira pessoa.
-  - Velocidade do rio não está de acordo com velocidade em que as torres se aproximam.
+  - Talvez seja uma boa ideia criar um ***Textura.c*** a fim de descarregar um pouco o módulo *Grafico*.
 
 Terceira parte
 --------------

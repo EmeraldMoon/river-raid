@@ -13,10 +13,12 @@
 #define TECLA_SAIDA  'Q'
 
 /* Vetores para reconhecimento de teclado */
-GLboolean keyStates[128]        = {GL_FALSE};
-GLboolean keySpecialStates[128] = {GL_FALSE};
+static GLboolean keyStates[128]        = {GL_FALSE};
+static GLboolean keySpecialStates[128] = {GL_FALSE};
 
-GLboolean pausado = GL_FALSE;
+/* Indicadores de estados */
+static GLboolean primeiraPessoa = GL_FALSE;
+static GLboolean pausado = GL_FALSE;
 
 static void pausa();
 
@@ -81,12 +83,31 @@ void keySpecialOperations()
 
 /*------------------------------------------------------------------*/
 
+GLboolean estaEmPrimeiraPessoa()
+{
+    return primeiraPessoa;
+}
+
+/*------------------------------------------------------------------*/
+
+GLboolean estaPausado()
+{
+    return pausado;
+}
+
+/*------------------------------------------------------------------*
+ *
+ *  Altera o estado atual do jogo. Caso jogo seja pausado,
+ *  interrompe toda execução e exibe mensagem de pausa na tela.
+ *  Caso contrário, retoma execução.
+ *
+ */
 static void pausa()
 {
     pausado = !pausado;
 
     if (pausado) {
-        hud(GL_TRUE);
+        hud();
         glutSwapBuffers();
         glutIdleFunc(NULL);
     }
