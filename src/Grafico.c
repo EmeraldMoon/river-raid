@@ -24,19 +24,6 @@ void desenha()
 {
     /* Contagem de timesteps */
     static GLuint tick = 0;
-
-    static GLint t0, dt, tExtra = 0;
-
-    if (tExtra > 1000/FPS) {
-        dt = glutGet(GLUT_ELAPSED_TIME) - t0;
-        tExtra -= dt;
-        t0 += dt;
-        if (tExtra > 1000/FPS) return;
-    }
-
-    t0 = glutGet(GLUT_ELAPSED_TIME);
-
-    glutSwapBuffers();
     
     /* Faz a limpeza dos buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -58,7 +45,7 @@ void desenha()
     glEnable(GL_TEXTURE_2D);
     fundo();
     rio(tick);
-    parede(tick);    
+    parede(tick);
     glDisable(GL_TEXTURE_2D); 
 
     /* Elementos dinâmicos do jogo, ainda sem texturas */    
@@ -71,13 +58,13 @@ void desenha()
         desenhaProjetil(bullet);
     }
     desenhaNave();
+    if (exibindoFPS()) fps(dt, tick);
     hud();
 
     /* Atualiza o cronômetro */
     tick++;
 
-    tExtra = glutGet(GLUT_ELAPSED_TIME) - t0;
-    t0 += tExtra;    
+    glutSwapBuffers();
 }
 
 /*------------------------------------------------------------------*/
@@ -101,88 +88,9 @@ void remodela(GLsizei largura, GLsizei altura)
 
 /*------------------------------------------------------------------*/
 
-static void ignoraComentario(FILE *file);
-static void erro(FILE *file, const char *filename);
-
-void carregaTextura(const char *filename, GLuint *textura)
-{
-    /* Abre o arquivo */
-    FILE *file = fopen(filename, "rb");
-    if (file == NULL) {
-        perror("carregaTextura()");
-        exit(EXIT_FAILURE);
-    }
-
-    /* Faz verificação da chave mágica */
-    char aux[3];
-    fscanf(file, "%2s", aux);
-    ignoraComentario(file);
-    if (strcmp(aux, "P6") != 0) erro(file, filename);
-
-    /* Obtém largura e altura */
-    GLsizei largura, altura;
-    ignoraComentario(file);
-    if (fscanf(file, "%d %d", &largura, &altura) != 2) erro(file, filename);
-
-    /* Obtém tamanho do arquivo */
-    fseek(file, 0, SEEK_END);
-    GLsizei n = ftell(file);
-    rewind(file);
-
-    /* Lê dados para uma string */
-    GLubyte *dados = mallocSafe(sizeof (GLubyte) * n);
-    fread(dados, sizeof (GLubyte), n, file);
-    fclose(file);
-
-    /* DOOM: Hell begins here */
-    glGenTextures(1, textura);
-    glBindTexture(GL_TEXTURE_2D, *textura);
-
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, largura, altura,
-                      GL_RGB, GL_UNSIGNED_BYTE, dados);
-    free(dados);
-    /* Hell ends here */
-}
-
-static void ignoraComentario(FILE *file)
-{
-    while (getc(file) == '\n');
-    fseek(file, -1, SEEK_CUR);
-
-    if (getc(file) == '#') {
-        while (getc(file) != '\n');
-    }
-    else fseek(file, -1, SEEK_CUR);
-}
-
-static void erro(FILE *file, const char *filename)
-{
-    fprintf(stderr, "carregaTextura(): "
-        "%s não é um arquivo PPM\n", filename);
-    fclose(file);
-    exit(EXIT_FAILURE);
-}
-
-/*------------------------------------------------------------------*/
-
-void liberaTexturas()
-{
-    glDeleteTextures(1, &fundoTextura);
-    glDeleteTextures(1, &rioTextura);
-    glDeleteTextures(1, &paredeTextura);
-}
-
-/*------------------------------------------------------------------*/
-
 void hud()
 {
-    static const GLdouble RAIO = 5.0;
+    const GLdouble RAIO = 5.0;
 
     glPushMatrix();
 
@@ -233,6 +141,32 @@ void hud()
         glColor(WHITE);
         glutBitmapString(GLUT_BITMAP_HELVETICA_18, PAUSA_MENSAGEM);
     }
+
+    glPopMatrix();
+}
+
+/*------------------------------------------------------------------*/
+
+void fps(GLuint tempo, GLuint tick)
+{
+    const GLdouble RAIO = 5.0;
+    static int tempoAnt = 60;
+
+    glPushMatrix();
+
+    /* Posiciona no local apropriado */
+    glTranslated(+GLUT_SCREEN_WIDTH/1.25, 
+                  GLUT_SCREEN_HEIGHT/1.5, nave.base.z);
+
+    /* Imprime pontuação */
+    char mostrador[16];
+    sprintf(mostrador, "%.2f fps", (double) 1000/tempoAnt);
+    glColor(YELLOW);
+    glRasterPos3d(0.0, -2*RAIO - 10, 0.0);
+    glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) mostrador);
+
+    /* Talvez provisório também. Evita que mude rápido demais */
+    if (tick % 30 == 0) tempoAnt = tempo;
 
     glPopMatrix();
 }
@@ -294,7 +228,7 @@ static void rio(GLuint tick)
  */
 static void parede(GLuint tick)
 {
-    static const GLdouble DIST_PAREDE = X_MAX;
+    const GLdouble DIST_PAREDE = X_MAX;
     GLuint t = tick % 10000;
     
     glPushMatrix();

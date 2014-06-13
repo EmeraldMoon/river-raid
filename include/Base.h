@@ -44,8 +44,7 @@ struct corpo
     unsigned int espera;    /* sofre decremento até chegar a 0 */
 
     /* Corpo de colisão é um CILINDRO reto */
-    unsigned int raio;
-    unsigned int altura;
+    int raio, altura;
 };
 
 /*-------------------------*

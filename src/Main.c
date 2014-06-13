@@ -12,15 +12,11 @@
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Teclado.h"
+#include "Textura.h"
 
 /* Dimensões da janela */
 #define JANELA_LARGURA 2 * 5 * X_MAX
 #define JANELA_ALTURA      5 * Y_MAX
-
-/* Arquivos de textura */
-#define FUNDO_TEXTURA  "texture/space.ppm"
-#define RIO_TEXTURA    "texture/water.ppm"
-#define PAREDE_TEXTURA "texture/brick.ppm"
 
 /*----------------*-------------------------------------------------*
  |   M  A  I  N   |
@@ -47,9 +43,7 @@ int main(int argc, char **argv)
     glutCreateWindow("River Raid");
 
     /* Carrega texturas */
-    carregaTextura(FUNDO_TEXTURA,  &fundoTextura);
-    carregaTextura(RIO_TEXTURA,    &rioTextura);
-    carregaTextura(PAREDE_TEXTURA, &paredeTextura);
+    inicializaTexturas();
 
     /* Ativa o uso de transparência */
     /*glEnable(GL_BLEND);*/
@@ -68,7 +62,7 @@ int main(int argc, char **argv)
 
     /* ---- Loop principal ---- */
 
-    glutIdleFunc(atualiza);
+    glutIdleFunc(tempo);
 
     glutDisplayFunc(desenha);
     glutReshapeFunc(remodela);

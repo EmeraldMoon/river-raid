@@ -2,6 +2,7 @@
 #include <stdlib.h>  /* exit */
 #include "Cenario.h"
 #include "Teclado.h"
+#include "Textura.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -28,15 +29,35 @@ void inicializaCenario()
 
 /*------------------------------------------------------------------*/
 
+void tempo()
+{
+    static int t0 = 0, tExtra;
+
+    /* Obtém tempo desde última atualização */
+    dt = glutGet(GLUT_ELAPSED_TIME) - t0;
+
+    if (dt < 1000/FPS) {
+        /*glutTimerFunc(1000/FPS - dt, tempo, 0);*/
+        return;
+    }
+
+    tExtra += dt - 1000/FPS;
+    for (;;) {
+        atualiza();
+        if (tExtra < 2 * 1000/FPS) break;
+        tExtra -= 1000/FPS;
+    }
+
+    t0 = glutGet(GLUT_ELAPSED_TIME);
+
+    glutPostRedisplay();
+}
+
+/*------------------------------------------------------------------*/
+
 void atualiza()
 {
     static int cont = TEMPO_INIMIGOS;
-    static int t0 = 0;
-
-    int dt = glutGet(GLUT_ELAPSED_TIME) - t0;
-
-    if (dt < 1000/FPS) return;
-    t0 += dt;
 
     /* Reconhecimento do teclado */
     keyOperations();
@@ -71,8 +92,6 @@ void atualiza()
         cont = TEMPO_INIMIGOS;
     }
     /*imprimeElementos();*/
-    
-    glutPostRedisplay();
 }
 
 /*------------------------------------------------------------------*/

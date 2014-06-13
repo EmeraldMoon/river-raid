@@ -16,8 +16,8 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
-/* Taxa de atualização padrão */
-#define FPS 60
+/* Número de quadros desenhados por segundo */
+#define FPS 75
 
 /* Distância da câmera à nave */
 #define DIST_CAMERA 100 
@@ -28,11 +28,6 @@
 
 /* Mensagem a ser exibida quando jogo está pausado */
 #define PAUSA_MENSAGEM (unsigned char *) "(Pausa)"
-
-/* Identificadores das texturas */
-extern GLuint fundoTextura;
-extern GLuint rioTextura;
-extern GLuint paredeTextura;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -51,19 +46,13 @@ void desenha();
 void remodela(GLsizei largura, GLsizei altura);
 
 /*
- *  Recebe um arquivo em formato PPM contendo uma textura e
- *  um identificador para a mesma. Carrega-a para a memória
- *  a fim de ser usada posteriormente.
- */
-void carregaTextura(const char *filename, GLuint *textura);
-
-/*
- *  Libera a memória alocada por todas as variáveis texture.
- */
-void liberaTexturas();
-
-/*
  *  Mostra na tela os indicadores básicos do jogo:
  *  energia, vidas restantes e pontuação.
  */
 void hud();
+
+/*
+ *  Exibe o número de quadros por segundo que o jogo está desenhando
+ *  no momento, caso a opção esteja ativada.
+ */
+void fps(GLuint tempo, GLuint tick);

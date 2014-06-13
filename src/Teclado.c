@@ -10,14 +10,16 @@
 #define TECLA_TIRO   ' '  /* barra de espaços */
 #define TECLA_CAMERA 'C'
 #define TECLA_PAUSA  'P'
+#define TECLA_FPS    'F'
 #define TECLA_SAIDA  'Q'
 
 /* Vetores para reconhecimento de teclado */
 static GLboolean keyStates[128]        = {GL_FALSE};
 static GLboolean keySpecialStates[128] = {GL_FALSE};
 
-/* Indicadores de estados */
+/* Variáveis de indicação */
 static GLboolean primeiraPessoa = GL_FALSE;
+static GLboolean exibeFPS = GL_FALSE;
 static GLboolean pausado = GL_FALSE;
 
 static void pausa();
@@ -31,8 +33,9 @@ void keyPressed(unsigned char key, GLint x, GLint y)
     keyStates[toupper(key)] = GL_TRUE;
 
     if (keyStates[TECLA_CAMERA]) primeiraPessoa = !primeiraPessoa;
-    if (keyStates[TECLA_PAUSA]) pausa();
-    if (keyStates[TECLA_SAIDA]) encerraJogo();
+    if (keyStates[TECLA_FPS])    exibeFPS = !exibeFPS;
+    if (keyStates[TECLA_PAUSA])  pausa();
+    if (keyStates[TECLA_SAIDA])  encerraJogo();
 }
 
 /*------------------------------------------------------------------*/
@@ -95,11 +98,17 @@ GLboolean estaPausado()
     return pausado;
 }
 
+/*------------------------------------------------------------------*/
+
+GLboolean exibindoFPS()
+{
+    return exibeFPS;
+}
+
 /*------------------------------------------------------------------*
  *
- *  Altera o estado atual do jogo. Caso jogo seja pausado,
- *  interrompe toda execução e exibe mensagem de pausa na tela.
- *  Caso contrário, retoma execução.
+ *  Altera o estado atual do jogo, interrompe ou resumindo execução
+ *  e, caso cabível, exibindo uma mensagem de pausa na tela.
  *
  */
 static void pausa()

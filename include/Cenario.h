@@ -26,6 +26,10 @@
 /* Variação de vy dos projéteis por timestep */
 #define ACEL_GRAVIDADE 0.01
 
+/* SOLUÇÂO TEMPORÀRIA ATÉ PENSAR NUMA IDEIA MELHOR.
+   SIM, EU GOSTO DE CAPS LOCK */
+GLuint dt;
+
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/
@@ -34,6 +38,8 @@
  *  Inicializa nave, pontuação e outras listas.
  */
 void inicializaCenario();
+
+void tempo();
 
 /*
  *  Loop principal de processamento do jogo. Cuida direta

@@ -36,6 +36,9 @@ static void atualizaDirecao(double *ang);
 
 void moveNave()
 {
+    const int RAIO   = nave.base.raio;
+    const int ALTURA = nave.base.altura;
+
     nave.vx = nave.vz * tan(nave.angHoriz);
     nave.vy = nave.vz * tan(nave.angVert);
 
@@ -44,10 +47,10 @@ void moveNave()
     nave.base.z += nave.vz;
 
     /* Impede que nave ultrapasse os limites do cenário */
-    if      (nave.base.x >  X_MAX) nave.base.x =  X_MAX;
-    else if (nave.base.x < -X_MAX) nave.base.x = -X_MAX;
-    if      (nave.base.y >  Y_MAX) nave.base.y =  Y_MAX;
-    else if (nave.base.y <      0) nave.base.y =      0;
+    if      (nave.base.x >  X_MAX - RAIO)   nave.base.x =  X_MAX - RAIO;
+    else if (nave.base.x < -X_MAX + RAIO)   nave.base.x = -X_MAX + RAIO;
+    if      (nave.base.y >  Y_MAX - ALTURA) nave.base.y =  Y_MAX - ALTURA;
+    else if (nave.base.y <      0 + ALTURA) nave.base.y =      0 + ALTURA;
 
     /* Direção tende a voltar ao centro */
     atualizaDirecao(&(nave.angHoriz));

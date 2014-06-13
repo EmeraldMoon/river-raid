@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <GL/freeglut.h>
 #include <stdbool.h>
+#include <GL/freeglut.h>
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -37,3 +37,4 @@ void keySpecialOperations();
  */
 GLboolean estaEmPrimeiraPessoa();
 GLboolean estaPausado();
+GLboolean exibindoFPS();
