@@ -4,7 +4,7 @@ River Raid - Changelog
 ##### TODO:
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
   - Posição do hud em relação ao tamanho da tela.
-  - Hud não fica "fixo" na câmera em primeira pessoa (isso seria um problema mesmo?).
+  - Implementar o skybox.
 
 Terceira parte
 --------------

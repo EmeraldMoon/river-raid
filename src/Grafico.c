@@ -2,15 +2,11 @@
 #include <string.h>  /* strcmp */
 #include "Grafico.h"
 #include "Cenario.h"
+#include "Textura.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
-
-/* Identificadores de textura */
-GLuint fundoTextura;
-GLuint rioTextura;
-GLuint paredeTextura;
 
 static void fundo();
 static void rio(GLuint tick);

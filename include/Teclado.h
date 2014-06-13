@@ -25,7 +25,7 @@ void keySpecialUp(GLint key, GLint x, GLint y);
 
 /*
  *  Funções usadas para teclas que necessitam ser verificadas
- *  continuamente, como dispard e movimentação da nave.
+ *  continuamente, como dispar e movimentação da nave.
  */
 void keyOperations();
 void keySpecialOperations();
