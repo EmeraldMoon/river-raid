@@ -21,10 +21,10 @@
    (Z_MAX refere-se á distância máxima visível). */
 #define X_MAX  120
 #define Y_MAX  100
-#define Z_MAX 1200
+#define Z_MAX 1600
 
 /* Variação de vy dos projéteis por timestep */
-#define ACEL_GRAVIDADE 0.01
+#define ACEL_GRAVIDADE 0.005
 
 /* SOLUÇÂO TEMPORÀRIA ATÉ PENSAR NUMA IDEIA MELHOR.
    SIM, EU GOSTO DE CAPS LOCK */

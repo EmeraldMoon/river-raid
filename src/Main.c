@@ -58,7 +58,13 @@ int main(int argc, char **argv)
     glShadeModel(GL_SMOOTH);
     */
 
-    atualiza();
+    const float cor[3] = { BLACK };
+
+    /* Nevoeiro sobre o cenário */
+    glEnable(GL_FOG);
+    glFogi(GL_FOG_MODE, GL_EXP);
+    glFogf(GL_FOG_DENSITY, 0.001);
+    glFogfv(GL_FOG_COLOR, cor);
 
     /* ---- Loop principal ---- */
 

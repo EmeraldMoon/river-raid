@@ -3,7 +3,6 @@ River Raid - Changelog
 
 ##### TODO:
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
-  - Fazer a sincronização entre velocidade do jogo e framerate (***importantíssimo***).
   - Posição do hud em relação ao tamanho da tela.
   - Hud não fica "fixo" na câmera em primeira pessoa (isso seria um problema mesmo?).
 
@@ -11,10 +10,13 @@ Terceira parte
 --------------
 
 ### Versão 1.0
+
+###### 13/06:
   - ***Textura.c***: novo módulo, auto-explicativo.
   - ***Cenario.c***: Enfim, controle do tempo de jogo à velocidade constante funcionando com perfeição. Em computadores rápidos, o jogo rodará fluidamente, sem modo turbo; em computadores lentos, ocorre *frameskip*, ou seja, o computador desenha apenas os quadros que conseguir, "pulando" os outros, mas deixando o ritmo de jogo intacto.
   - ***Grafico.c***: Pequena funçãozinha para mostrar FPS atual na tela, ainda meio mequetrefe.
   - ***Nave.c***: Limites do campo de jogo agora levam em conta dimensões da nave - ela não sairá mais para fora do cenário.
+  - Nevoeiro adicionado sobre o cenário. O efeito é visualmente interessante.
   - 2000 linhas de código atingidas.
 
 ###### 09/06:

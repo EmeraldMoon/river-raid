@@ -38,9 +38,11 @@ void aplicaPrecisao(Projetil *bullet, double precisao)
     calculaAngulo(vy, vz, desvio);  /* desvio vertical   */
 }
 
-/*
+/*------------------------------------------------------------------*
+ *
  *  Recebe duas componentes, encontra seu ângulo em coordenadas 
  *  polares, modifica-o por meio de uma Normal e atualiza os valores.
+ *
  */
 static void calculaAngulo(double *a, double *b, double desvio)
 {

@@ -166,7 +166,7 @@ void fps(GLuint tempo, GLuint tick)
     glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) mostrador);
 
     /* Talvez provisório também. Evita que mude rápido demais */
-    if (tick % 30 == 0) tempoAnt = tempo;
+    if (tick % 15 == 0) tempoAnt = tempo;
 
     glPopMatrix();
 }

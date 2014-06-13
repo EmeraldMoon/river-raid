@@ -36,12 +36,17 @@ void tempo()
     /* Obtém tempo desde última atualização */
     dt = glutGet(GLUT_ELAPSED_TIME) - t0;
 
+    /* Limita FPS para programa não ir rápido demais */
     if (dt < 1000/FPS) {
         /*glutTimerFunc(1000/FPS - dt, tempo, 0);*/
         return;
     }
 
+    /* Acumula tempo extra gasto para desenhar */
     tExtra += dt - 1000/FPS;
+
+    /* Caso tempo acumulado chegue a um ou mais frames inteiros, 
+       faz a interpolação entre o anterior e o próximo desenho. */
     for (;;) {
         atualiza();
         if (tExtra < 2 * 1000/FPS) break;
@@ -50,6 +55,7 @@ void tempo()
 
     t0 = glutGet(GLUT_ELAPSED_TIME);
 
+    /* Chama a função de desenho após esta */
     glutPostRedisplay();
 }
 
