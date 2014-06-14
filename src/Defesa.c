@@ -83,11 +83,18 @@ bool inimigoSaiu(Inimigo *foe)
 
 void desenhaInimigo(Inimigo *foe)
 {
+    const GLfloat luzVermelha[3] = { RED };
+    const GLfloat luzBranca[3]   = { WHITE };
+    const GLfloat brilho[]       = { 128 };
+
     glPushMatrix();
     glTranslated(foe->base.x, 0.0, foe->base.z);
     glRotated(-90.0, 1.0, 0.0, 0.0);
     glColor(RED);
-    /*glutWireTeapot(3 * foe->base.raio);*/
-    glutWireCylinder(foe->base.raio, foe->base.altura, SLICES, STACKS);
+    /*glutSolidTeapot(3 * foe->base.raio);*/
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, luzBranca);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, brilho);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, luzVermelha);
+    glutSolidCylinder(foe->base.raio, foe->base.altura, SLICES, STACKS);
     glPopMatrix();
 }

@@ -45,26 +45,21 @@ int main(int argc, char **argv)
     /* Carrega texturas */
     inicializaTexturas();
 
-    /* Ativa o uso de transparência */
-    /*glEnable(GL_BLEND);*/
-    /*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
-
-    /* Inicializa efeitos de luz (com alguns problemas) */
-    /*
-    glEnable(GL_DEPTH_TEST);
+    /* Inicializa efeitos de luz */
+    /*glEnable(GL_DEPTH_TEST);*/
     glEnable(GL_LIGHTING);
-    glEnable(LUZ_AMBIENTE);  
+    glEnable(LUZ_AMBIENTE);
     glEnable(GL_COLOR_MATERIAL);
     glShadeModel(GL_SMOOTH);
-    */
-
-    const float cor[3] = { BLACK };
 
     /* Nevoeiro sobre o cenário */
+    const float cor[3] = { BLACK };
+    
     glEnable(GL_FOG);
-    glFogi(GL_FOG_MODE, GL_EXP);
+    glFogi(GL_FOG_MODE, GL_EXP2);
     glFogf(GL_FOG_DENSITY, 0.001);
     glFogfv(GL_FOG_COLOR, cor);
+    glHint(GL_FOG_HINT, GL_NICEST);
 
     /* ---- Loop principal ---- */
 

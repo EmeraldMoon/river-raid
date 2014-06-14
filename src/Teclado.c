@@ -120,5 +120,5 @@ static void pausa()
         glutSwapBuffers();
         glutIdleFunc(NULL);
     }
-    else glutIdleFunc(atualiza);
+    else glutIdleFunc(tempo);
 }

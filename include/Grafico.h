@@ -26,6 +26,9 @@
 #define SLICES 16
 #define STACKS 10
 
+/* Tipos de luz */
+#define LUZ_AMBIENTE GL_LIGHT0
+
 /* Mensagem a ser exibida quando jogo está pausado */
 #define PAUSA_MENSAGEM (unsigned char *) "(Pausa)"
 

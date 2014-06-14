@@ -25,6 +25,12 @@ void desenha()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
+    /* Configura a luz ambiente */
+    const GLfloat luzBranca[3] = { 1.0, 1.0, 1.0 }; /* Usar WHITE aqui deixa a lifebar amarela... */
+    glLightfv(LUZ_AMBIENTE, GL_SPECULAR, luzBranca);
+    glLightfv(LUZ_AMBIENTE, GL_AMBIENT,  luzBranca);
+    glLightfv(LUZ_AMBIENTE, GL_DIFFUSE,  luzBranca);
+
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */
     if (estaEmPrimeiraPessoa()) {
@@ -151,8 +157,13 @@ void fps(GLuint tempo, GLuint tick)
     glPushMatrix();
 
     /* Posiciona no local apropriado */
-    glTranslated(+GLUT_SCREEN_WIDTH/1.25, 
-                  GLUT_SCREEN_HEIGHT/1.5, nave.base.z);
+    if (estaEmPrimeiraPessoa()) {
+        glTranslated(nave.base.x + 6, nave.base.y + 4, nave.base.z + 5);
+        glScaled(0.05, 0.05, 0.05);
+    } else {
+        glTranslated(+GLUT_SCREEN_WIDTH/1.25, 
+                      GLUT_SCREEN_HEIGHT/1.5, nave.base.z);
+    }
 
     /* Imprime pontuação */
     char mostrador[16];

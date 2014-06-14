@@ -3,6 +3,7 @@ River Raid - Changelog
 
 ##### TODO:
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
+  - Consertar problema que fecha o jogo ao despausá-lo.
   - Posição do hud em relação ao tamanho da tela.
   - Implementar o skybox.
 
@@ -10,6 +11,9 @@ Terceira parte
 --------------
 
 ### Versão 1.0
+
+###### 14/06:
+  - Tentativa de implementar luzes no jogo. Só funciona (e ainda assim, não muito bem) para os inimigos.
 
 ###### 13/06:
   - ***Textura.c***: novo módulo, auto-explicativo.
