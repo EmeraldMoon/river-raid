@@ -16,7 +16,7 @@ OBJ:= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
 INC:= -I$(INCDIR)
 TAR:= $(BIN).tar
 
-.PHONY: dump tar count clean distclean tarclean
+.PHONY: dump tar count clean distclean tarclean pull push amend
 
 all: $(BINDIR)/$(BIN)
 
@@ -54,3 +54,12 @@ distclean: clean
 
 tarclean:
 	$(RM) $(TAR)
+
+pull:
+	git pull origin master
+
+push:
+	git add . && git commit -m "$(M)" && git push
+
+amend:
+	git add . && git commit --amend && git push -f

@@ -12,6 +12,9 @@ Terceira parte
 
 ### Versão 1.0
 
+###### 16/06:
+  - Opções muito úteis de interação com o git adicionadas ao *Makefile*.
+
 ###### 14/06:
   - Tentativa de implementar luzes no jogo. Só funciona (e ainda assim, não muito bem) para os inimigos.
 
