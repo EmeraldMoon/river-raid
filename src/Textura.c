@@ -8,7 +8,7 @@
  *-------------------------*/
 
 /* Arquivos de textura */
-#define FUNDO_TEXTURA  "texture/sky1.ppm"
+#define FUNDO_TEXTURA  "texture/space.ppm"
 #define RIO_TEXTURA    "texture/water.ppm"
 #define PAREDE_TEXTURA "texture/brick.ppm"
 

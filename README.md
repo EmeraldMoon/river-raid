@@ -14,6 +14,8 @@ Terceira parte
 
 ###### 16/06:
   - Opções muito úteis de interação com o git adicionadas ao *Makefile*.
+  - Corrigida localização dos inimigos para não aparecerem "dentro" das paredes.
+  - Limpeza dos *glBegin() / glEnd()* passando vértices por matrizes.
 
 ###### 14/06:
   - Tentativa de implementar luzes no jogo. Só funciona (e ainda assim, não muito bem) para os inimigos.

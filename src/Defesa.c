@@ -20,7 +20,7 @@ void geraInimigo()
     Inimigo foe;
 
     /* (uniforme(-1, 0) | 1) gera um número que é 1 ou -1 */
-    foe.base.x = uniforme(3 * X_MAX/4, X_MAX) * (uniforme(-1, 0) | 1);
+    foe.base.x = (X_MAX - FOE_RAIO) * (uniforme(-1, 0) | 1);
     foe.base.y = uniforme(Y_MAX/8, Y_MAX/2);
     foe.base.z = nave.base.z + Z_MAX;
 

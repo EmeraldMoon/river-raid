@@ -44,11 +44,12 @@ void desenha()
     }
 
     /* Elementos estáticos do cenário, com texturas */
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     fundo();
     rio(tick);
     parede(tick);
-    glDisable(GL_TEXTURE_2D); 
+    glDisable(GL_TEXTURE_2D);
 
     /* Elementos dinâmicos do jogo, ainda sem texturas */    
     for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
@@ -60,6 +61,8 @@ void desenha()
         desenhaProjetil(bullet);
     }
     desenhaNave();
+    glDisable(GL_DEPTH_TEST);
+
     if (exibindoFPS()) fps(dt, tick);
     hud();
 
@@ -207,22 +210,30 @@ static void fundo()
  */
 static void rio(GLuint tick)
 {
-    GLuint t = tick % 10000;
+    GLdouble t = tick % 10000;
+
+    const double coord[4][2] = {
+        { 0, 8 + t/128 }, { 4, 8 + t/128 },
+        { 4,     t/128 }, { 0,     t/128 }
+    };
+
+    const int vertex[4][3] = {
+        {         0, 0, Z_MAX + DIST_CAMERA },
+        { 2 * X_MAX, 0, Z_MAX + DIST_CAMERA },
+        { 2 * X_MAX, 0,                   0 },
+        {         0, 0,                   0 }
+    };
 
     glPushMatrix();
     glTranslated(-X_MAX, 0, nave.base.z - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, rioTextura);
 
-    glBegin(GL_QUADS); {
-        glTexCoord2d(0.0, 8.0 + t/128.);
-        glVertex3d(0.0, 0.0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(4.0, 8.0 + t/128.);
-        glVertex3d(2*X_MAX, 0.0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(4.0, 0.0  + t/128.);
-        glVertex3d(2*X_MAX, 0.0, 0.0);
-        glTexCoord2d(0.0, 0.0  + t/128.);
-        glVertex3d(0.0, 0.0, 0.0);
-    } glEnd();
+    glBegin(GL_QUADS); 
+    for (int i = 0; i < 4; i++) {
+        glTexCoord2dv(coord[i]);
+        glVertex3iv(vertex[i]);
+    } 
+    glEnd();
 
     glPopMatrix();
 }
@@ -236,35 +247,49 @@ static void rio(GLuint tick)
 static void parede(GLuint tick)
 {
     const GLdouble DIST_PAREDE = X_MAX;
-    GLuint t = tick % 10000;
+    GLdouble t = tick % 10000;
     
     glPushMatrix();
-    glTranslated(0.0, 0.0, nave.base.z - DIST_CAMERA);
+    glTranslated(0, 0, nave.base.z - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, paredeTextura);
 
+    const double coords[4][2] = {
+        {      t/128, 1 },
+        { 16 + t/128, 1 },
+        { 16 + t/128, 0 },
+        {      t/128, 0 }
+    };
+
+    const int verticesFFLCH[4][3] = {
+        { -DIST_PAREDE, Y_MAX, 0 },
+        { -DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA },
+        { -DIST_PAREDE, 0, Z_MAX + DIST_CAMERA },
+        { -DIST_PAREDE, 0, 0 }
+    };
+
     /* Parede esquerda */
-    glBegin(GL_QUADS); {
-        glTexCoord2d(0.0  + t/128., 1.0);
-        glVertex3d(-DIST_PAREDE, Y_MAX, 0);
-        glTexCoord2d(16.0 + t/128., 1.0);
-        glVertex3d(-DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(16.0 + t/128., 0.0);
-        glVertex3d(-DIST_PAREDE, 0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(0.0  + t/128., 0.0);
-        glVertex3d(-DIST_PAREDE, 0, 0);
-    } glEnd();
+    glBegin(GL_QUADS);
+    for (int i = 0; i < 4; i++) {
+        glTexCoord2dv(coords[i]);
+        glVertex3iv(verticesFFLCH[i]);
+    }
+    glEnd();
+
+    const int verticesPOLI[4][3] = {
+        { DIST_PAREDE, Y_MAX, 0 },
+        { DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA },
+        { DIST_PAREDE, 0, Z_MAX + DIST_CAMERA },
+        { DIST_PAREDE, 0, 0 }
+    };
 
     /* Parede direita */
-    glBegin(GL_QUADS); {
-        glTexCoord2d(0.0  + t/128., 1.0);
-        glVertex3d(DIST_PAREDE, Y_MAX, 0);
-        glTexCoord2d(16.0 + t/128., 1.0);
-        glVertex3d(DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(16.0 + t/128., 0.0);
-        glVertex3d(DIST_PAREDE, 0, Z_MAX + DIST_CAMERA);
-        glTexCoord2d(0.0  + t/128., 0.0);
-        glVertex3d(DIST_PAREDE, 0, 0);
-    } glEnd();
+    glBegin(GL_QUADS);
+    for (int i = 0; i < 4; i++) {
+        glTexCoord2dv(coords[i]);
+        glVertex3iv(verticesPOLI[i]);
+    }
+    glEnd();
+
 
     glPopMatrix();
 }

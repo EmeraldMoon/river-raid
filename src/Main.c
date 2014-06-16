@@ -46,7 +46,6 @@ int main(int argc, char **argv)
     inicializaTexturas();
 
     /* Inicializa efeitos de luz */
-    /*glEnable(GL_DEPTH_TEST);*/
     glEnable(GL_LIGHTING);
     glEnable(LUZ_AMBIENTE);
     glEnable(GL_COLOR_MATERIAL);
