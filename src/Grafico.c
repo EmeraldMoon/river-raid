@@ -26,10 +26,14 @@ void desenha()
     glLoadIdentity();
 
     /* Configura a luz ambiente */
-    const GLfloat luzBranca[3] = { 1.0, 1.0, 1.0 }; /* Usar WHITE aqui deixa a lifebar amarela... */
-    glLightfv(LUZ_AMBIENTE, GL_SPECULAR, luzBranca);
-    glLightfv(LUZ_AMBIENTE, GL_AMBIENT,  luzBranca);
-    glLightfv(LUZ_AMBIENTE, GL_DIFFUSE,  luzBranca);
+    const GLfloat luzTela[3] = { 
+        1.0, 
+        (estaEmPrimeiraPessoa()) ? 1.0 - (double) nave.invencibilidade/INVENCIVEL_VIDA : 1.0,
+        (estaEmPrimeiraPessoa()) ? 1.0 - (double) nave.invencibilidade/INVENCIVEL_VIDA : 1.0 };
+
+    glLightfv(LUZ_AMBIENTE, GL_SPECULAR, luzTela);
+    glLightfv(LUZ_AMBIENTE, GL_AMBIENT,  luzTela);
+    glLightfv(LUZ_AMBIENTE, GL_DIFFUSE,  luzTela);
 
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */

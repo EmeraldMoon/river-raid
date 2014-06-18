@@ -4,13 +4,17 @@ River Raid - Changelog
 ##### TODO:
   - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
   - Consertar problema que fecha o jogo ao despausá-lo.
-  - Posição do hud em relação ao tamanho da tela.
+  - Posição do hud em relação ao tamanho da tela: usar o gluOrtho2D().
   - Implementar o skybox.
 
 Terceira parte
 --------------
 
 ### Versão 1.0
+
+###### 18/06:
+  - ***Grafico.c***: Implementação de "flashes" vermelhos durante os frames de invencibilidade da nave (só para a câmera em primeira pessoa).
+  - Efeito de transparência quando a nave é atingida está mais perceptível.
 
 ###### 16/06:
   - Opções muito úteis de interação com o git adicionadas ao *Makefile*.
@@ -21,7 +25,7 @@ Terceira parte
   - Tentativa de implementar luzes no jogo. Só funciona (e ainda assim, não muito bem) para os inimigos.
 
 ###### 13/06:
-  - ***Textura.c***: novo módulo, auto-explicativo.
+  - ***Textura.c***: Novo módulo, auto-explicativo.
   - ***Cenario.c***: Enfim, controle do tempo de jogo à velocidade constante funcionando com perfeição. Em computadores rápidos, o jogo rodará fluidamente, sem modo turbo; em computadores lentos, ocorre *frameskip*, ou seja, o computador desenha apenas os quadros que conseguir, "pulando" os outros, mas deixando o ritmo de jogo intacto.
   - ***Grafico.c***: Pequena funçãozinha para mostrar FPS atual na tela, ainda meio mequetrefe.
   - ***Nave.c***: Limites do campo de jogo agora levam em conta dimensões da nave - ela não sairá mais para fora do cenário.
