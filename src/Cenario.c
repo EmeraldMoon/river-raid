@@ -31,26 +31,27 @@ void inicializaCenario()
 
 void tempo()
 {
+    const GLuint INTERVALO = 1000/FPS;
     static int t0 = 0, tExtra;
 
     /* Obtém tempo desde última atualização */
     dt = glutGet(GLUT_ELAPSED_TIME) - t0;
 
     /* Limita FPS para programa não ir rápido demais */
-    if (dt < 1000/FPS) {
-        /*glutTimerFunc(1000/FPS - dt, tempo, 0);*/
+    if (dt < INTERVALO) {
+        glutTimerFunc(INTERVALO - dt, tempo, 0);
         return;
     }
 
     /* Acumula tempo extra gasto para desenhar */
-    tExtra += dt - 1000/FPS;
+    tExtra += dt - INTERVALO;
 
     /* Caso tempo acumulado chegue a um ou mais frames inteiros, 
        faz a interpolação entre o anterior e o próximo desenho. */
     for (;;) {
         atualiza();
-        if (tExtra < 2 * 1000/FPS) break;
-        tExtra -= 1000/FPS;
+        if (tExtra < 2 * INTERVALO) break;
+        tExtra -= INTERVALO;
     }
 
     t0 = glutGet(GLUT_ELAPSED_TIME);

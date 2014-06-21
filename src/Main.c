@@ -62,8 +62,6 @@ int main(int argc, char **argv)
 
     /* ---- Loop principal ---- */
 
-    glutIdleFunc(tempo);
-
     glutDisplayFunc(desenha);
     glutReshapeFunc(remodela);
 

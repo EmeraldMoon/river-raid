@@ -1,12 +1,6 @@
 River Raid - Changelog
 ========================
 
-##### TODO:
-  - Rever as constantes de cenário, inimigos, nave, etc. para balancear o jogo.
-  - Consertar problema que fecha o jogo ao despausá-lo.
-  - Posição do hud em relação ao tamanho da tela: usar o gluOrtho2D().
-  - Implementar o skybox.
-
 Terceira parte
 --------------
 
