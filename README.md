@@ -4,6 +4,9 @@ River Raid - Changelog
 Terceira parte
 --------------
 
+### Versão 1.1
+  - Nada por aqui.
+
 ### Versão 1.0
 
 ###### 22/06:
@@ -12,7 +15,7 @@ Terceira parte
   - ***Nave.c***: Uso de uma mira em vez de um cone transparente na câmera em primeira pessoa.
 
 ###### 20/06:
-  - Uso de ***issues*** no GitHub para facilitar os próximos objetivos a serem atingidos no projeto.
+  - Uso de ***issues*** no GitHub para acompanhar as próximas pendências a serem resolvidas no projeto.
 
 ###### 18/06:
   - ***Grafico.c***: Implementação de "flashes" vermelhos durante os frames de invencibilidade da nave (só para a câmera em primeira pessoa).

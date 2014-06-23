@@ -50,7 +50,6 @@ int main(int argc, char **argv)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     /* Inicializa efeitos de luz */
-    glEnable(GL_LIGHTING);
     glEnable(LUZ_AMBIENTE);
     glEnable(GL_COLOR_MATERIAL);
     glShadeModel(GL_SMOOTH);

@@ -142,9 +142,10 @@ bool naveColidiu(Inimigo *foe)
 void desenhaNave()
 {
     const GLdouble NAVE_COR =
-          255 - 190.0/INVENCIVEL_VIDA * nave.invencibilidade;
+        255 - 190.0/INVENCIVEL_VIDA * nave.invencibilidade;
 
     glPushMatrix();
+    glDisable(GL_LIGHTING);
     glTranslated(nave.base.x, nave.base.y, nave.base.z);
     glRotated(nave.angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
     glRotated(-nave.angVert * 180.0/PI, 1.0, 0.0, 0.0);
@@ -160,11 +161,12 @@ void desenhaNave()
         glEnable(GL_TEXTURE_GEN_T);
         glBindTexture(GL_TEXTURE_2D, naveTextura);
         /*glutSolidCone(nave.base.raio, nave.base.altura + 20, SLICES, STACKS);*/
-        glScaled(7.0, 7.0, 7.0);
+        glScaled(4.0, 6.0, 5.0);
         #include "Nave.ogl"
     }
 
     glDisable(GL_TEXTURE_GEN_S);
     glDisable(GL_TEXTURE_GEN_T);
+    glEnable(GL_LIGHTING);
     glPopMatrix();
 }

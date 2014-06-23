@@ -50,6 +50,7 @@ void desenha()
     /* Elementos estáticos do cenário, com texturas */
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
     fundo();
     rio(tick);
     parede(tick);
@@ -66,6 +67,7 @@ void desenha()
     desenhaNave();
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
 
     if (exibindoFPS()) fps(dt, tick);
     hud();
@@ -201,7 +203,7 @@ static void fundo()
         glTexCoord2d(0.0, 1.0); glVertex3d(-26*X_MAX, 15*Y_MAX, 0);
         glTexCoord2d(2.0, 1.0); glVertex3d(26*X_MAX, 15*Y_MAX, 0);
         glTexCoord2d(2.0, 0.0); glVertex3d(26*X_MAX, 0, 0);
-        glTexCoord2d(0.0, 0.0); glVertex3d(-26*X_MAX, 0, 0);       
+        glTexCoord2d(0.0, 0.0); glVertex3d(-26*X_MAX, 0, 0);
     } glEnd();
 
     glPopMatrix();
