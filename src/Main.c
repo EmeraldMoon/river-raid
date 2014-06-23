@@ -45,6 +45,10 @@ int main(int argc, char **argv)
     /* Carrega texturas */
     inicializaTexturas();
 
+    /* Inicializa efeitos de transparência */
+    glEnable(GL_BLEND); 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     /* Inicializa efeitos de luz */
     glEnable(GL_LIGHTING);
     glEnable(LUZ_AMBIENTE);

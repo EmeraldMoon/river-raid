@@ -3,6 +3,8 @@
 #include "Nave.h"
 #include "Cenario.h"
 #include "Grafico.h"
+#include "Textura.h"
+#include "Teclado.h"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -140,13 +142,29 @@ bool naveColidiu(Inimigo *foe)
 void desenhaNave()
 {
     const GLdouble NAVE_COR =
-        255 - 190.0/INVENCIVEL_VIDA * nave.invencibilidade;
+          255 - 190.0/INVENCIVEL_VIDA * nave.invencibilidade;
 
     glPushMatrix();
     glTranslated(nave.base.x, nave.base.y, nave.base.z);
     glRotated(nave.angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
     glRotated(-nave.angVert * 180.0/PI, 1.0, 0.0, 0.0);
     glColorAlpha(3*NAVE_COR, 3*NAVE_COR, 0, 3*NAVE_COR);
-    glutWireCone(nave.base.raio, nave.base.altura + 20, SLICES, STACKS);
+
+    if (estaEmPrimeiraPessoa()) {
+        glDisable(GL_TEXTURE_2D);
+        glutWireCone(0.25, 2, 4, 0);
+    }
+    else {
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_GEN_S);
+        glEnable(GL_TEXTURE_GEN_T);
+        glBindTexture(GL_TEXTURE_2D, naveTextura);
+        /*glutSolidCone(nave.base.raio, nave.base.altura + 20, SLICES, STACKS);*/
+        glScaled(7.0, 7.0, 7.0);
+        #include "Nave.ogl"
+    }
+
+    glDisable(GL_TEXTURE_GEN_S);
+    glDisable(GL_TEXTURE_GEN_T);
     glPopMatrix();
 }

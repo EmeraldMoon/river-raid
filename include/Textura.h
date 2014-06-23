@@ -7,6 +7,7 @@
 #pragma once
 
 #include <GL/freeglut.h>
+#include <stdbool.h>
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -16,6 +17,8 @@
 extern GLuint fundoTextura;
 extern GLuint rioTextura;
 extern GLuint paredeTextura;
+extern GLuint naveTextura;
+extern GLuint defesaTextura;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -31,7 +34,7 @@ void inicializaTexturas();
  *  um identificador para a mesma. Carrega-a para a memória
  *  a fim de ser usada posteriormente.
  */
-void carregaTextura(const char *filename, GLuint *textura);
+void carregaTextura(const char *filename, GLuint *textura, bool mipmap);
 
 /*
  *  Libera a memória alocada por todas as texturas usadas.

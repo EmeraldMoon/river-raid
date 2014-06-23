@@ -133,6 +133,7 @@ bool projetilSaiu(Projetil *bullet)
 void desenhaProjetil(Projetil *bullet)
 {
     glPushMatrix();
+    glDisable(GL_TEXTURE_2D);
     glTranslated(bullet->x, bullet->y, bullet->z);
 
     /* Provisório, no futuro cada tiro terá sua estrutura */

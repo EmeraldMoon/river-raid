@@ -3,6 +3,7 @@
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Random.h"
+#include "Textura.h"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -89,12 +90,19 @@ void desenhaInimigo(Inimigo *foe)
 
     glPushMatrix();
     glTranslated(foe->base.x, 0.0, foe->base.z);
-    glRotated(-90.0, 1.0, 0.0, 0.0);
-    glColor(RED);
-    /*glutSolidTeapot(3 * foe->base.raio);*/
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_GEN_S);
+    glEnable(GL_TEXTURE_GEN_T);
+    glBindTexture(GL_TEXTURE_2D, defesaTextura);
+
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, luzBranca);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, brilho);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, luzVermelha);
-    glutSolidCylinder(foe->base.raio, foe->base.altura, SLICES, STACKS);
+
+    glScaled(0.3, 0.001*foe->base.altura, 0.3);
+    #include "Defesa.ogl"
+    
+    glDisable(GL_TEXTURE_GEN_S);
+    glDisable(GL_TEXTURE_GEN_T);
     glPopMatrix();
 }

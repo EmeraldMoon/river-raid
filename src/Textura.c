@@ -8,13 +8,17 @@
  *-------------------------*/
 
 /* Arquivos de textura */
-#define FUNDO_TEXTURA  "texture/space.ppm"
+#define FUNDO_TEXTURA  "texture/sky1.ppm"
 #define RIO_TEXTURA    "texture/water.ppm"
 #define PAREDE_TEXTURA "texture/brick.ppm"
+#define NAVE_TEXTURA   "texture/silver.ppm"
+#define DEFESA_TEXTURA "texture/magma.ppm"
 
 GLuint fundoTextura;
 GLuint rioTextura;
 GLuint paredeTextura;
+GLuint naveTextura;
+GLuint defesaTextura;
 
 static void ignoraComentario(FILE *file);
 static void erro(FILE *file, const char *filename);
@@ -25,14 +29,16 @@ static void erro(FILE *file, const char *filename);
 
 void inicializaTexturas()
 {
-    carregaTextura(FUNDO_TEXTURA,  &fundoTextura);
-    carregaTextura(RIO_TEXTURA,    &rioTextura);
-    carregaTextura(PAREDE_TEXTURA, &paredeTextura);
+    carregaTextura(FUNDO_TEXTURA,  &fundoTextura,  true);
+    carregaTextura(RIO_TEXTURA,    &rioTextura,    true);
+    carregaTextura(PAREDE_TEXTURA, &paredeTextura, true);
+    carregaTextura(NAVE_TEXTURA,   &naveTextura,   false);
+    carregaTextura(DEFESA_TEXTURA, &defesaTextura, false);
 }
 
 /*------------------------------------------------------------------*/
 
-void carregaTextura(const char *filename, GLuint *textura)
+void carregaTextura(const char *filename, GLuint *textura, bool mipmap)
 {
     /* Abre o arquivo */
     FILE *file = fopen(filename, "rb");
@@ -67,13 +73,22 @@ void carregaTextura(const char *filename, GLuint *textura)
     glBindTexture(GL_TEXTURE_2D, *textura);
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, largura, altura,
-                      GL_RGB, GL_UNSIGNED_BYTE, dados);
+    if (mipmap) {
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, largura, altura,
+                        GL_RGB, GL_UNSIGNED_BYTE, dados);
+    }
+    else {
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, largura, altura,
+                    0, GL_RGB, GL_UNSIGNED_BYTE, dados);
+    }
+    
     free(dados);
     /* Hell ends here */
 }
@@ -85,6 +100,8 @@ void liberaTexturas()
     glDeleteTextures(1, &fundoTextura);
     glDeleteTextures(1, &rioTextura);
     glDeleteTextures(1, &paredeTextura);
+    glDeleteTextures(1, &naveTextura);
+    glDeleteTextures(1, &defesaTextura);
 }
 
 /*------------------------------------------------------------------*/

@@ -48,14 +48,13 @@ void desenha()
     }
 
     /* Elementos estáticos do cenário, com texturas */
-    glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_DEPTH_TEST);
     fundo();
     rio(tick);
     parede(tick);
-    glDisable(GL_TEXTURE_2D);
-
-    /* Elementos dinâmicos do jogo, ainda sem texturas */    
+    
+    /* Elementos dinâmicos do jogo, ainda sem texturas */
     for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         desenhaInimigo(foe);
@@ -65,6 +64,7 @@ void desenha()
         desenhaProjetil(bullet);
     }
     desenhaNave();
+    glDisable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
 
     if (exibindoFPS()) fps(dt, tick);
@@ -152,7 +152,7 @@ void hud()
     }
 
     glPopMatrix();
-    tempo();
+    if (!estaPausado()) tempo();
 }
 
 /*------------------------------------------------------------------*/
