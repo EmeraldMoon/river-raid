@@ -34,7 +34,7 @@ void keyPressed(unsigned char key, GLint x, GLint y)
 
     if (keyStates[TECLA_CAMERA]) primeiraPessoa = !primeiraPessoa;
     if (keyStates[TECLA_FPS])    exibeFPS = !exibeFPS;
-    if (keyStates[TECLA_PAUSA])  pausa();
+    if (keyStates[TECLA_PAUSA])  pausado = !pausado;
     if (keyStates[TECLA_SAIDA])  encerraJogo();
 }
 
@@ -103,22 +103,4 @@ GLboolean estaPausado()
 GLboolean exibindoFPS()
 {
     return exibeFPS;
-}
-
-/*------------------------------------------------------------------*
- *
- *  Altera o estado atual do jogo, interrompe ou resumindo execução
- *  e, caso cabível, exibindo uma mensagem de pausa na tela.
- *
- */
-static void pausa()
-{
-    pausado = !pausado;
-
-    if (pausado) {
-        hud();
-        glutSwapBuffers();
-        glutIdleFunc(NULL);
-    }
-    else glutIdleFunc(tempo);
 }

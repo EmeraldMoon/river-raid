@@ -47,7 +47,7 @@ void tempo()
     tExtra += dt - INTERVALO;
 
     /* Caso tempo acumulado chegue a um ou mais frames inteiros, 
-       faz a interpolação entre o anterior e o próximo desenho. */
+       faz a interpolação deles entre o anterior e o próximo desenho. */
     for (;;) {
         atualiza();
         if (tExtra < 2 * INTERVALO) break;

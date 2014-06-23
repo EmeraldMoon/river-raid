@@ -84,20 +84,12 @@ bool inimigoSaiu(Inimigo *foe)
 
 void desenhaInimigo(Inimigo *foe)
 {
-    const GLfloat luzVermelha[3] = { RED };
-    const GLfloat luzBranca[3]   = { WHITE };
-    const GLfloat brilho[]       = { 128 };
-
     glPushMatrix();
     glTranslated(foe->base.x, 0.0, foe->base.z);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_TEXTURE_GEN_S);
     glEnable(GL_TEXTURE_GEN_T);
     glBindTexture(GL_TEXTURE_2D, defesaTextura);
-
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, luzBranca);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, brilho);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, luzVermelha);
 
     glScaled(0.3, 0.001*foe->base.altura, 0.3);
     #include "Defesa.ogl"
