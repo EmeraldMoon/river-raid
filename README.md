@@ -12,6 +12,8 @@ Terceira parte
   - ***Main.c***: Removido a opção de fornecer a semente do gerador de números aleatórios (não estava sendo muito útil). Adicionada a opção de um cheat de invincibilidade pela linha de comando.
   - Corrigido bug da nave "entrar" nas paredes ao levar em conta o ângulo máximo/mínimo horizontal da nave.
   - Constantes da nave, inimigos, etc. foram levemente modificados para melhorar a jogabilidade.
+  - Nova pasta ***model*** para guardar os arquivos .obj.
+  - Uso do programa ***obj2opengl.pl***, da autoria de Heiko Behrens, diminuiu bem o tempo de compilação dos modelos. Para maiores detalhes: http://heikobehrens.net/2009/08/27/obj2opengl/
 
 ### Versão 1.0
 

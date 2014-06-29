@@ -1,5 +1,6 @@
 #include <math.h>  /* sqrt */
 #include "Defesa.h"
+#include "Defesa.ogl"
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Random.h"
@@ -90,10 +91,17 @@ void desenhaInimigo(Inimigo *foe)
     glEnable(GL_TEXTURE_GEN_S);
     glEnable(GL_TEXTURE_GEN_T);
     glBindTexture(GL_TEXTURE_2D, defesaTextura);
+    glScaled(400, 1.2*foe->base.altura, 400);
 
-    glScaled(0.3, 0.001*foe->base.altura, 0.3);
-    #include "Defesa.ogl"
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    /* Desenha os vértices do Defesa.ogl */
+    glVertexPointer(3, GL_FLOAT, 0, towerVerts);
+    glNormalPointer(GL_FLOAT, 0, towerNormals);
+    glDrawArrays(GL_TRIANGLES, 0, towerNumVerts);
     
+    glDisableClientState(GL_VERTEX_ARRAY);
+
     glDisable(GL_TEXTURE_GEN_S);
     glDisable(GL_TEXTURE_GEN_T);
     glPopMatrix();

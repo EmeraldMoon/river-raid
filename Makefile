@@ -10,10 +10,12 @@ INCDIR:= include
 OBJDIR:= obj
 DOCDIR:= doc
 TEXDIR:= texture
+MODDIR:= model
 BIN:= River
 SRC:= $(wildcard $(SRCDIR)/*.c)
 OBJ:= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
 INC:= -I$(INCDIR)
+MOD:= -I$(MODDIR)
 TAR:= $(BIN).tar
 
 .PHONY: dump tar count clean distclean tarclean pull push amend
@@ -27,7 +29,7 @@ $(BINDIR)/$(BIN): $(OBJ) | $(BINDIR)
 $(OBJ): | $(OBJDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	$(CC) $(CFLAGS) $(INC) $(MOD) -c $< -o $@
 
 $(OBJDIR) $(BINDIR):
 	$(MKDIR) $@
@@ -38,7 +40,7 @@ dump:
 
 tar:
 	$(MKDIR) $(BIN)/
-	cp -r $(INCDIR)/ $(SRCDIR)/ $(DOCDIR)/ $(TEXDIR)/ Makefile *.md $(BIN)/
+	cp -r $(INCDIR)/ $(SRCDIR)/ $(DOCDIR)/ $(TEXDIR)/ $(MODDIR)/ Makefile *.md $(BIN)/
 	tar -czf $(TAR) $(BIN)/
 	$(RMDIR) $(BIN)/
 	@echo "Arquivo\033[1;32m" $(TAR) "\033[0mcriado com sucesso"

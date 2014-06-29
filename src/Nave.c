@@ -1,6 +1,7 @@
 #include <math.h>  /* tan, abs */
 #include <GL/freeglut.h>
 #include "Nave.h"
+#include "Nave.ogl"
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Textura.h"
@@ -160,9 +161,16 @@ void desenhaNave()
         glEnable(GL_TEXTURE_GEN_S);
         glEnable(GL_TEXTURE_GEN_T);
         glBindTexture(GL_TEXTURE_2D, naveTextura);
-        /*glutSolidCone(nave.base.raio, nave.base.altura + 20, SLICES, STACKS);*/
-        glScaled(4.0, 6.0, 5.0);
-        #include "Nave.ogl"
+        /*glutWireCone(nave.base.raio, nave.base.altura, SLICES, STACKS);*/
+        glScaled(20.0, 40.0, 25.0);
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+
+        /* Desenha os vértices do Nave.ogl */
+        glVertexPointer(3, GL_FLOAT, 0, SpaceShipVerts);
+        glDrawArrays(GL_TRIANGLES, 0, SpaceShipNumVerts);
+
+        glDisableClientState(GL_VERTEX_ARRAY);
     }
 
     glDisable(GL_TEXTURE_GEN_S);
