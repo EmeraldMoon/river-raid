@@ -111,9 +111,10 @@ void remodela(GLsizei largura, GLsizei altura)
 void hud()
 {
     const GLdouble RAIO = larg/75.0;
+    const GLdouble K = CONST_CAMERA(31*alt/32.0); /* Constante de mudança de câmera */
     const GLdouble X = (estaEmPrimeiraPessoa() ? nave.base.x + larg/10.0
                                                : larg/10.0);
-    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave.base.y + 31*alt/32.0
+    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave.base.y + K*31*alt/32.0
                                                : 31*alt/32.0);
     const GLdouble Z = (estaEmPrimeiraPessoa() ? nave.base.z
                                                : nave.base.z - DIST_CAMERA);
@@ -175,11 +176,12 @@ void hud()
 
 void fps(GLuint tempo, GLuint tick)
 {
-    const GLdouble k = 15*alt/(16*nave.base.y + 15*alt); /* Constante de mudança de câmera */
+    
     static int tempoAnt = 60;
+    const GLdouble K = CONST_CAMERA(31*alt/32.0); /* Constante de mudança de câmera */
     const GLdouble X = (estaEmPrimeiraPessoa() ? nave.base.x + 9*larg/10.0
                                                : 9*larg/10.0);
-    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave.base.y + 31*alt/32.0
+    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave.base.y + K*31*alt/32.0
                                                : 31*alt/32.0);
     const GLdouble Z = (estaEmPrimeiraPessoa() ? nave.base.z
                                                : nave.base.z - DIST_CAMERA);
