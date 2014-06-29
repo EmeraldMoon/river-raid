@@ -62,8 +62,8 @@ int main(int argc, char **argv)
     const float cor[3] = { BLACK };
     
     glEnable(GL_FOG);
-    glFogi(GL_FOG_MODE, GL_EXP2);
-    glFogf(GL_FOG_DENSITY, 0.001);
+    glFogi(GL_FOG_MODE, GL_EXP);
+    glFogf(GL_FOG_DENSITY, 0.0009);
     glFogfv(GL_FOG_COLOR, cor);
     glHint(GL_FOG_HINT, GL_NICEST);
 

@@ -100,7 +100,7 @@ void remodela(GLsizei largura, GLsizei altura)
     glScaled(-1.0, 1.0, 1.0);
 
     /* (ângulo de visão, proporção de tela, distâncias min e max) */
-    gluPerspective(90.0, (GLdouble) largura/altura, 1.0, Z_MAX + DIST_CAMERA);
+    gluPerspective(90.0, (GLdouble) largura/altura, 1.0, 1.5*Z_MAX + DIST_CAMERA);
 
     /* Volta ao modo original */
     glMatrixMode(GL_MODELVIEW);
@@ -137,23 +137,34 @@ void hud()
         } glEnd();
     }
 
-    /* Desenha a caixa da lifebar */
-    glColor(DARK_BLUE);
-    glBegin(GL_QUADS); {
-        glVertex3d( X - 1.0, Y - 2*RAIO - 3, Z);
-        glVertex3d( X - 1.0, Y - 2*RAIO + 2, Z);
-        glVertex3d( X + 2.5*NAVE_HPMAX + 1, Y - 2*RAIO + 2, Z);
-        glVertex3d( X + 2.5*NAVE_HPMAX + 1, Y - 2*RAIO - 3, Z);
-    } glEnd();
+    /* Caixa da lifebar */
+    const double vertexLifebox[4][3] = {
+        {          X - 1.0, Y - 2*RAIO - 3, Z },
+        {          X - 1.0, Y - 2*RAIO + 2, Z },
+        { X + 0.2*larg + 1, Y - 2*RAIO + 2, Z },
+        { X + 0.2*larg + 1, Y - 2*RAIO - 3, Z }
+    };
 
-    /* Desenha a lifebar, que varia de cor dependendo da energia da nave */
+    glColor(DARK_BLUE);
+    glBegin(GL_QUADS); 
+    for (int i = 0; i < 4; i++)
+        glVertex3dv(vertexLifebox[i]);
+    glEnd();
+
+    /* Desenha a lifebar */
+    const double vertexLifebar[4][3] = {
+        {                               X, Y - 2*RAIO - 2, Z },
+        {                               X, Y - 2*RAIO + 1, Z },
+        { X + 0.2*larg*nave.base.hp/100.0, Y - 2*RAIO + 1, Z },
+        { X + 0.2*larg*nave.base.hp/100.0, Y - 2*RAIO - 2, Z }
+    };
+
+    /* Cor varia dependendo da energia da nave */
     glColor3ub(1 - 255*nave.base.hp/NAVE_HPMAX, 255*nave.base.hp/NAVE_HPMAX, 0);
-    glBegin(GL_QUADS); {
-        glVertex3d( X, Y - 2*RAIO - 2, Z);
-        glVertex3d( X, Y - 2*RAIO + 1, Z);
-        glVertex3d( X + 2.5*NAVE_HPMAX*nave.base.hp/100.0, Y - 2*RAIO + 1, Z);
-        glVertex3d( X + 2.5*NAVE_HPMAX*nave.base.hp/100.0, Y - 2*RAIO - 2, Z);
-    } glEnd();
+    glBegin(GL_QUADS);
+    for (int i = 0; i < 4; i++)
+        glVertex3dv(vertexLifebar[i]);
+    glEnd();
 
     /* Imprime pontuação */
     char score[16];
@@ -176,7 +187,6 @@ void hud()
 
 void fps(GLuint tempo, GLuint tick)
 {
-    
     static int tempoAnt = 60;
     const GLdouble K = CONST_CAMERA(31*alt/32.0); /* Constante de mudança de câmera */
     const GLdouble X = (estaEmPrimeiraPessoa() ? nave.base.x + 9*larg/10.0
@@ -213,12 +223,24 @@ static void fundo()
     glTranslated(0.0, 0.0, nave.base.z + Z_MAX);
     glBindTexture(GL_TEXTURE_2D, fundoTextura);
 
-    glBegin(GL_QUADS); {
-        glTexCoord2d(0.0, 1.0); glVertex3d(-26*X_MAX, 15*Y_MAX, 0.0);
-        glTexCoord2d(2.0, 1.0); glVertex3d(26*X_MAX, 15*Y_MAX, 0.0);
-        glTexCoord2d(2.0, 0.0); glVertex3d(26*X_MAX, 0.0, 0.0);
-        glTexCoord2d(0.0, 0.0); glVertex3d(-26*X_MAX, 0.0, 0.0);
-    } glEnd();
+    const double coord[4][2] = {
+        { 0.0, 1.0 }, { 4.0, 1.0 },
+        { 4.0, 0.0 }, { 0.0, 0.0 }
+    };
+
+    const int vertex[4][3] = {
+        { -35*X_MAX, 20*Y_MAX, 0.0 },
+        {  35*X_MAX, 20*Y_MAX, 0.0 },
+        {  35*X_MAX,      0.0, 0.0 },
+        { -35*X_MAX,      0.0, 0.0 }
+    };
+
+    glBegin(GL_QUADS); 
+    for (int i = 0; i < 4; i++) {
+        glTexCoord2dv(coord[i]);
+        glVertex3iv(vertex[i]);
+    } 
+    glEnd();
 
     glPopMatrix();
 }

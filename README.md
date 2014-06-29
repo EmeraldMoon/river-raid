@@ -9,6 +9,9 @@ Terceira parte
 ###### 29/06:
   - Relatório feito.
   - Corrigida a pequena mudança nas projeções ortogonais ao se mudar a câmera.
+  - Fog não está tão intenso a ponto de não se enxergar o céu.
+  - Ampliado distância máxima em *gluPerspective()* para poder enxergar o céu na cãmera em terceira pessoa.
+  - ***Grafico.c***: Pequena polida em algumas funções.
 
 ###### 28/06:
   - ***Grafico.c***: Adicionadas funções relativas ao uso de projeções ortogonais: *ortogonalInicio()* e *ortogonalFim()*.

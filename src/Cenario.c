@@ -112,6 +112,7 @@ void encerraJogo()
     liberaLista(projeteis);
     liberaTexturas();
 
+    printf("Score final: %d\n", nave.score);
     exit(EXIT_SUCCESS);
 }
 

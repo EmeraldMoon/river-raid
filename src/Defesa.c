@@ -91,6 +91,8 @@ void desenhaInimigo(Inimigo *foe)
     glEnable(GL_TEXTURE_GEN_S);
     glEnable(GL_TEXTURE_GEN_T);
     glBindTexture(GL_TEXTURE_2D, defesaTextura);
+    /*glRotated(-90.0, 1.0, 0.0, 0.0);*/
+    /*glutWireCylinder(foe->base.raio, foe->base.altura, SLICES, STACKS);*/
     glScaled(400, 1.2*foe->base.altura, 400);
 
     glEnableClientState(GL_VERTEX_ARRAY);

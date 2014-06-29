@@ -8,7 +8,7 @@
  *-------------------------*/
 
 /* Arquivos de textura */
-#define FUNDO_TEXTURA  "texture/sky1.ppm"
+#define FUNDO_TEXTURA  "texture/space.ppm"
 #define RIO_TEXTURA    "texture/water.ppm"
 #define PAREDE_TEXTURA "texture/brick.ppm"
 #define NAVE_TEXTURA   "texture/silver.ppm"
@@ -104,8 +104,11 @@ void liberaTexturas()
     glDeleteTextures(1, &defesaTextura);
 }
 
-/*------------------------------------------------------------------*/
-
+/*------------------------------------------------------------------*
+ *
+ * Pula comentários (iniciados com '#') na leitura do arquivo PPM.
+ *
+ */
 static void ignoraComentario(FILE *file)
 {
     while (getc(file) == '\n');
@@ -117,8 +120,11 @@ static void ignoraComentario(FILE *file)
     else fseek(file, -1, SEEK_CUR);
 }
 
-/*------------------------------------------------------------------*/
-
+/*------------------------------------------------------------------*
+ *
+ * Fecha o programa quando a textura não é um arquivo PPM.
+ *
+ */
 static void erro(FILE *file, const char *filename)
 {
     fprintf(stderr, "carregaTextura(): "
