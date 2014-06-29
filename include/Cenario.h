@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <stdbool.h>
 #include "Nave.h"
 #include "Defesa.h"
 #include "Tiro.h"
@@ -29,6 +30,9 @@
 /* SOLUÇÂO TEMPORÀRIA ATÉ PENSAR NUMA IDEIA MELHOR.
    SIM, EU GOSTO DE CAPS LOCK */
 GLuint dt;
+
+/* Cheat da nave indestrutível */
+extern bool godMode;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |

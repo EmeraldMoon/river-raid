@@ -108,7 +108,7 @@ void naveDispara()
 
 void danificaNave(int dano)
 {
-    if (nave.invencibilidade > 0) return;
+    if (nave.invencibilidade > 0 || godMode) return;
 
     nave.base.hp -= dano;
     nave.invencibilidade = INVENCIVEL_DANO;

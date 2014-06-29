@@ -5,7 +5,13 @@ Terceira parte
 --------------
 
 ### Versão 1.1
-  - Nada por aqui.
+
+###### 28/06:
+  - ***Grafico.c***: Adicionadas funções relativas ao uso de projeções ortogonais: *ortogonalInicio()* e *ortogonalFim()*.
+  - O hud e o fps não sumirão ao se mudar o tamanho da tela, mas ainda há um problema relativo à aparência das projeções na câmera em primeira pessoa.
+  - ***Main.c***: Removido a opção de fornecer a semente do gerador de números aleatórios (não estava sendo muito útil). Adicionada a opção de um cheat de invincibilidade pela linha de comando.
+  - Corrigido bug da nave "entrar" nas paredes ao levar em conta o ângulo máximo/mínimo horizontal da nave.
+  - Constantes da nave, inimigos, etc. foram levemente modificados para melhorar a jogabilidade.
 
 ### Versão 1.0
 

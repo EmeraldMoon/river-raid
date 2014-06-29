@@ -3,12 +3,13 @@
  |  Módulo principal do projeto.                                    |
  |  Inicializa o programa e chama o loop do glut.                   |
  |                                                                  |
- |  Uso: ./bin/River [semente]                                      |
+ |  Uso: ./bin/River [-iddqd]                                      |
  |                                                                  |
  *------------------------------------------------------------------*/
 
 #include <stdlib.h>  /* atoi, srand */
 #include <time.h>    /* time */
+#include <string.h>  /* strcmp */
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Teclado.h"
@@ -18,18 +19,21 @@
 #define JANELA_LARGURA 2 * 5 * X_MAX
 #define JANELA_ALTURA      5 * Y_MAX
 
+/* Cheats */
+#define GOD_MODE "-iddqd"
+
 /*----------------*-------------------------------------------------*
  |   M  A  I  N   |
  *----------------*/
 
 int main(int argc, char **argv)
 {
-    int semente = (argc < 2) ? time(NULL)
-                             : atoi(argv[1]);
+    if (argc >= 2 && !strcmp(argv[1], GOD_MODE))
+        godMode = true;
 
     /* Inicialização dos elementos */
     inicializaCenario();
-    srand(semente);
+    srand(time(NULL));
 
     /* Inicializa glut e ativa flags */
     glutInit(&argc, argv);

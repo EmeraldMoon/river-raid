@@ -16,9 +16,9 @@
 
 /* Atributos iniciais e/ou fixos */
 #define VIDAS_INI     3
-#define NAVE_VEL      5
+#define NAVE_VEL      4
 #define NAVE_HPMAX  100
-#define NAVE_COOL     5
+#define NAVE_COOL     6
 #define NAVE_RAIO    10
 #define NAVE_ALTURA   5
 

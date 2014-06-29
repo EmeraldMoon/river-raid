@@ -13,6 +13,9 @@ Nave nave;
 Lista *inimigos;
 Lista *projeteis;
 
+/* Cheat da nave indestrutível */
+bool godMode = false;
+
 static void imprimeElementos();
 
 /*-------------------*

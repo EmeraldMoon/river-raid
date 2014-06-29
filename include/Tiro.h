@@ -17,7 +17,7 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
-#define BALA_VEL  10  /* módulo da velocidade */
+#define BALA_VEL   8  /* módulo da velocidade */
 #define BALA_DANO 15
 #define BALA_RAIO  3
 
