@@ -6,6 +6,10 @@ Terceira parte
 
 ### Versão 1.1
 
+###### 29/06:
+  - Relatório feito.
+  - Corrigida a pequena mudança nas projeções ortogonais ao se mudar a câmera.
+
 ###### 28/06:
   - ***Grafico.c***: Adicionadas funções relativas ao uso de projeções ortogonais: *ortogonalInicio()* e *ortogonalFim()*.
   - O hud e o fps não sumirão ao se mudar o tamanho da tela, mas ainda há um problema relativo à aparência das projeções na câmera em primeira pessoa.
