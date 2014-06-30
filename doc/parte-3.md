@@ -37,7 +37,7 @@ Uso
     + [-iddqd]: A nave fica invencível.
   
 As seguintes teclas podem ser usadas pelo usuário:
-  - **Setas Direcionais**: Fazem a nove se mover na direção correspondente.
+  - **Setas Direcionais**: Fazem a nave mover-se na direção correspondente.
   - **Barra de Espaço**: Faz a nave atirar.
   - **C**: Alterna entre visão em primeira e terceira pessoa.
   - **P**: Pausa/despausa jogo.
