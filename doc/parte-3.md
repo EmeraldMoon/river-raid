@@ -8,28 +8,28 @@ Relatório - Parte 3
 
 Introdução
 ----------
-  O objetivo principal desta terceira fase foi a implementação gráfica do jogo, o que permite uma jogabilidade melhor e a visualização de uma forma mais *user friendly*. Isso facilita a visualização do que foi implementado nas partes anteriores sem que o usuário precise analisar dezenas/centenas de números.
+  O objetivo principal desta terceira parte foi finalizar o projeto por meio da tão esperada implementação gráfica via OpenGL. Assim, temos como resultado final um jogo básico, interativo e visualmente atrativo.
   
 Resumo do que foi feito
 -----------------------
   - Implementação gráfica dos elementos do jogo.
-  - Controle da velocidade do jogo. Em computadores mais potentes, o jogo fica na velocidade normal; nos menos potentes, o jogo fica com *frameskip*.
+  - Texturas para as paredes, rio e fundo.
+  - Modelos padronizados para nave e inimigos.
+  - Reconhecimento de comandos via teclado (callbacks).
+  - HUD para indicação de pontuação, vidas e energia da nave.
+  - Modo primeira pessoa, onde câmera é colocada "dentro" da nave.
+  - Possibilidade de exibir frames por segundo (FPS) do jogo no momento.
+  - Controle da velocidade do jogo. Evita-se que o jogo rode rápido ou lento demais, usando de *frameskip* caso necessário.
   - Ajustes em algumas constantes do jogo, visando a torná-lo mais balanceado.
   - Correções de bugs que ficaram aparentes após a implementação gráfica.
-
-Dificuldades
-------------
-  A maior dificuldade desta parte do projeto foi a implementação da parte gráfica, tendo em vista que foi necessária a utilização de diversas funções do OpenGL, cujos usos tiveram que ser pesquisados e estudados. O uso do método tentativa e erro foi frequente para a correção de bugs decorrentes da parte gráfica.
-
-  A realização dos testes foi feita em diversos computadores, o que dificultava a simulação do jogo, uma vez que ele rodava normalmente em um, mas poderia rodar duas vezes mais rapido ou na metade da velocidade em outros. Para evitar este problema, foi necessária a implementação do controle de velocidade do jogo.
  
 Simulação
 ---------
-  Ao executar o programa, o jogo é iniciado imediatamente (ainda sem tela de menu). O usuário joga através do teclado, tentando desviar de tiros enquanto destrói inimigos para obter um high-score (que por enquanto ainda não é armazenado). Quando a nave perder as 3 vidas, o jogo é fechado automaticamente.
+  Ao executar o programa, o jogo é iniciado imediatamente. O usuário joga através do teclado, tentando desviar de tiros enquanto destrói inimigos para acumular pontos em seu score. Quando a nave perder as 3 vidas, o jogo é fechado automaticamente, e a pontuação final impressa na tela.
 
 Uso
 ---
-  A compilação do programa é feita pelo Makefile, sendo necessário apenas digitar *make*.
+  Para compilar, basta digitar *make*.
   O programa é executado pelo terminal (supõe-se aqui que esteja usando Linux) da seguinte forma:
 
   **$ ./bin/River [código]**

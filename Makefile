@@ -16,7 +16,7 @@ SRC:= $(wildcard $(SRCDIR)/*.c)
 OBJ:= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
 INC:= -I$(INCDIR)
 MOD:= -I$(MODDIR)
-TAR:= $(BIN).tar
+TAR:= $(BIN).tar.gz
 
 .PHONY: dump tar count clean distclean tarclean pull push amend
 

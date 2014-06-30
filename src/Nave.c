@@ -1,11 +1,13 @@
 #include <math.h>  /* tan, abs */
 #include <GL/freeglut.h>
 #include "Nave.h"
-#include "Nave.ogl"
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Textura.h"
 #include "Teclado.h"
+
+/* Vértices do modelo da nave */
+#include "Nave.ogl"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
