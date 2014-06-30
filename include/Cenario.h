@@ -27,9 +27,8 @@
 /* Variação de vy dos projéteis por timestep */
 #define ACEL_GRAVIDADE 0.005
 
-/* SOLUÇÂO TEMPORÀRIA ATÉ PENSAR NUMA IDEIA MELHOR.
-   SIM, EU GOSTO DE CAPS LOCK */
-GLuint dt;
+/* Variáveis globais de tempo */
+extern GLuint dt, t0;
 
 /* Cheat da nave indestrutível */
 extern bool godMode;
@@ -43,12 +42,16 @@ extern bool godMode;
  */
 void inicializaCenario();
 
+/*
+ *  Faz a chamada das funções de atualização e desenho, além de
+ *  controlar o tempo do jogo, evitando que o mesmo rode rápido
+ *  demais e pulando frames que o computador não consiga exibir.
+ */
 void tempo();
 
 /*
- *  Loop principal de processamento do jogo. Cuida direta
- *  ou indiretamente de tudo que compõe o cenário, sendo
- *  responsável por atualizar posições, tratar interações
+ *  Cuida direta ou indiretamente de tudo que compõe o cenário,
+ *  sendo responsável por atualizar posições, tratar interações
  *  entre objetos e encerrar o jogo quando cabível.
  */
 void atualiza();

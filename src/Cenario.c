@@ -16,7 +16,10 @@ Lista *projeteis;
 /* Cheat da nave indestrutível */
 bool godMode = false;
 
-static void imprimeElementos();
+/* Variáveis globais de tempo */
+GLuint dt, t0 = 0;
+
+/*static void imprimeElementos();*/
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -35,7 +38,7 @@ void inicializaCenario()
 void tempo()
 {
     const GLuint INTERVALO = 1000/FPS;
-    static int t0 = 0, tExtra;
+    static int tExtra;
 
     /* Obtém tempo desde última atualização */
     dt = glutGet(GLUT_ELAPSED_TIME) - t0;
@@ -122,44 +125,44 @@ void encerraJogo()
  *  timestep atual. Usada para depuração.
  *
  */
-static void imprimeElementos()
-{
-    /* Limpa a tela do terminal/prompt */
-    #ifdef __linux__
-        system("clear");
-    #elif _WIN32
-        system("cls");
-    #endif    
+// static void imprimeElementos()
+// {
+//     /* Limpa a tela do terminal/prompt */
+//     #ifdef __linux__
+//         system("clear");
+//     #elif _WIN32
+//         system("cls");
+//     #endif    
 
-    puts("{Nave}");
-    printf("PONTUAÇÂO: %d\n", nave.score);
-    printf("VIDAS: %d\n", nave.vidas);
-    printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
-    printf("Posição: (%.0f, %.0f, %.0f)\n", 
-        nave.base.x, nave.base.y, nave.base.z);
-    printf("Ângulos: (%.0f°, %.0f°)\n",
-        (180/PI) * nave.angHoriz, (180/PI) * nave.angVert);
+//     puts("{Nave}");
+//     printf("PONTUAÇÂO: %d\n", nave.score);
+//     printf("VIDAS: %d\n", nave.vidas);
+//     printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
+//     printf("Posição: (%.0f, %.0f, %.0f)\n", 
+//         nave.base.x, nave.base.y, nave.base.z);
+//     printf("Ângulos: (%.0f°, %.0f°)\n",
+//         (180/PI) * nave.angHoriz, (180/PI) * nave.angVert);
     
-    /* Para efeitos de clareza, todas as componentes z dos
-       inimigos e projéteis são relativas à nave (e não absolutas). */
-    puts("\n{Inimigos}");
-    puts("    ( x, y, z)          Recarga    Precisão    Energia ");
-    puts("-------------------     -------    --------   ---------");
-    for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
-        Inimigo *foe = p->prox->item;
-        printf(" (%4g, %3g, %4g)       %2d/%2d       %3.0f%%       %2d/%2d\n",
-            foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
-            foe->base.espera, foe->base.cooldown, 100 * foe->precisao,
-            foe->base.hp, FOE_HPMAX);
-    }
-    puts("\n{Projéteis}");
-    puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
-    puts("-------------------    --------------------     --------");
-    for (Celula *p = projeteis; p->prox != NULL; p = p->prox) {
-        Projetil *bullet = p->prox->item;
-        printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
-            bullet->x, bullet->y, (bullet->z - nave.base.z),
-            bullet->vx, bullet->vy, bullet->vz,
-            (bullet->amigo) ? "sim" : "não");
-    }
-}
+//     /* Para efeitos de clareza, todas as componentes z dos
+//        inimigos e projéteis são relativas à nave (e não absolutas). */
+//     puts("\n{Inimigos}");
+//     puts("    ( x, y, z)          Recarga    Precisão    Energia ");
+//     puts("-------------------     -------    --------   ---------");
+//     for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
+//         Inimigo *foe = p->prox->item;
+//         printf(" (%4g, %3g, %4g)       %2d/%2d       %3.0f%%       %2d/%2d\n",
+//             foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
+//             foe->base.espera, foe->base.cooldown, 100 * foe->precisao,
+//             foe->base.hp, FOE_HPMAX);
+//     }
+//     puts("\n{Projéteis}");
+//     puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
+//     puts("-------------------    --------------------     --------");
+//     for (Celula *p = projeteis; p->prox != NULL; p = p->prox) {
+//         Projetil *bullet = p->prox->item;
+//         printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
+//             bullet->x, bullet->y, (bullet->z - nave.base.z),
+//             bullet->vx, bullet->vy, bullet->vz,
+//             (bullet->amigo) ? "sim" : "não");
+//     }
+// }

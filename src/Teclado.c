@@ -22,8 +22,6 @@ static GLboolean primeiraPessoa = GL_FALSE;
 static GLboolean exibeFPS = GL_FALSE;
 static GLboolean pausado = GL_FALSE;
 
-static void pausa();
-
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*/
@@ -34,7 +32,13 @@ void keyPressed(unsigned char key, GLint x, GLint y)
 
     if (keyStates[TECLA_CAMERA]) primeiraPessoa = !primeiraPessoa;
     if (keyStates[TECLA_FPS])    exibeFPS = !exibeFPS;
-    if (keyStates[TECLA_PAUSA])  pausado = !pausado;
+    if (keyStates[TECLA_PAUSA]) {
+        pausado = !pausado;
+        if (!estaPausado()) {
+            t0 = glutGet(GLUT_ELAPSED_TIME);
+            desenha();
+        }
+    }
     if (keyStates[TECLA_SAIDA])  encerraJogo();
 }
 

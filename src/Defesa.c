@@ -1,10 +1,12 @@
 #include <math.h>  /* sqrt */
 #include "Defesa.h"
-#include "Defesa.ogl"
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Random.h"
 #include "Textura.h"
+
+/* Vértices do modelo das torres */
+#include "Defesa.ogl"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
