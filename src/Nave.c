@@ -9,6 +9,8 @@
 /* Vértices do modelo da nave */
 #include "Nave.ogl"
 
+static double rotacao = 0;
+
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*/
@@ -33,6 +35,7 @@ void criaNave(int z, int nVidas)
     nave.base.altura   = NAVE_ALTURA;
 
     nave.invencibilidade = INVENCIVEL_VIDA;
+    nave.escudo = 0;
 }
 
 /*------------------------------------------------------------------*/
@@ -113,7 +116,12 @@ void danificaNave(int dano)
 {
     if (nave.invencibilidade > 0 || godMode) return;
 
-    nave.base.hp -= dano;
+    if (nave.escudo > 0) {
+        nave.base.hp -= dano/3;
+        nave.escudo -= 2*dano/3;
+    }
+    else
+        nave.base.hp -= dano;
     nave.invencibilidade = INVENCIVEL_DANO;
 
     /* Verifica se nave perdeu vida */
@@ -141,19 +149,48 @@ bool naveColidiu(Inimigo *foe)
 }
 
 /*------------------------------------------------------------------*/
+
+bool naveTocaItem(Item *item)
+{
+    int dx = nave.base.x - item->x;
+    int dy = nave.base.y - item->y;
+    int dz = nave.base.z - item->z;
+    int somaRaios = nave.base.raio + ITEM_RAIO;
+
+    /* Evita cálculos desnecessários */
+    if (dx >= somaRaios || dz >= somaRaios) return false;
+
+    return (hipot(dx, dz) < somaRaios)
+        && (abs(dy) < (nave.base.altura + ITEM_RAIO)/2);
+}
+
+/*------------------------------------------------------------------*/
  
 void desenhaNave()
 {
-    const GLdouble NAVE_COR =
+    rotacao += PI/6;
+
+    GLdouble NAVE_COR =
         255 - 190.0/INVENCIVEL_VIDA * nave.invencibilidade;
+
+    if (nave.escudo > 0 && !estaEmPrimeiraPessoa()) {
+        NAVE_COR = 255;
+        glPushMatrix();
+        glColorAlpha(DARK_BLUE, 250 * nave.escudo/(2.0*NAVE_HPMAX));
+        glDisable(GL_TEXTURE_2D);
+        glTranslated(nave.base.x, nave.base.y, nave.base.z);
+        glRotated(rotacao, 1.0, 1.0, 0.0);
+        glutWireSphere(1.75*NAVE_RAIO, SLICES, STACKS);
+        glPopMatrix();
+    }
 
     glPushMatrix();
     glDisable(GL_LIGHTING);
     glTranslated(nave.base.x, nave.base.y, nave.base.z);
     glRotated(nave.angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
     glRotated(-nave.angVert * 180.0/PI, 1.0, 0.0, 0.0);
-    glColorAlpha(3*NAVE_COR, 3*NAVE_COR, 0, 3*NAVE_COR);
 
+    glColorAlpha(3*NAVE_COR, 3*NAVE_COR, 0, 3*NAVE_COR);
     if (estaEmPrimeiraPessoa()) {
         glDisable(GL_TEXTURE_2D);
         glutWireCone(0.25, 2, 4, 0);

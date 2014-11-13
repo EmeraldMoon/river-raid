@@ -88,6 +88,7 @@ bool inimigoSaiu(Inimigo *foe)
 void desenhaInimigo(Inimigo *foe)
 {
     glPushMatrix();
+    glColorAlpha(WHITE, 255);
     glTranslated(foe->base.x, 0.0, foe->base.z);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_TEXTURE_GEN_S);

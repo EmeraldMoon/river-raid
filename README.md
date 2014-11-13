@@ -10,7 +10,7 @@ Terceira parte
   - Relatório feito.
   - Corrigida a pequena mudança nas projeções ortogonais ao se mudar a câmera.
   - Fog não está tão intenso a ponto de não se enxergar o céu.
-  - Ampliado distância máxima em *gluPerspective()* para poder enxergar o céu na cãmera em terceira pessoa.
+  - Ampliado distância máxima em *gluPerspective()* para poder enxergar o céu na câmera em terceira pessoa.
   - ***Grafico.c***: Pequena polida em algumas funções.
   - Pausa funcionando perfeitamente. Bug que causava encerramento do jogo fora removido.
 

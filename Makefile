@@ -23,7 +23,7 @@ TAR:= $(BIN).tar.gz
 all: $(BINDIR)/$(BIN)
 
 $(BINDIR)/$(BIN): $(OBJ) | $(BINDIR)
-	$(CC) $(LIBS) $^ -o $@
+	$(CC) $^ $(LIBS) -o $@
 	@echo "Generating C binary \033[1;32m"$@"\033[0m"
 
 $(OBJ): | $(OBJDIR)

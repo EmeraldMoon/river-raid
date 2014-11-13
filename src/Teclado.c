@@ -8,6 +8,7 @@
 
 /* Constantes para teclas */
 #define TECLA_TIRO   ' '  /* barra de espaços */
+#define TECLA_TIRO2  'Z'
 #define TECLA_CAMERA 'C'
 #define TECLA_PAUSA  'P'
 #define TECLA_FPS    'F'

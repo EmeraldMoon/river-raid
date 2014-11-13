@@ -13,12 +13,14 @@
 #define PAREDE_TEXTURA "texture/brick.ppm"
 #define NAVE_TEXTURA   "texture/silver.ppm"
 #define DEFESA_TEXTURA "texture/magma.ppm"
+#define ITEM_TEXTURA   "texture/box.ppm"
 
 GLuint fundoTextura;
 GLuint rioTextura;
 GLuint paredeTextura;
 GLuint naveTextura;
 GLuint defesaTextura;
+GLuint itemTextura;
 
 static void ignoraComentario(FILE *file);
 static void erro(FILE *file, const char *filename);
@@ -34,6 +36,7 @@ void inicializaTexturas()
     carregaTextura(PAREDE_TEXTURA, &paredeTextura, true);
     carregaTextura(NAVE_TEXTURA,   &naveTextura,   false);
     carregaTextura(DEFESA_TEXTURA, &defesaTextura, false);
+    carregaTextura(ITEM_TEXTURA,   &itemTextura,   false);
 }
 
 /*------------------------------------------------------------------*/
@@ -102,6 +105,7 @@ void liberaTexturas()
     glDeleteTextures(1, &paredeTextura);
     glDeleteTextures(1, &naveTextura);
     glDeleteTextures(1, &defesaTextura);
+    glDeleteTextures(1, &itemTextura);
 }
 
 /*------------------------------------------------------------------*

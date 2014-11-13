@@ -12,6 +12,7 @@
 Nave nave;
 Lista *inimigos;
 Lista *projeteis;
+Lista *items;
 
 /* Cheat da nave indestrutível */
 bool godMode = false;
@@ -30,6 +31,7 @@ void inicializaCenario()
     criaNave(0, VIDAS_INI);
     inimigos  = criaLista();
     projeteis = criaLista();
+    items = criaLista();
     nave.score = 0;
 }
 
@@ -70,7 +72,8 @@ void tempo()
 
 void atualiza()
 {
-    static int cont = TEMPO_INIMIGOS;
+    static int cont_foe = TEMPO_INIMIGOS;
+    static int cont_item = TEMPO_ITEM;
 
     /* Reconhecimento do teclado */
     keyOperations();
@@ -90,6 +93,18 @@ void atualiza()
         else p = p->prox;
     }
 
+    /* Loop para tratar de itens */
+    Celula *q = items;
+    while (q->prox != NULL) {
+        Item *item = q->prox->item;
+        if (naveTocaItem(item)) {
+            ativaItem(item);
+            exclui(q);
+        }
+        else if (itemSaiu(item)) exclui(q);
+        else q = q->prox;
+    }
+
     /* Loop para verificar estado dos projéteis */
     p = projeteis;
     while (p->prox != NULL) {
@@ -100,9 +115,13 @@ void atualiza()
     }
 
     if (nave.vidas <= 0) encerraJogo();
-    if (--cont == 0) {
+    if (--cont_foe == 0) {
         geraInimigo();
-        cont = TEMPO_INIMIGOS;
+        cont_foe = TEMPO_INIMIGOS;
+    }
+    if (--cont_item == 0) {
+        geraItem();
+        cont_item = TEMPO_ITEM;
     }
     /*imprimeElementos();*/
 }
@@ -113,6 +132,7 @@ void encerraJogo()
 {
     liberaLista(inimigos);
     liberaLista(projeteis);
+    liberaLista(items);
     liberaTexturas();
 
     printf("Score final: %d\n", nave.score);

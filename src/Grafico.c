@@ -63,6 +63,10 @@ void desenha()
     parede(tick);
     
     /* Elementos dinâmicos do jogo, ainda sem texturas */
+    for (Celula *p = items; p->prox != NULL; p = p->prox) {
+        Item *item = p->prox->item;
+        desenhaItem(item);
+    }
     for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         desenhaInimigo(foe);

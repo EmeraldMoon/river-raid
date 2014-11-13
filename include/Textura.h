@@ -19,6 +19,7 @@ extern GLuint rioTextura;
 extern GLuint paredeTextura;
 extern GLuint naveTextura;
 extern GLuint defesaTextura;
+extern GLuint itemTextura;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |

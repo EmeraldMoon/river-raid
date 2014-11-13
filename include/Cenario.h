@@ -11,6 +11,7 @@
 #include "Nave.h"
 #include "Defesa.h"
 #include "Tiro.h"
+#include "Item.h"
 #include "Grafico.h"
 #include "Base.h"
 

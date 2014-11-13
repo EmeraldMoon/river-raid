@@ -8,6 +8,7 @@
 
 #include <stdbool.h>
 #include "Defesa.h"
+#include "Item.h"
 #include "Base.h"
 
 /*-------------------------*
@@ -58,6 +59,9 @@ struct nave
 
     /* Enquanto > 0, nave é imune a tiros e colisões */
     unsigned int invencibilidade;
+
+    /* Serve como uma 2ª barra de vida para a nave, até ser destruída */
+    unsigned int escudo;
 };
 
 extern Nave nave;
@@ -97,6 +101,7 @@ void danificaNave(int dano);
  *  ou seja, se seus corpos entraram em contato.
  */
 bool naveColidiu(Inimigo *foe);
+bool naveTocaItem(Item *item);
 
 /*
  *  Desenha a representação visual da nave na tela.

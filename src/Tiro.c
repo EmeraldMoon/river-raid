@@ -140,6 +140,6 @@ void desenhaProjetil(Projetil *bullet)
     if (bullet->amigo) glColor(LIGHT_GRAY);
     else               glColor(LIME);
   
-    glutSolidSphere(bullet->raio, SLICES, STACKS);  
+    glutSolidSphere(bullet->raio, SLICES, STACKS);
     glPopMatrix();
 }
