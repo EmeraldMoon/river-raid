@@ -42,11 +42,10 @@ void ativaItem(Item *item)
     switch(item->tipo) {
         case HP:
             nave.base.hp += NAVE_HPMAX/6;
-            if (nave.base.hp > NAVE_HPMAX)
-                nave.base.hp = NAVE_HPMAX;
+            if (nave.base.hp > NAVE_HPMAX) nave.base.hp = NAVE_HPMAX;
             break;
         case VIDA:
-            nave.vidas += 1;
+            (nave.vidas)++;
             break;
         case ESCUDO:
             nave.escudo = 2*NAVE_HPMAX;

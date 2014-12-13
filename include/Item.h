@@ -23,7 +23,7 @@
 typedef enum {HP, VIDA, ESCUDO} ItemTipo;
 
 /*
- *  Representa um inimigo (elemento de defesa).
+ *  Representa um item coletável.
  */
 typedef struct item Item;
 struct item

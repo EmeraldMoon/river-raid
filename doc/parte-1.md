@@ -2,8 +2,8 @@ Relatório - Parte 1
 ===================
 
   - Integrantes:
-    - (**7557797**) Gustavo Chicato Wandeur
     - (**8516782**) Daniel Toshio Iwamoto
+    - (**7557797**) Gustavo Chicato Wandeur
 
 Introdução
 ----------

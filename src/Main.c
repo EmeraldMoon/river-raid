@@ -3,7 +3,7 @@
  |  Módulo principal do projeto.                                    |
  |  Inicializa o programa e chama o loop do glut.                   |
  |                                                                  |
- |  Uso: ./bin/River [-iddqd]                                      |
+ |  Uso: ./bin/River [-iddqd]                                       |
  |                                                                  |
  *------------------------------------------------------------------*/
 
