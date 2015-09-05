@@ -15,12 +15,12 @@
  *-------------------------*/
 
 /*
- *  Estrutura genérica de célula.
+ *  Estrutura genérica de célula
  */
 typedef struct celula Celula;
 struct celula
 {
-    void   *item;  /* ponteiro para tipo genérico */
+    void   *item;  /* Ponteiro para tipo genérico */
     Celula *prox;
 };
 

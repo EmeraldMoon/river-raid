@@ -20,10 +20,11 @@
 #define FPS 75
 
 /* Distância da câmera à nave */
-#define DIST_CAMERA 100 
+#define DIST_CAMERA 250
 
-/* Constante para mudança de projeções ortogonais
- * de terceira para primeira pessoa
+/* 
+ *  Constante para mudança de projeções ortogonais
+ *  de terceira para primeira pessoa
  */
 #define CONST_CAMERA(k) (-Y_MAX/(2.0*k) + 1)
 

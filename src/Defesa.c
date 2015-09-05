@@ -23,13 +23,12 @@ void geraInimigo()
 {
     Inimigo foe;
 
-    /* (uniforme(-1, 0) | 1) gera um número que é 1 ou -1 */
-    foe.base.x = (X_MAX - FOE_RAIO) * (uniforme(-1, 0) | 1);
+    foe.base.x = (X_MAX - FOE_RAIO) * uniformeD(-1.0, 1.0);
     foe.base.y = uniforme(Y_MAX/8, Y_MAX/2);
     foe.base.z = nave.base.z + Z_MAX;
 
     foe.base.hp       = FOE_HPMAX;
-    foe.base.cooldown = uniforme(45, 60);
+    foe.base.cooldown = uniforme(80, 105);
     foe.base.espera   = foe.base.cooldown;
     foe.base.raio     = FOE_RAIO;
     foe.base.altura   = 2 * foe.base.y;

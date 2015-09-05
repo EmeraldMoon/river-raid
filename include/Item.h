@@ -29,9 +29,9 @@ typedef struct item Item;
 struct item
 {
     ItemTipo tipo; /* que tipo de item é */
-    double x;  /* posição horizontal (centro == 0) */
-    double y;  /* altura em relação ao solo */
-    double z;  /* distância desde o início do cenário */
+    double x;      /* posição horizontal (centro == 0) */
+    double y;      /* altura em relação ao solo */
+    double z;      /* distância desde o início do cenário */
 };
 
 extern Lista *items;
