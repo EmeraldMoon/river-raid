@@ -27,6 +27,14 @@
 #define PONTOS_ACERTO    100
 #define PONTOS_DESTRUCT 1000
 
+/* Arquivo e número de vértices referentes ao modelo das defesas */
+#define DEFESA_MODELO "Defesa.vert"
+#define DEFESA_NUM_VERTICES 15538
+
+/* Idem, para normais */
+#define DEFESA_NORMAL_MODELO "Defesa.norm"
+#define DEFESA_NUM_NORMAIS 7541
+
 /*
  *  Representa um inimigo (elemento de defesa).
  */
@@ -44,6 +52,11 @@ extern Lista *inimigos;
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/
+
+/*
+ *  Carrega modelo gráfico de inimigos para a memória.
+ */
+void carregaModeloInimigos();
 
 /*
  *  Insere um inimigo na respectiva lista.

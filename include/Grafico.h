@@ -43,6 +43,12 @@
  *-------------------------*/
 
 /*
+ *  Inicializa objetos da parte gráfica e passa o comando
+ *  do restante do programa ao OpenGL.
+ */
+void graficosInit();
+
+/*
  *  Loop principal da parte visual. Cuida do posicionamento
  *  da câmera e chamada de funções de atualização.
  */

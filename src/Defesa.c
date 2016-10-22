@@ -5,12 +5,21 @@
 #include "Random.h"
 #include "Textura.h"
 
-/* Vértices do modelo das torres */
-#include "Defesa.ogl"
+/* Matrizes representando vértices e normais do inimigo */
+static GLdouble defesaVertices[DEFESA_NUM_VERTICES][3];
+static GLdouble defesaNormais[DEFESA_NUM_NORMAIS][3];
 
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*/
+
+void carregaModeloInimigos()
+{
+    leVetores(defesaVertices, DEFESA_NUM_VERTICES, DEFESA_MODELO);
+    leVetores(defesaNormais,  DEFESA_NUM_NORMAIS,  DEFESA_NORMAL_MODELO);
+}
+
+/*------------------------------------------------------------------*/
 
 void criaInimigo(Inimigo foe)
 {
@@ -100,9 +109,9 @@ void desenhaInimigo(Inimigo *foe)
     glEnableClientState(GL_VERTEX_ARRAY);
 
     /* Desenha os vértices do Defesa.ogl */
-    glVertexPointer(3, GL_FLOAT, 0, towerVerts);
-    glNormalPointer(GL_FLOAT, 0, towerNormals);
-    glDrawArrays(GL_TRIANGLES, 0, towerNumVerts);
+    glVertexPointer(3, GL_DOUBLE, 0, defesaVertices);
+    glNormalPointer(GL_DOUBLE, 0, defesaNormais);
+    glDrawArrays(GL_TRIANGLES, 0, DEFESA_NUM_VERTICES);
     
     glDisableClientState(GL_VERTEX_ARRAY);
 

@@ -79,8 +79,7 @@ int main(int argc, char **argv)
 
     /* ---- Loop principal ---- */
 
-    /* Cuida do resto do jogo */
-    glutMainLoop();
+    graficosInit();
 
     /* Campanha: adote este return. Ele é inútil. */
     return 0;

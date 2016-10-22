@@ -8,6 +8,7 @@
 #pragma once
 
 #include <stdlib.h>  /* size_t, malloc, exit */
+#include <GL/freeglut.h>
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -56,3 +57,9 @@ struct corpo
  *  exibe uma mensagem de erro e encerra o programa.
  */
 void * mallocSafe(size_t nbytes);
+
+/*
+ *  Recebe uma matriz de doubles e dimensões (num x 3) e um nome
+ *  de arquivo. Lê valores de vetores (vértices ou normais) para a matriz.
+ */
+void leVetores(GLdouble vetores[][3], GLint num, char nomeArq[]);

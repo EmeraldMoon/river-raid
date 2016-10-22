@@ -23,11 +23,22 @@ static void ortogonalFim();
  |   F U N Ç Õ E S   |
  *-------------------*/
 
+void graficosInit()
+{
+    carregaModeloNave();
+    carregaModeloInimigos();
+
+    /* Cuida do resto do jogo */
+    glutMainLoop();
+}
+
+/*------------------------------------------------------------------*/
+
 void desenha()
 {
     /* Contagem de timesteps */
     static GLuint tick = 0;
-    
+
     /* Faz a limpeza dos buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();

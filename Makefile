@@ -1,5 +1,5 @@
 CC:= gcc
-CFLAGS:= -Wall -O3 -std=c99 -pedantic -Wno-unused-result
+CFLAGS:= -Wall -Wextra -std=c11 -pedantic -Wno-unused-result -g
 LIBS:= -lm -lGL -lGLU -lglut
 MKDIR:= mkdir -p
 RMDIR:= rm -rf

@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdbool.h>
+
 #include "Defesa.h"
 #include "Item.h"
 #include "Base.h"
@@ -36,6 +37,10 @@
 
 /* Energia perdida caso ocorra colisão com inimigos */
 #define DANO_COLISAO 20
+
+/* Arquivo e número de vértices referentes ao modelo da nave */
+#define NAVE_MODELO "Nave.vert"
+#define NAVE_NUM_VERTICES 696
 
 /*
  *  Representa a nave do jogador.
@@ -71,6 +76,11 @@ extern Nave nave;
  *-------------------------*/
 
 /*
+ *  Carrega modelo gráfico da nave para a memória.
+ */
+void carregaModeloNave();
+
+/*
  *  Recebe a posição no eixo Oz da nave e um número de vidas.
  *  Inicializa os atributos da nave.
  */
@@ -97,7 +107,7 @@ void naveDispara();
 void danificaNave(int dano);
 
 /*
- *  Verifica se nave colidiu com um determinado inimigo,
+ *  Verifica se nave colidiu com determinado inimigo,
  *  ou seja, se seus corpos entraram em contato.
  */
 bool naveColidiu(Inimigo *foe);

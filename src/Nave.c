@@ -1,19 +1,23 @@
 #include <math.h>  /* tan, abs */
 #include <GL/freeglut.h>
+
 #include "Nave.h"
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Textura.h"
 #include "Teclado.h"
 
-/* Vértices do modelo da nave */
-#include "Nave.ogl"
-
-static double rotacao = 0;
+/* Matriz representando vértices da nave */
+static GLdouble naveVertices[NAVE_NUM_VERTICES][3];
 
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*/
+
+void carregaModeloNave()
+{
+    leVetores(naveVertices, NAVE_NUM_VERTICES, NAVE_MODELO);
+}
 
 void criaNave(int z, int nVidas)
 {
@@ -36,6 +40,8 @@ void criaNave(int z, int nVidas)
 
     nave.invencibilidade = INVENCIVEL_VIDA;
     nave.escudo = 0;
+
+    leVetores(naveVertices, NAVE_NUM_VERTICES, NAVE_MODELO);
 }
 
 /*------------------------------------------------------------------*/
@@ -168,6 +174,7 @@ bool naveTocaItem(Item *item)
  
 void desenhaNave()
 {
+    static double rotacao = 0;
     rotacao += PI/6;
 
     GLdouble NAVE_COR =
@@ -183,7 +190,6 @@ void desenhaNave()
         glutWireSphere(1.75*NAVE_RAIO, SLICES, STACKS);
         glPopMatrix();
     }
-
     glPushMatrix();
     glDisable(GL_LIGHTING);
     glTranslated(nave.base.x, nave.base.y, nave.base.z);
@@ -200,14 +206,13 @@ void desenhaNave()
         glEnable(GL_TEXTURE_GEN_S);
         glEnable(GL_TEXTURE_GEN_T);
         glBindTexture(GL_TEXTURE_2D, naveTextura);
-        /*glutWireCone(nave.base.raio, nave.base.altura, SLICES, STACKS);*/
         glScaled(20.0, 40.0, 25.0);
 
         glEnableClientState(GL_VERTEX_ARRAY);
 
-        /* Desenha os vértices do Nave.ogl */
-        glVertexPointer(3, GL_FLOAT, 0, SpaceShipVerts);
-        glDrawArrays(GL_TRIANGLES, 0, SpaceShipNumVerts);
+        /* Desenha os vértices do arquivo */
+        glVertexPointer(3, GL_DOUBLE, 0, naveVertices);
+        glDrawArrays(GL_TRIANGLES, 0, NAVE_NUM_VERTICES);
 
         glDisableClientState(GL_VERTEX_ARRAY);
     }
