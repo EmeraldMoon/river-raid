@@ -16,8 +16,12 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
+/* Dimensões da janela */
+#define JANELA_LARGURA 2 * 5 * X_MAX
+#define JANELA_ALTURA      5 * Y_MAX
+
 /* Número de quadros desenhados por segundo */
-#define FPS 75
+#define FPS 60
 
 /* Distância da câmera à nave */
 #define DIST_CAMERA 250
@@ -46,7 +50,7 @@
  *  Inicializa objetos da parte gráfica e passa o comando
  *  do restante do programa ao OpenGL.
  */
-void graficosInit();
+void inicializaGraficos();
 
 /*
  *  Loop principal da parte visual. Cuida do posicionamento

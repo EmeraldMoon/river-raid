@@ -39,7 +39,7 @@
 #define DANO_COLISAO 20
 
 /* Arquivo e número de vértices referentes ao modelo da nave */
-#define NAVE_MODELO "Nave.vert"
+#define NAVE_MODELO_VERTICES "Nave.vert"
 #define NAVE_NUM_VERTICES 696
 
 /*
@@ -67,6 +67,9 @@ struct nave
 
     /* Serve como uma 2ª barra de vida para a nave, até ser destruída */
     unsigned int escudo;
+
+    /* Define invencibilidade */
+    bool godMode;
 };
 
 extern Nave nave;
@@ -83,8 +86,9 @@ void carregaModeloNave();
 /*
  *  Recebe a posição no eixo Oz da nave e um número de vidas.
  *  Inicializa os atributos da nave.
+ *  Se godMode == true, então nave será invencível.
  */
-void criaNave(int z, int nVidas);
+void criaNave(int z, int nVidas, bool godMode);
 
 /*
  *  Atualiza a posição da nave em relação ao timestep anterior.

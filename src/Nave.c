@@ -16,10 +16,10 @@ static GLdouble naveVertices[NAVE_NUM_VERTICES][3];
 
 void carregaModeloNave()
 {
-    leVetores(naveVertices, NAVE_NUM_VERTICES, NAVE_MODELO);
+    leVetores(naveVertices, NAVE_NUM_VERTICES, NAVE_MODELO_VERTICES);
 }
 
-void criaNave(int z, int nVidas)
+void criaNave(int z, int nVidas, bool godMode)
 {
     /* Coordenadas iniciais */
     nave.base.x = 0.0;
@@ -40,6 +40,8 @@ void criaNave(int z, int nVidas)
 
     nave.invencibilidade = INVENCIVEL_VIDA;
     nave.escudo = 0;
+
+    nave.godMode = godMode;
 }
 
 /*------------------------------------------------------------------*/
@@ -118,7 +120,7 @@ void naveDispara()
 
 void danificaNave(int dano)
 {
-    if (nave.invencibilidade > 0 || godMode) return;
+    if (nave.invencibilidade > 0 || nave.godMode) return;
 
     if (nave.escudo > 0) {
         nave.base.hp -= dano/3;
@@ -132,7 +134,7 @@ void danificaNave(int dano)
     if (nave.base.hp <= 0) {
         nave.base.hp = 0;
         (nave.vidas)--;
-        if (nave.vidas >= 0) criaNave(nave.base.z, nave.vidas);
+        if (nave.vidas >= 0) criaNave(nave.base.z, nave.vidas, nave.godMode);
     }
 }
 

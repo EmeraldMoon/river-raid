@@ -33,9 +33,6 @@
 /* Variáveis globais de tempo */
 extern GLuint dt, t0;
 
-/* Cheat da nave indestrutível */
-extern bool godMode;
-
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/
@@ -43,7 +40,7 @@ extern bool godMode;
 /*
  *  Inicializa nave, pontuação e outras listas.
  */
-void inicializaCenario();
+void inicializaCenario(bool godMode);
 
 /*
  *  Faz a chamada das funções de atualização e desenho, além de

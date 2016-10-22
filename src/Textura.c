@@ -29,7 +29,7 @@ static void erro(FILE *file, const char *filename);
  |   F U N Ç Õ E S   |
  *-------------------*/
 
-void inicializaTexturas()
+void carregaTexturas()
 {
     carregaTextura(FUNDO_TEXTURA,  &fundoTextura,  true);
     carregaTextura(RIO_TEXTURA,    &rioTextura,    true);

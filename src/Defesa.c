@@ -15,8 +15,8 @@ static GLdouble defesaNormais[DEFESA_NUM_NORMAIS][3];
 
 void carregaModeloInimigos()
 {
-    leVetores(defesaVertices, DEFESA_NUM_VERTICES, DEFESA_MODELO);
-    leVetores(defesaNormais,  DEFESA_NUM_NORMAIS,  DEFESA_NORMAL_MODELO);
+    leVetores(defesaVertices, DEFESA_NUM_VERTICES, DEFESA_MODELO_VERTICES);
+    leVetores(defesaNormais,  DEFESA_NUM_NORMAIS,  DEFESA_MODELO_NORMAIS);
 }
 
 /*------------------------------------------------------------------*/

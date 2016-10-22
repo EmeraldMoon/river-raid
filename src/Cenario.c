@@ -14,21 +14,20 @@ Lista *inimigos;
 Lista *projeteis;
 Lista *items;
 
-/* Cheat da nave indestrutível */
-bool godMode = false;
-
 /* Variáveis globais de tempo */
 GLuint dt, t0 = 0;
 
-/*static void imprimeElementos();*/
+static void imprimeElementos();
 
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*/
 
-void inicializaCenario()
+void inicializaCenario(bool godMode)
 {
-    criaNave(0, VIDAS_INI);
+    godMode = godMode;
+
+    criaNave(0, VIDAS_INI, godMode);
     inimigos  = criaLista();
     projeteis = criaLista();
     items = criaLista();

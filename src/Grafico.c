@@ -23,10 +23,53 @@ static void ortogonalFim();
  |   F U N Ç Õ E S   |
  *-------------------*/
 
-void graficosInit()
+void inicializaGraficos()
 {
+    /* Inicializa glut e ativa flags (em tese deveríamos passar
+       argc e argv aqui, mas este hack resolve as coisas). */
+    glutInit(malloc(0), NULL);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+
+    /* Desenha e centraliza janela de jogo */
+    glutInitWindowSize(JANELA_LARGURA, JANELA_ALTURA);
+    glutInitWindowPosition(
+        (glutGet(GLUT_SCREEN_WIDTH)  - JANELA_LARGURA)/2,
+        (glutGet(GLUT_SCREEN_HEIGHT) - JANELA_ALTURA)/2);
+    glutCreateWindow("River Raid");
+
+    /* Carrega texturas e modelos */
+    carregaTexturas();
     carregaModeloNave();
     carregaModeloInimigos();
+
+    /* Inicializa efeitos de transparência */
+    glEnable(GL_BLEND); 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    /* Inicializa efeitos de luz */
+    glEnable(LUZ_AMBIENTE);
+    glEnable(GL_COLOR_MATERIAL);
+    glShadeModel(GL_SMOOTH);
+
+    /* Nevoeiro sobre o cenário */
+    const GLint cor[3] = { BLACK };
+    glEnable(GL_FOG);
+    glFogi(GL_FOG_MODE, GL_EXP);
+    glFogf(GL_FOG_DENSITY, 0.0009f);
+    glFogiv(GL_FOG_COLOR, cor);
+    glHint(GL_FOG_HINT, GL_NICEST);
+
+    /* ---- Loop principal ---- */
+
+    glutDisplayFunc(desenha);
+    glutReshapeFunc(remodela);
+
+    glutKeyboardFunc(keyPressed);
+    glutKeyboardUpFunc(keyUp);
+    glutSpecialFunc(keySpecialPressed);
+    glutSpecialUpFunc(keySpecialUp);
+
+    /* ---- Loop principal ---- */
 
     /* Cuida do resto do jogo */
     glutMainLoop();
