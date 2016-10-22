@@ -1,67 +1,58 @@
-CC:= gcc
-CFLAGS:= -Wall -Wextra -std=c11 -pedantic -Wno-unused-result -g
-LIBS:= -lm -lGL -lGLU -lglut
-MKDIR:= mkdir -p
-RMDIR:= rm -rf
-RM:= rm -f
-BINDIR:= bin
-SRCDIR:= src
-INCDIR:= include
-OBJDIR:= obj
-DOCDIR:= doc
-TEXDIR:= texture
-MODDIR:= model
-BIN:= River
-SRC:= $(wildcard $(SRCDIR)/*.c)
-OBJ:= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
-INC:= -I$(INCDIR)
-MOD:= -I$(MODDIR)
-TAR:= $(BIN).tar.gz
+CC     = gcc
+CFLAGS = -Wall -Wextra -pedantic -Wno-unused-result -std=c11 -O3
+LIBS   = -lm -lGL -lGLU -lglut
+BINDIR = bin
+SRCDIR = src
+INCDIR = include
+OBJDIR = obj
+DOCDIR = doc
+TEXDIR = texture
+MODDIR = model
+SRC    = $(wildcard $(SRCDIR)/*.c)
+OBJ    = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
+TAR    = $(BIN).tar.gz
+BIN    = River
 
-.PHONY: dump tar count clean distclean tarclean pull push amend
+.PHONY: dump count tar clean new pull push amend
 
 all: $(BINDIR)/$(BIN)
 
 $(BINDIR)/$(BIN): $(OBJ) | $(BINDIR)
 	$(CC) $^ $(LIBS) -o $@
-	@echo "Generating C binary \033[1;32m"$@"\033[0m"
+	@echo "\033[1m> Generating C binary \033[32m"$@"\033[0m."
 
-$(OBJ): | $(OBJDIR)
+$(OBJ): $(OBJDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) $(INC) $(MOD) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(INCDIR)/ -c $< -o $@
 
 $(OBJDIR) $(BINDIR):
-	$(MKDIR) $@
+	mkdir -p $@
 
 dump:
 	@echo "src:" $(SRC)
 	@echo "obj:" $(OBJ)
 
-tar:
-	$(MKDIR) $(BIN)/
-	cp -r $(INCDIR)/ $(SRCDIR)/ $(DOCDIR)/ $(TEXDIR)/ $(MODDIR)/ Makefile *.md $(BIN)/
-	tar -czf $(TAR) $(BIN)/
-	$(RMDIR) $(BIN)/
-	@echo "Arquivo\033[1;32m" $(TAR) "\033[0mcriado com sucesso"
-
 count:
 	wc -l $(SRCDIR)/* $(INCDIR)/*
 
+tar:
+	mkdir -p $(BIN)/
+	cp -r `ls | grep -v "$(BINDIR)\|$(OBJDIR)\|$(BIN)"` $(BIN)/
+	tar -czf $(TAR) $(BIN)/
+	rm -rf $(BIN)/
+	@echo "\033[1m> Arquivo\033[32m" $(TAR) "\033[37mcriado com sucesso.\033[0m"
+
 clean:
-	$(RMDIR) $(OBJDIR)/
+	rm -rf $(OBJDIR)/ $(BINDIR)/ $(TAR)
 
-distclean: clean
-	$(RMDIR) $(BINDIR)/
-
-tarclean:
-	$(RM) $(TAR)
+new: clean | all
 
 pull:
-	git pull origin master
+	git pull
 
 push:
-	git add . && git commit -m "$(M)" && git push
+	git add . && git commit && git push
 
 amend:
 	git add . && git commit --amend && git push -f

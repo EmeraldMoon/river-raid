@@ -40,8 +40,6 @@ void criaNave(int z, int nVidas)
 
     nave.invencibilidade = INVENCIVEL_VIDA;
     nave.escudo = 0;
-
-    leVetores(naveVertices, NAVE_NUM_VERTICES, NAVE_MODELO);
 }
 
 /*------------------------------------------------------------------*/
