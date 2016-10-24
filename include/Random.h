@@ -9,19 +9,19 @@
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /*
- *  Recebe dois inteiros tais que (a <= b).
+ *  Recebe dois inteiros tais que a <= b.
  *  Devolve um inteiro uniformemente no intervalo [a,b].
  */
-int uniforme(int a, int b);
+int uniformeInt(int a, int b);
 
 /*
- *  Recebe dois valores reais tais que (a <= b).
+ *  Recebe dois valores reais tais que a <= b.
  *  Devolve um número real uniformemente no intervalo [a,b).
  */
-double uniformeD(double a, double b);
+double uniformeDouble(double a, double b);
 
 /*
  *  Gera um número real sob uma distribuição Normal com 

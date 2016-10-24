@@ -8,12 +8,14 @@
 #pragma once
 
 #include <stdbool.h>
-#include "Lista.h"
+
 #include "Base.h"
+#include "Lista.h"
+#include "Nave.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /* Tempo de espera até criar um inimigo */
 #define TEMPO_INIMIGOS 150
@@ -35,13 +37,18 @@
 #define DEFESA_MODELO_NORMAIS "Defesa.norm"
 #define DEFESA_NUM_NORMAIS 7541
 
+/*------------------------------------------------------------------*/
+
 /*
  *  Representa um inimigo (elemento de defesa).
  */
 typedef struct inimigo Inimigo;
 struct inimigo
 {
-    Corpo base;
+    Corpo corpo;
+
+    /* HP e cooldown */
+    Atributos atribs;
 
     /* Chance (esperada) de um projétil disparado acertar a nave */
     double precisao;
@@ -51,7 +58,7 @@ extern Lista *inimigos;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /*
  *  Carrega modelo gráfico de inimigos para a memória.
@@ -61,7 +68,7 @@ void carregaModeloInimigos();
 /*
  *  Insere um inimigo na respectiva lista.
  */
-void criaInimigo(Inimigo foe);
+void criaInimigo(Inimigo *foe);
 
 /*
  *  Gera uma torre ao fundo do cenário, com altura, posição
@@ -74,7 +81,7 @@ void geraInimigo();
  *  de recarga do inimigo. A fim de aumentar a chance de acerto,
  *  os tiros são mirados logo à frente da posição da nave.
  */
-void inimigoDispara(Inimigo *foe);
+void inimigoDispara(Inimigo *foe, Nave *nave);
 
 /*
  *  Verifica se o inimigo passou pela nave e saiu

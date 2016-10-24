@@ -28,7 +28,7 @@ extern GLuint itemTextura;
 /*
  *  Faz o carregamento de todas as texturas do jogo.
  */
-void inicializaTexturas();
+void carregaTexturas();
 
 /*
  *  Recebe um arquivo em formato PPM contendo uma textura e

@@ -1,5 +1,7 @@
 #include <ctype.h>  /* toupper */
+
 #include "Teclado.h"
+#include "Nave.h"
 #include "Cenario.h"
 
 /*-------------------------*
@@ -68,7 +70,7 @@ void keySpecialUp(GLint key, GLint x, GLint y)
 
 void keyOperations()
 {
-    if (keyStates[TECLA_TIRO] && (nave.base.espera)-- == 0) {
+    if (keyStates[TECLA_TIRO] && (nave->atribs.espera)-- == 0) {
         naveDispara();
     }
 }
@@ -77,16 +79,16 @@ void keyOperations()
 
 void keySpecialOperations()
 {
-    if      (keySpecialStates[GLUT_KEY_UP])    nave.angVert  += ANG_MANUAL;
-    else if (keySpecialStates[GLUT_KEY_DOWN])  nave.angVert  -= ANG_MANUAL;
-    if      (keySpecialStates[GLUT_KEY_LEFT])  nave.angHoriz -= ANG_MANUAL;
-    else if (keySpecialStates[GLUT_KEY_RIGHT]) nave.angHoriz += ANG_MANUAL;
+    if      (keySpecialStates[GLUT_KEY_UP])    nave->angVert  += ANG_MANUAL;
+    else if (keySpecialStates[GLUT_KEY_DOWN])  nave->angVert  -= ANG_MANUAL;
+    if      (keySpecialStates[GLUT_KEY_LEFT])  nave->angHoriz -= ANG_MANUAL;
+    else if (keySpecialStates[GLUT_KEY_RIGHT]) nave->angHoriz += ANG_MANUAL;
 
     /* Ângulos devem permanecer no intervalo [-ANG_MAX, ANG_MAX] */
-    if      (nave.angVert  >  ANG_MAX) nave.angVert  =  ANG_MAX;
-    else if (nave.angVert  < -ANG_MAX) nave.angVert  = -ANG_MAX;
-    if      (nave.angHoriz >  ANG_MAX) nave.angHoriz =  ANG_MAX;
-    else if (nave.angHoriz < -ANG_MAX) nave.angHoriz = -ANG_MAX;
+    if      (nave->angVert  >  ANG_MAX) nave->angVert  =  ANG_MAX;
+    else if (nave->angVert  < -ANG_MAX) nave->angVert  = -ANG_MAX;
+    if      (nave->angHoriz >  ANG_MAX) nave->angHoriz =  ANG_MAX;
+    else if (nave->angHoriz < -ANG_MAX) nave->angHoriz = -ANG_MAX;
 }
 
 /*------------------------------------------------------------------*/

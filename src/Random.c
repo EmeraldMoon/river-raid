@@ -1,20 +1,17 @@
 #include <stdlib.h>  /* rand */
 #include <math.h>    /* sqrt, log */
-#include "Base.h"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
- *-------------------*/
+ *-------------------*----------------------------------------------*/
 
-int uniforme(int a, int b)
+int uniformeInt(int a, int b)
 {
     /* O (+1) na fórmula visa a incluir 'b' */
     return (rand() % (b - a + 1)) + a;
 }
 
-/*------------------------------------------------------------------*/
-
-double uniformeD(double a, double b)
+double uniformeDouble(double a, double b)
 {
     double x = (double) rand()/RAND_MAX;
     return (x * (b - a)) + a;
@@ -29,14 +26,13 @@ double uniformeD(double a, double b)
 double normal(double media, double desvpadr)
 {
     double r, x, y;
-
     do {
-        x = uniformeD(-1.0, 1.0);
-        y = uniformeD(-1.0, 1.0);
-        r = sq(x) + sq(y);
+        x = uniformeDouble(-1.0, 1.0);
+        y = uniformeDouble(-1.0, 1.0);
+        r = x*x + y*y;
     } while (r >= 1 || r == 0);
     
-    /* Valor gerado por uma Normal(0,1) */
+    /* Valor gerado por uma Normal(0, 1) */
     r = x * sqrt((-2) * log(r)/r);
 
     /* Aplicamos média e desvio-padrão */

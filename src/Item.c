@@ -1,8 +1,10 @@
 #include <math.h>  /* sqrt */
+
 #include "Item.h"
+#include "Random.h"
+#include "Nave.h"
 #include "Cenario.h"
 #include "Grafico.h"
-#include "Random.h"
 #include "Textura.h"
 
 static double rotacao = 0;
@@ -11,53 +13,46 @@ static double rotacao = 0;
  |   F U N Ç Õ E S   |
  *-------------------*/
 
-void criaItem(Item item)
+void criaItem(Item *item)
 {
-    insere(items, &item, sizeof item);
+    listaInsere(items, item);
 }
 
 /*------------------------------------------------------------------*/
 
-void geraItem()
+void geraItem(int z)
 {
-    Item item;
-    int sorte = uniforme(0, 100);
+    Item *item = mallocSafe(sizeof *item);
+    int sorte = uniformeInt(0, 100);
 
-    if      (sorte < 60)                return;
-    else if (sorte >= 60 && sorte < 85) item.tipo = HP;
-    else if (sorte >= 86 && sorte < 96) item.tipo = ESCUDO;
-    else if (sorte >= 96)               item.tipo = VIDA;
+    if      (sorte  < 60)               return;
+    else if (sorte >= 60 && sorte < 85) item->tipo = HP;
+    else if (sorte >= 86 && sorte < 96) item->tipo = ESCUDO;
+    else if (sorte >= 96)               item->tipo = VIDA;
 
-    item.x = uniformeD(-X_MAX + ITEM_RAIO, X_MAX - ITEM_RAIO);
-    item.y = uniforme(Y_MAX/8, Y_MAX/2);
-    item.z = nave.base.z + Z_MAX;
+    item->corpo.x = uniformeDouble(-X_MAX + ITEM_RAIO, X_MAX - ITEM_RAIO);
+    item->corpo.y = uniformeInt(Y_MAX/8, Y_MAX/2);
+    item->corpo.z = z;
 
     criaItem(item);
 }
 
 /*------------------------------------------------------------------*/
 
-void ativaItem(Item *item)
+void ativaItem(Item *item, Nave *nave)
 {
     switch(item->tipo) {
         case HP:
-            nave.base.hp += NAVE_HPMAX/6;
-            if (nave.base.hp > NAVE_HPMAX) nave.base.hp = NAVE_HPMAX;
+            nave->atribs.hp += NAVE_HPMAX/6;
+            if (nave->atribs.hp > NAVE_HPMAX) nave->atribs.hp = NAVE_HPMAX;
             break;
         case VIDA:
-            (nave.vidas)++;
+            ++nave->vidas;
             break;
         case ESCUDO:
-            nave.escudo = 2*NAVE_HPMAX;
+            nave->escudo = 2*NAVE_HPMAX;
             break;
     }
-}
-
-/*------------------------------------------------------------------*/
-
-bool itemSaiu(Item *item)
-{
-    return (item->z < nave.base.z - DIST_CAMERA);
 }
 
 /*------------------------------------------------------------------*/
@@ -67,7 +62,7 @@ void desenhaItem(Item *item)
     rotacao += PI/6;
 
     glPushMatrix();
-    glTranslated(item->x, item->y, item->z);
+    glTranslated(item->corpo.x, item->corpo.y, item->corpo.z);
     glRotated(rotacao, 1.0, 1.0, 1.0);
 
     glDisable(GL_TEXTURE_2D);

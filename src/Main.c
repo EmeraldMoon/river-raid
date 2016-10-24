@@ -10,6 +10,8 @@
 #include <stdlib.h>  /* srand */
 #include <time.h>    /* time */
 #include <string.h>  /* strcmp */
+
+#include "Cenario.h"
 #include "Grafico.h"
 
 /* Cheats */

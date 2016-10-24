@@ -1,5 +1,6 @@
 #include <stdio.h>   /* puts, printf, system */
 #include <stdlib.h>  /* exit */
+
 #include "Cenario.h"
 #include "Teclado.h"
 #include "Textura.h"
@@ -9,7 +10,7 @@
  *-------------------------*/
 
 /* Elementos básicos do jogo */
-Nave nave;
+Nave *nave;
 Lista *inimigos;
 Lista *projeteis;
 Lista *items;
@@ -25,13 +26,10 @@ static void imprimeElementos();
 
 void inicializaCenario(bool godMode)
 {
-    godMode = godMode;
-
-    criaNave(0, VIDAS_INI, godMode);
+    carregaNave(godMode);
     inimigos  = criaLista();
     projeteis = criaLista();
     items = criaLista();
-    nave.score = 0;
 }
 
 /*------------------------------------------------------------------*/
@@ -71,8 +69,8 @@ void tempo()
 
 void atualiza()
 {
-    static int cont_foe = TEMPO_INIMIGOS;
-    static int cont_item = TEMPO_ITEM;
+    static int contFoe  = TEMPO_INIMIGOS;
+    static int contItem = TEMPO_ITEM;
 
     /* Reconhecimento do teclado */
     keyOperations();
@@ -80,47 +78,44 @@ void atualiza()
 
     /* Ações relacionadas à nave */
     moveNave();
-    if (nave.invencibilidade > 0) (nave.invencibilidade)--;
+    if (nave->invencibilidade > 0) (nave->invencibilidade)--;
 
     /* Loop para tratar de inimigos */
     Celula *p = inimigos;
     while (p->prox != NULL) {
         Inimigo *foe = p->prox->item;
-        if (naveColidiu(foe)) danificaNave(DANO_COLISAO);
-        if ((foe->base.espera)-- == 0) inimigoDispara(foe);
-        if (inimigoSaiu(foe)) exclui(p);
+        if (ocorreuColisao(&nave->corpo, &foe->corpo)) danificaNave(DANO_COLISAO);
+        if (foe->atribs.espera-- == 0) inimigoDispara(foe, nave);
+        if (corpoSaiu(&foe->corpo, nave->corpo.z)) listaRemove(p);
         else p = p->prox;
     }
-
     /* Loop para tratar de itens */
     Celula *q = items;
     while (q->prox != NULL) {
         Item *item = q->prox->item;
-        if (naveTocaItem(item)) {
-            ativaItem(item);
-            exclui(q);
+        if (ocorreuColisao(&nave->corpo, &item->corpo)) {
+            ativaItem(item, nave);
+            listaRemove(q);
         }
-        else if (itemSaiu(item)) exclui(q);
+        else if (corpoSaiu(&item->corpo, nave->corpo.z)) listaRemove(q);
         else q = q->prox;
     }
-
     /* Loop para verificar estado dos projéteis */
     p = projeteis;
     while (p->prox != NULL) {
         Projetil *bullet = p->prox->item;
         moveProjetil(bullet);
-        if (verificaAcerto(bullet) || projetilSaiu(bullet)) exclui(p);
+        if (verificaAcerto(bullet, nave) || corpoSaiu(&bullet->corpo, nave->corpo.z)) listaRemove(p);
         else p = p->prox;
     }
-
-    if (nave.vidas <= 0) encerraJogo();
-    if (--cont_foe == 0) {
+    if (nave->vidas <= 0) encerraJogo();
+    if (--contFoe == 0) {
         geraInimigo();
-        cont_foe = TEMPO_INIMIGOS;
+        contFoe = TEMPO_INIMIGOS;
     }
-    if (--cont_item == 0) {
+    if (--contItem == 0) {
         geraItem();
-        cont_item = TEMPO_ITEM;
+        contItem = TEMPO_ITEM;
     }
     /*imprimeElementos();*/
 }
@@ -134,7 +129,7 @@ void encerraJogo()
     liberaLista(items);
     liberaTexturas();
 
-    printf("Score final: %d\n", nave.score);
+    printf("Score final: %d\n", nave->score);
     exit(EXIT_SUCCESS);
 }
 
@@ -154,13 +149,13 @@ static void imprimeElementos()
     #endif    
 
     puts("{Nave}");
-    printf("PONTUAÇÂO: %d\n", nave.score);
-    printf("VIDAS: %d\n", nave.vidas);
-    printf("Energia: %-3d/%d\n", nave.base.hp, NAVE_HPMAX);
+    printf("PONTUAÇÂO: %d\n", nave->score);
+    printf("VIDAS: %d\n", nave->vidas);
+    printf("Energia: %-3d/%d\n", nave->atribs.hp, NAVE_HPMAX);
     printf("Posição: (%.0f, %.0f, %.0f)\n", 
-        nave.base.x, nave.base.y, nave.base.z);
+        nave->corpo.x, nave->corpo.y, nave->corpo.z);
     printf("Ângulos: (%.0f°, %.0f°)\n",
-        (180/PI) * nave.angHoriz, (180/PI) * nave.angVert);
+        (180/PI) * nave->angHoriz, (180/PI) * nave->angVert);
     
     /* Para efeitos de clareza, todas as componentes z dos
        inimigos e projéteis são relativas à nave (e não absolutas). */
@@ -170,9 +165,9 @@ static void imprimeElementos()
     for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         printf(" (%4g, %3g, %4g)       %2d/%2d       %3.0f%%       %2d/%2d\n",
-            foe->base.x, foe->base.y, (foe->base.z - nave.base.z),
-            foe->base.espera, foe->base.cooldown, 100 * foe->precisao,
-            foe->base.hp, FOE_HPMAX);
+            foe->corpo.x, foe->corpo.y, (foe->corpo.z - nave->corpo.z),
+            foe->atribs.espera, foe->atribs.cooldown, 100 * foe->precisao,
+            foe->atribs.hp, FOE_HPMAX);
     }
     puts("\n{Projéteis}");
     puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
@@ -180,7 +175,7 @@ static void imprimeElementos()
     for (Celula *p = projeteis; p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
         printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
-            bullet->x, bullet->y, (bullet->z - nave.base.z),
+            bullet->corpo.x, bullet->corpo.y, (bullet->corpo.z - nave->corpo.z),
             bullet->vx, bullet->vy, bullet->vz,
             (bullet->amigo) ? "sim" : "não");
     }

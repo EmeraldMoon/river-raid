@@ -1,6 +1,8 @@
 #include <stdio.h>   /* sprintf */
 #include <math.h>    /* sin */
+
 #include "Grafico.h"
+#include "Nave.h"
 #include "Cenario.h"
 #include "Textura.h"
 
@@ -11,6 +13,9 @@
 /* Tamanho da tela */
 GLsizei larg;
 GLsizei alt;
+
+/* Provisório? Quebra de encapsulamento? Hmm */
+Nave *nave;
 
 static void fundo();
 static void rio(GLuint tick);
@@ -26,8 +31,8 @@ static void ortogonalFim();
 void inicializaGraficos()
 {
     /* Inicializa glut e ativa flags (em tese deveríamos passar
-       argc e argv aqui, mas este hack resolve as coisas). */
-    glutInit(malloc(0), NULL);
+       argc e argv no glutInit(), mas este hack resolve as coisas). */
+    glutInit((malloc(0)), NULL);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 
     /* Desenha e centraliza janela de jogo */
@@ -39,14 +44,14 @@ void inicializaGraficos()
 
     /* Carrega texturas e modelos */
     carregaTexturas();
-    carregaModeloNave();
+    nave = carregaNave(false);
     carregaModeloInimigos();
 
-    /* Inicializa efeitos de transparência */
+    /* Ativa efeitos de transparência */
     glEnable(GL_BLEND); 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    /* Inicializa efeitos de luz */
+    /* Ativa efeitos de luz */
     glEnable(LUZ_AMBIENTE);
     glEnable(GL_COLOR_MATERIAL);
     glShadeModel(GL_SMOOTH);
@@ -89,9 +94,9 @@ void desenha()
     /* Configura a luz ambiente */
     const GLfloat luzTela[3] = { 
         1.0, 
-        (estaEmPrimeiraPessoa()) ? 1.0 - (double) 1.5*nave.invencibilidade/INVENCIVEL_VIDA : 1.0,
-        (estaEmPrimeiraPessoa()) ? 1.0 - (double) 1.5*nave.invencibilidade/INVENCIVEL_VIDA : 1.0 };
-
+        (estaEmPrimeiraPessoa()) ? 1.0 - (double) 1.5*nave->invencibilidade/INVENCIVEL_VIDA : 1.0,
+        (estaEmPrimeiraPessoa()) ? 1.0 - (double) 1.5*nave->invencibilidade/INVENCIVEL_VIDA : 1.0
+    };
     glLightfv(LUZ_AMBIENTE, GL_SPECULAR, luzTela);
     glLightfv(LUZ_AMBIENTE, GL_AMBIENT,  luzTela);
     glLightfv(LUZ_AMBIENTE, GL_DIFFUSE,  luzTela);
@@ -99,15 +104,14 @@ void desenha()
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */
     if (estaEmPrimeiraPessoa()) {
-        gluLookAt(nave.base.x, nave.base.y, nave.base.z,
-                  nave.base.x, nave.base.y, nave.base.z + Z_MAX,
+        gluLookAt(nave->corpo.x, nave->corpo.y, nave->corpo.z,
+                  nave->corpo.x, nave->corpo.y, nave->corpo.z + Z_MAX,
                   0.0, 1.0, 0.0);
     } else {
-        gluLookAt(0.0, Y_MAX/2, nave.base.z - DIST_CAMERA,
-                  0.0, Y_MAX/2, nave.base.z + Z_MAX,
+        gluLookAt(0.0, Y_MAX/2, nave->corpo.z - DIST_CAMERA,
+                  0.0, Y_MAX/2, nave->corpo.z + Z_MAX,
                   0.0, 1.0, 0.0);
     }
-
     /* Elementos estáticos do cenário, com texturas */
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
@@ -170,17 +174,17 @@ void hud()
 {
     const GLdouble RAIO = larg/75.0;
     const GLdouble K = CONST_CAMERA(31*alt/32.0); /* Constante de mudança de câmera */
-    const GLdouble X = (estaEmPrimeiraPessoa() ? nave.base.x + larg/10.0
+    const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + larg/10.0
                                                : larg/10.0);
-    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave.base.y + K*31*alt/32.0
+    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*alt/32.0
                                                : 31*alt/32.0);
-    const GLdouble Z = (estaEmPrimeiraPessoa() ? nave.base.z
-                                               : nave.base.z - DIST_CAMERA);
+    const GLdouble Z = (estaEmPrimeiraPessoa() ? nave->corpo.z
+                                               : nave->corpo.z - DIST_CAMERA);
 
     ortogonalInicio();
 
     /* Desenha vidas restantes da nave */
-    for (GLint i = 0; i < nave.vidas; i++) {
+    for (GLint i = 0; i < nave->vidas; i++) {
         glBegin(GL_TRIANGLE_FAN); {
             glColor(CYAN);
             glVertex3d( X + 3*RAIO*i, Y, Z );
@@ -213,12 +217,12 @@ void hud()
     const double vertexLifebar[4][3] = {
         {                               X, Y - 2*RAIO - 2, Z },
         {                               X, Y - 2*RAIO + 1, Z },
-        { X + 0.2*larg*nave.base.hp/100.0, Y - 2*RAIO + 1, Z },
-        { X + 0.2*larg*nave.base.hp/100.0, Y - 2*RAIO - 2, Z }
+        { X + 0.2*larg*nave->atribs.hp/100.0, Y - 2*RAIO + 1, Z },
+        { X + 0.2*larg*nave->atribs.hp/100.0, Y - 2*RAIO - 2, Z }
     };
 
     /* Cor varia dependendo da energia da nave */
-    glColor3ub(1 - 255*nave.base.hp/NAVE_HPMAX, 255*nave.base.hp/NAVE_HPMAX, 0);
+    glColor3ub(1 - 255*nave->atribs.hp/NAVE_HPMAX, 255*nave->atribs.hp/NAVE_HPMAX, 0);
     glBegin(GL_QUADS);
     for (int i = 0; i < 4; i++)
         glVertex3dv(vertexLifebar[i]);
@@ -226,7 +230,7 @@ void hud()
 
     /* Imprime pontuação */
     char score[16];
-    sprintf(score, "Score: %d ", nave.score);
+    sprintf(score, "Score: %d ", nave->score);
     glColor(WHITE);
     glRasterPos3d(X, Y -2*RAIO - 25, Z);
     glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) score);
@@ -247,12 +251,12 @@ void fps(GLuint tempo, GLuint tick)
 {
     static int tempoAnt = 60;
     const GLdouble K = CONST_CAMERA(31*alt/32.0); /* Constante de mudança de câmera */
-    const GLdouble X = (estaEmPrimeiraPessoa() ? nave.base.x + 9*larg/10.0
+    const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + 9*larg/10.0
                                                : 9*larg/10.0);
-    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave.base.y + K*31*alt/32.0
+    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*alt/32.0
                                                : 31*alt/32.0);
-    const GLdouble Z = (estaEmPrimeiraPessoa() ? nave.base.z
-                                               : nave.base.z - DIST_CAMERA);
+    const GLdouble Z = (estaEmPrimeiraPessoa() ? nave->corpo.z
+                                               : nave->corpo.z - DIST_CAMERA);
 
     ortogonalInicio();
 
@@ -278,7 +282,7 @@ void fps(GLuint tempo, GLuint tick)
 static void fundo()
 {
     glPushMatrix();
-    glTranslated(0.0, 0.0, nave.base.z + Z_MAX);
+    glTranslated(0.0, 0.0, nave->corpo.z + Z_MAX);
     glBindTexture(GL_TEXTURE_2D, fundoTextura);
 
     const double coord[4][2] = {
@@ -312,10 +316,10 @@ static void fundo()
 static void rio(GLuint tick)
 {
     GLdouble t = tick % 10000;
-    const GLdouble DIST_RIO = X_MAX + nave.base.raio * sin(ANG_MAX);
+    const GLdouble DIST_RIO = X_MAX + nave->corpo.raio * sin(ANG_MAX);
 
     glPushMatrix();
-    glTranslated(0.0, 0.0, nave.base.z - DIST_CAMERA);
+    glTranslated(0.0, 0.0, nave->corpo.z - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, rioTextura);
 
     const double coord[4][2] = {
@@ -348,11 +352,11 @@ static void rio(GLuint tick)
  */
 static void parede(GLuint tick)
 {
-    const GLdouble DIST_PAREDE = X_MAX + nave.base.raio * sin(ANG_MAX);
+    const GLdouble DIST_PAREDE = X_MAX + nave->corpo.raio * sin(ANG_MAX);
     GLdouble t = tick % 10000;
     
     glPushMatrix();
-    glTranslated(0, 0, nave.base.z - DIST_CAMERA);
+    glTranslated(0, 0, nave->corpo.z - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, paredeTextura);
 
     const double coords[4][2] = {

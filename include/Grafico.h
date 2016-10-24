@@ -7,10 +7,12 @@
 
 #pragma once
 
-#include <GL/freeglut.h>
 #include <stdbool.h>
-#include "Teclado.h"
+#include <GL/freeglut.h>
+
+#include "Nave.h"
 #include "Cores.h"
+#include "Teclado.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -41,6 +43,8 @@
 
 /* Mensagem a ser exibida quando jogo está pausado */
 #define PAUSA_MENSAGEM (unsigned char *) "(Pausa)"
+
+extern Nave *nave;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |

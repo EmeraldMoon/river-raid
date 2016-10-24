@@ -7,7 +7,10 @@
 #pragma once
 
 #include <stdbool.h>
+
+#include "Base.h"
 #include "Lista.h"
+#include "Nave.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -20,7 +23,7 @@
 #define ITEM_RAIO 20
 
 /* Tipos de item disponíveis no jogo */
-typedef enum {HP, VIDA, ESCUDO} ItemTipo;
+// typedef enum {HP, VIDA, ESCUDO} ItemTipo;
 
 /*
  *  Representa um item coletável.
@@ -28,10 +31,10 @@ typedef enum {HP, VIDA, ESCUDO} ItemTipo;
 typedef struct item Item;
 struct item
 {
-    ItemTipo tipo; /* que tipo de item é */
-    double x;      /* posição horizontal (centro == 0) */
-    double y;      /* altura em relação ao solo */
-    double z;      /* distância desde o início do cenário */
+	Corpo corpo;
+
+	/* Indica tipo do item */
+    enum {HP, VIDA, ESCUDO} tipo;
 };
 
 extern Lista *items;
@@ -43,7 +46,7 @@ extern Lista *items;
 /*
  *  Insere um item na respectiva lista.
  */
-void criaItem(Item item);
+void criaItem(Item *item);
 
 /*
  *  Gera um item ao fundo do cenário, com altura, posição
@@ -52,9 +55,9 @@ void criaItem(Item item);
 void geraItem();
 
 /*
- *  Ativa o efeito do item.
+ *  Ativa o efeito do item na nave.
  */
-void ativaItem(Item *item);
+void ativaItem(Item *item, Nave *nave);
 
 /*
  *  Verifica se o item passou pela nave e saiu da tela.

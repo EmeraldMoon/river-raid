@@ -8,12 +8,13 @@
 #pragma once
 
 #include <stdbool.h>
+
+#include "Base.h"
 #include "Nave.h"
 #include "Defesa.h"
 #include "Tiro.h"
 #include "Item.h"
 #include "Grafico.h"
-#include "Base.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

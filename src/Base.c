@@ -1,12 +1,40 @@
-#include <stdio.h>  /* perror */
-#include <stdlib.h>
-#include <string.h>
+#include <stdio.h>    /* perror */
+#include <stdlib.h>   /* malloc, exit */
+#include <stdbool.h>  /* bool */
+#include <math.h>     /* hypot */
 
 #include "Base.h"
+#include "Cenario.h"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
- *-------------------*/
+ *-------------------*----------------------------------------------*/
+
+bool ocorreuColisao(Corpo *a, Corpo *b)
+{
+    int dx = a->x - b->x;
+    int dy = a->y - b->y;
+    int dz = a->z - b->z;
+    int somaRaios = a->raio + b->raio;
+
+    /* Evita cálculos desnecessários */
+    if (dx >= somaRaios || dz >= somaRaios) return false;
+
+    /* TODO. */
+    return (hypot(dx, dz) < somaRaios)
+        && (abs(dy) < (a->altura + b->raio)/2);
+}
+
+bool corpoSaiu(Corpo *corpo, double naveZ)
+{
+    /* O corpo saiu por um dos limites da tela (x, y ou z)?
+       Caso a respostas seja sim, então o corpo saiu do jogo. */
+    return (abs(corpo->x) > X_MAX)
+        || (corpo->y < 0)
+        || (corpo->z < naveZ - DIST_CAMERA || corpo->z > naveZ + Z_MAX);
+}
+
+/*------------------------------------------------------------------*/
 
 void *mallocSafe(size_t nbytes)
 {
@@ -16,24 +44,4 @@ void *mallocSafe(size_t nbytes)
         exit(EXIT_FAILURE);
     }
     return ptr;
-}
-
-/*------------------------------------------------------------------*/
-
-void leVetores(GLdouble vetores[][3], GLsizei n, char nomeArq[])
-{
-    char caminho[strlen("model/") + strlen(nomeArq) + 1];
-    sprintf(caminho, "model/%s", nomeArq);
-
-    FILE *arq = fopen(caminho, "r");
-    if (arq == NULL) {
-        fprintf(stderr, "ERRO: arquivo \"%s\" não encontrado\n", nomeArq);
-        exit(EXIT_FAILURE);
-    }
-    for (GLsizei i = 0; i < n; i++) {
-        for (GLsizei j = 0; j < 3; j++) {
-            fscanf(arq, "%lf", &vetores[i][j]);
-        }
-    }
-    fclose(arq);
 }

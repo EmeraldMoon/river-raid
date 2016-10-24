@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -Wall -Wextra -pedantic -Wno-unused-result -std=c11 -O3
+CFLAGS = -Wall -Wextra -pedantic -Wno-unused-result -std=c11 -g
 LIBS   = -lm -lGL -lGLU -lglut
 BINDIR = bin
 SRCDIR = src
@@ -21,7 +21,7 @@ $(BINDIR)/$(BIN): $(OBJ) | $(BINDIR)
 	$(CC) $^ $(LIBS) -o $@
 	@echo "\033[1m> Generating C binary \033[32m"$@"\033[0m."
 
-$(OBJ): $(OBJDIR)
+$(OBJ): | $(OBJDIR)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -I$(INCDIR)/ -c $< -o $@

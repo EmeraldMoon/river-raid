@@ -10,12 +10,14 @@
 #pragma once
 
 #include <stdbool.h>
+
 #include "Base.h"
 #include "Lista.h"
+#include "Nave.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 #define BALA_VEL   9  /* Módulo da velocidade */
 #define BALA_DANO 15
@@ -24,23 +26,21 @@
 /* Desvio-padrão caso (precisão == 0) */
 #define DESVIO_MAX PI/4
 
+/*------------------------------------------------------------------*/
+
 /*
  *  Representa um projétil causador de dano.
  */
 typedef struct projetil Projetil;
 struct projetil
 {
-    /* Posição do projétil (x,y,z) */
-    double x, y, z;
+    Corpo corpo;
 
-    /* Componentes da velocidade para cada eixo */
+    /* Componentes de velocidade do tiro */
     double vx, vy, vz;
 
     /* Energia removida do elemento em caso de acerto */
     unsigned int dano;
-
-    /* Projéteis são esféricos */
-    unsigned int raio;
 
     /* Se 'true', tiro foi disparado pela nave */
     bool amigo;
@@ -50,12 +50,12 @@ extern Lista *projeteis;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /*
  *  Insere um projétil na respectiva lista.
  */
-void criaProjetil(Projetil bullet);
+void criaProjetil(Projetil *bullet);
 
 /*  
  *  Aplica no respectivo projétil dois desvios em graus, um horizontal
@@ -76,13 +76,14 @@ void moveProjetil(Projetil *bullet);
  *
  *  A função devolve true caso haja um acerto qualquer, ou false caso contrário.
  */
-bool verificaAcerto(Projetil *bullet);
+bool verificaAcerto(Projetil *bullet, Nave *nave);
 
 /*
  *  O projétil em questão saiu da tela de jogo?
  *  Considera-se fora de jogo caso saia por um dos limites da tela.
+ *  Parâmetros naveZ refere-se à posição da nave no eixo Z.
  */
-bool projetilSaiu(Projetil *bullet);
+bool projetilSaiu(Projetil *bullet, double naveZ);
 
 /*
  *  Recebe um projétil e o desenha na tela.
