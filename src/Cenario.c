@@ -1,28 +1,46 @@
-#include <stdio.h>   /* puts, printf, system */
-#include <stdlib.h>  /* exit */
+#include <stdio.h>    /* puts, printf, system */
+#include <stdlib.h>   /* exit */
+#include <string.h>   /* strcmp */
+#include <stdbool.h>  /* bool */
+#include <GL/freeglut.h>
 
 #include "Cenario.h"
+#include "Nave.h"
+#include "Defesa.h"
+#include "Tiro.h"
+#include "Item.h"
 #include "Teclado.h"
 #include "Textura.h"
+#include "Grafico.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
-/* Elementos básicos do jogo */
-Nave *nave;
+/* Indica se serão impressas informações de debug */
+static bool debug = false;
 
-/* Variáveis globais de tempo */
-GLuint dt, t0 = 0;
+/* Variáveis de controle de tempo */
+static int t0 = 0;
+static int dt;
+
+/*------------------------------------------------------------------*/
 
 static void imprimeElementos();
 
 /*-------------------*
  |   F U N Ç Õ E S   |
- *-------------------*/
+ *-------------------*----------------------------------------------*/
 
-void inicializaCenario(bool godMode)
+void inicializaJogo(int argc, char *argv[])
 {
+    /* Tratamento de argumentos via linha de comando */
+    bool godMode = false;
+    for (int i = 0; i < argc; i++) {
+        if      (strcmp(argv[i], "-iddqd") == 0) godMode = true;
+        else if (strcmp(argv[i],     "-d") == 0)   debug = true;
+    }
+    /* Carrega listas, modelos e texturas */
     carregaNave(godMode);
     carregaInimigos();
     carregaProjeteis();
@@ -31,40 +49,44 @@ void inicializaCenario(bool godMode)
 
 /*------------------------------------------------------------------*/
 
-void tempo()
+void controlaTempo()
 {
-    const GLint INTERVALO = 1000/FPS;
-    static int tExtra;
+    static const int INTERVALO = 1000/FPS;
+    static int tExtra = 0;
 
     /* Obtém tempo desde última atualização */
     dt = glutGet(GLUT_ELAPSED_TIME) - t0;
 
     /* Limita FPS para programa não ir rápido demais */
     if (dt < INTERVALO) {
-        glutTimerFunc(INTERVALO - dt, tempo, 0);
+        glutTimerFunc(INTERVALO - dt, controlaTempo, 0);
         return;
     }
-
     /* Acumula tempo extra gasto para desenhar */
     tExtra += dt - INTERVALO;
 
     /* Caso tempo acumulado chegue a um ou mais frames inteiros, 
        faz a interpolação deles entre o anterior e o próximo desenho. */
     for (;;) {
-        atualiza();
-        if (tExtra < 2 * INTERVALO) break;
+        atualizaCenario();
+        if (tExtra < INTERVALO) break;
         tExtra -= INTERVALO;
     }
-
+    /* Guarda o instante desta iteração */
     t0 = glutGet(GLUT_ELAPSED_TIME);
 
-    /* Chama a função de desenho após esta */
+    /* Chama a função de desenho */
     glutPostRedisplay();
+}
+
+int getDelayTempo()
+{
+    return dt;
 }
 
 /*------------------------------------------------------------------*/
 
-void atualiza()
+void atualizaCenario()
 {
     static int contFoe  = TEMPO_INIMIGOS;
     static int contItem = TEMPO_ITEM;
@@ -74,19 +96,22 @@ void atualiza()
     keySpecialOperations();
 
     /* Ações relacionadas à nave */
+    Nave *nave = getNave();
     moveNave();
-    if (nave->invencibilidade > 0) (nave->invencibilidade)--;
+    if (nave->invencibilidade > 0) nave->invencibilidade--;
 
     /* Loop para tratar de inimigos */
     Celula *p = getListaInimigos();
     while (p->prox != NULL) {
         Inimigo *foe = p->prox->item;
-        if (ocorreuColisao(&nave->corpo, &foe->corpo)) danificaNave(DANO_COLISAO);
-        if (foe->atribs.espera-- == 0) inimigoDispara(foe, nave);
+        if (ocorreuColisao(&nave->corpo, &foe->corpo)) {
+            danificaNave(foe->danoColisao);
+        }
+        if (--foe->atribs.espera == 0) inimigoDispara(foe, nave);
         if (corpoSaiu(&foe->corpo, nave->corpo.z)) listaRemove(p);
         else p = p->prox;
     }
-    /* Loop para tratar de getListaItens() */
+    /* Loop para tratar de itens */
     Celula *q = getListaItens();
     while (q->prox != NULL) {
         Item *item = q->prox->item;
@@ -102,10 +127,13 @@ void atualiza()
     while (p->prox != NULL) {
         Projetil *bullet = p->prox->item;
         moveProjetil(bullet);
-        if (verificaAcerto(bullet) || corpoSaiu(&bullet->corpo, nave->corpo.z)) listaRemove(p);
-        else p = p->prox;
+        if (verificaAcerto(bullet) ||
+                corpoSaiu(&bullet->corpo, nave->corpo.z)) {
+            listaRemove(p);
+        } else p = p->prox;
     }
     if (nave->vidas <= 0) encerraJogo();
+
     if (--contFoe == 0) {
         geraInimigo(nave->corpo.z + Z_DIST);
         contFoe = TEMPO_INIMIGOS;
@@ -114,7 +142,7 @@ void atualiza()
         geraItem(nave->corpo.z + Z_DIST);
         contItem = TEMPO_ITEM;
     }
-    /*imprimeElementos();*/
+    if (debug) imprimeElementos();
 }
 
 /*------------------------------------------------------------------*/
@@ -126,15 +154,15 @@ void encerraJogo()
     liberaLista(getListaItens());
     liberaTexturas();
 
-    printf("Score final: %d\n", nave->score);
+    printf("Score final: %d\n", getNave()->score);
     exit(EXIT_SUCCESS);
 }
 
-/*------------------------------------------------------------------*
- *
+/*------------------------------------------------------------------*/
+
+/*
  *  Mostra informação a respeito dos elementos do jogo no
  *  timestep atual. Usada para depuração.
- *
  */
 static void imprimeElementos()
 {
@@ -145,14 +173,15 @@ static void imprimeElementos()
         system("cls");
     #endif    
 
+    Nave *nave = getNave();
     puts("{Nave}");
     printf("PONTUAÇÂO: %d\n", nave->score);
     printf("VIDAS: %d\n", nave->vidas);
     printf("Energia: %-3d/%d\n", nave->atribs.hp, NAVE_HPMAX);
     printf("Posição: (%.0f, %.0f, %.0f)\n", 
-        nave->corpo.x, nave->corpo.y, nave->corpo.z);
+           nave->corpo.x, nave->corpo.y, nave->corpo.z);
     printf("Ângulos: (%.0f°, %.0f°)\n",
-        (180/PI) * nave->angHoriz, (180/PI) * nave->angVert);
+           180/PI * nave->angHoriz, 180/PI * nave->angVert);
     
     /* Para efeitos de clareza, todas as componentes z dos
        inimigos e projéteis são relativas à nave (e não absolutas). */
@@ -161,10 +190,11 @@ static void imprimeElementos()
     puts("-------------------     -------    --------   ---------");
     for (Celula *p = getListaInimigos(); p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
-        printf(" (%4g, %3g, %4g)       %2d/%2d       %3.0f%%       %2d/%2d\n",
-            foe->corpo.x, foe->corpo.y, (foe->corpo.z - nave->corpo.z),
-            foe->atribs.espera, foe->atribs.cooldown, 100 * foe->precisao,
-            foe->atribs.hp, FOE_HPMAX);
+        printf(" (%4.0f, %3.0f, %4.0f)       "
+               "%2d/%3d       %3.0f%%       %2d/%2d\n",
+               foe->corpo.x, foe->corpo.y, foe->corpo.z,
+               foe->atribs.espera, foe->atribs.cooldown, 100 * foe->precisao,
+               foe->atribs.hp, FOE_HPMAX);
     }
     puts("\n{Projéteis}");
     puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
@@ -172,8 +202,8 @@ static void imprimeElementos()
     for (Celula *p = getListaProjeteis(); p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
         printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
-            bullet->corpo.x, bullet->corpo.y, (bullet->corpo.z - nave->corpo.z),
-            bullet->vx, bullet->vy, bullet->vz,
-            (bullet->amigo) ? "sim" : "não");
+               bullet->corpo.x, bullet->corpo.y, bullet->corpo.z,
+               bullet->vx, bullet->vy, bullet->vz,
+               bullet->amigo ? "sim" : "não");
     }
 }

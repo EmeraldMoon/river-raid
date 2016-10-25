@@ -4,6 +4,7 @@
 #include "Base.h"
 #include "Lista.h"
 #include "Random.h"
+#include "Defesa.h"
 #include "Cenario.h"
 #include "Grafico.h"
 

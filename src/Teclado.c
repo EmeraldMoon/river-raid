@@ -38,8 +38,8 @@ void keyPressed(unsigned char key, GLint x, GLint y)
     if (keyStates[TECLA_PAUSA]) {
         pausado = !pausado;
         if (!estaPausado()) {
-            t0 = glutGet(GLUT_ELAPSED_TIME);
-            desenha();
+/*            t0 = glutGet(GLUT_ELAPSED_TIME);
+*/            desenha();
         }
     }
     if (keyStates[TECLA_SAIDA])  encerraJogo();
@@ -59,8 +59,6 @@ void keySpecialPressed(GLint key, GLint x, GLint y)
     keySpecialStates[key] = GL_TRUE;
 }
 
-/*------------------------------------------------------------------*/
-
 void keySpecialUp(GLint key, GLint x, GLint y)
 {
     keySpecialStates[key] = GL_FALSE;
@@ -70,15 +68,16 @@ void keySpecialUp(GLint key, GLint x, GLint y)
 
 void keyOperations()
 {
-    if (keyStates[TECLA_TIRO] && (nave->atribs.espera)-- == 0) {
+    if ((keyStates[TECLA_TIRO] || keyStates[TECLA_TIRO2])
+            && getNave()->atribs.espera-- == 0) {
         naveDispara();
     }
 }
 
-/*------------------------------------------------------------------*/
-
 void keySpecialOperations()
 {
+    Nave *nave = getNave();
+
     if      (keySpecialStates[GLUT_KEY_UP])    nave->angVert  += ANG_MANUAL;
     else if (keySpecialStates[GLUT_KEY_DOWN])  nave->angVert  -= ANG_MANUAL;
     if      (keySpecialStates[GLUT_KEY_LEFT])  nave->angHoriz -= ANG_MANUAL;

@@ -8,17 +8,11 @@
 #pragma once
 
 #include <stdbool.h>
-
-#include "Base.h"
-#include "Nave.h"
-#include "Defesa.h"
-#include "Tiro.h"
-#include "Item.h"
-#include "Grafico.h"
+#include <GL/freeglut.h>
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /* Coordenadas máximas da área de jogo. */
 #define X_MAX 360
@@ -27,34 +21,40 @@
 /* Distância máxima visível */
 #define Z_DIST 1600
 
-/* Variação de vy dos projéteis por timestep */
+/* Variação negativa de vy dos projéteis por timestep */
 #define ACEL_GRAVIDADE 0.005
-
-/* Variáveis globais de tempo */
-extern GLuint dt, t0;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /*
- *  Inicializa nave, pontuação e outras listas.
+ *  Faz tratamento dos argumentos via linha de comando. Inicializa
+ *  listas e carrega modelos e texturas para a memória.
  */
-void inicializaCenario(bool godMode);
+void inicializaJogo(int argc, char *argv[]);
 
 /*
  *  Faz a chamada das funções de atualização e desenho, além de
  *  controlar o tempo do jogo, evitando que o mesmo rode rápido
  *  demais e pulando frames que o computador não consiga exibir.
+ *
+ *  É usada a técnica de interpolação: o tempo de jogo é constante,
+ *  mesmo que a taxa de desenho na tela passe por variações.
  */
-void tempo();
+void controlaTempo();
+
+/*
+ *  Devolve tempo entre penúltima e última atualizações.
+ */
+int getDelayTempo();
 
 /*
  *  Cuida direta ou indiretamente de tudo que compõe o cenário,
  *  sendo responsável por atualizar posições, tratar interações
  *  entre objetos e encerrar o jogo quando cabível.
  */
-void atualiza();
+void atualizaCenario();
 
 /*
  *  Libera toda a memória alocada para as listas

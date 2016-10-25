@@ -2,7 +2,11 @@
 #include <math.h>    /* sin */
 
 #include "Grafico.h"
+#include "Lista.h"
 #include "Nave.h"
+#include "Defesa.h"
+#include "Tiro.h"
+#include "Item.h"
 #include "Cenario.h"
 #include "Textura.h"
 
@@ -10,12 +14,12 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
+/* Ponteiro para acessar a nave neste módulo */
+static Nave *nave;
+
 /* Tamanho da tela */
 GLsizei larg;
 GLsizei alt;
-
-/* Provisório? Quebra de encapsulamento? Hmm */
-Nave *nave;
 
 static void fundo();
 static void rio(GLuint tick);
@@ -44,8 +48,7 @@ void inicializaGraficos()
 
     /* Carrega texturas e modelos */
     carregaTexturas();
-    nave = carregaNave(false);
-    carregaInimigos();
+    nave = getNave();
 
     /* Ativa efeitos de transparência */
     glEnable(GL_BLEND); 
@@ -138,7 +141,7 @@ void desenha()
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
 
-    if (exibindoFPS()) fps(dt, tick);
+    if (exibindoFPS()) fps(getDelayTempo(), tick);
     hud();
 
     /* Atualiza o cronômetro */
@@ -242,7 +245,7 @@ void hud()
     }
 
     ortogonalFim();
-    if (!estaPausado()) tempo();
+    if (!estaPausado()) controlaTempo();
 }
 
 /*------------------------------------------------------------------*/

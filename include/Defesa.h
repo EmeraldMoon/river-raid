@@ -18,7 +18,7 @@
  *-------------------------*----------------------------------------*/
 
 /* Tempo de espera até criar um inimigo */
-#define TEMPO_INIMIGOS 150
+#define TEMPO_INIMIGOS 100
 
 /* Atributos padrão */
 #define FOE_HPMAX     80

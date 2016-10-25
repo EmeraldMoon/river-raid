@@ -2,6 +2,7 @@
 
 #include "Defesa.h"
 #include "Random.h"
+#include "Tiro.h"
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Modelo.h"

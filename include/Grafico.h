@@ -44,8 +44,6 @@
 /* Mensagem a ser exibida quando jogo está pausado */
 #define PAUSA_MENSAGEM (unsigned char *) "(Pausa)"
 
-extern Nave *nave;
-
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*/

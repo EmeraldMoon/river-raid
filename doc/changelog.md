@@ -89,7 +89,7 @@ Terceira parte
   - *Include guards* nos headers foram todos substituídos por *#pragma once*. Ajuda a manter os cabeçalhos mais limpos.
   - Diferenciação provisória das cores dos tiros da nave e dos inimigos.
   - ***Grafico.c***: Desenho da barra de energia pôde ser simplificado usando a função *glRect()*, cujo papel é desenhar retângulos. Função *desenha()* limita-se agora apenas a cuidar da parte visual.
-  - ***Cenario.c***: Função ***atualiza()***, antiga *atualizaCenario()*, passa a cuidar do callback de comandos e de outras verificações. Será basicamente o loop responsável pelo processamento interno do jogo.  
+  - ***Cenario.c***: Função ***atualizaCenario()***, antiga *atualizaCenario()*, passa a cuidar do callback de comandos e de outras verificações. Será basicamente o loop responsável pelo processamento interno do jogo.  
 
 ### Versão 0.8
 

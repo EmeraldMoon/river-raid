@@ -6,6 +6,7 @@
 #include "Base.h"
 #include "Random.h"
 #include "Cenario.h"
+#include "Grafico.h"
 
 /*-------------------*
  |   F U N Ç Õ E S   |

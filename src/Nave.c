@@ -37,7 +37,7 @@ Nave *carregaNave(bool _godMode)
 
     nave->corpo.raio      = NAVE_RAIO;
     nave->corpo.altura    = NAVE_ALTURA;
-    nave->vz           = NAVE_VEL;
+    nave->vz              = NAVE_VEL;
     nave->atribs.cooldown = NAVE_COOL;
     nave->score = 0;
 
@@ -61,11 +61,11 @@ void recriaNave(int z, int nVidas)
     nave->angHoriz = 0.0;
     nave->angVert  = 0.0;
 
-    nave->vidas = nVidas;
-    nave->atribs.hp = NAVE_HPMAX;
-    nave->atribs.espera = 0;
+    nave->vidas           = nVidas;
+    nave->atribs.hp       = NAVE_HPMAX;
+    nave->atribs.espera   = 0;
     nave->invencibilidade = INVENCIVEL_VIDA;
-    nave->escudo = 0;
+    nave->escudo          = 0;
 }
 
 /*------------------------------------------------------------------*/
@@ -90,10 +90,10 @@ void moveNave()
     /* Impede que nave ultrapasse os limites do cenário */
     double raio   = nave->corpo.raio;
     double altura = nave->corpo.altura;
-    if      (*naveX >  (X_MAX - raio) ) *naveX =  (X_MAX - raio);
-    else if (*naveX < -(X_MAX - raio) ) *naveX = -(X_MAX + raio);
-    if      (*naveY >   Y_MAX - altura) *naveY =   Y_MAX - altura;
-    else if (*naveY <       0 + altura) *naveY =       0 + altura;
+    if      (*naveX >  X_MAX -   raio) *naveX =  X_MAX - raio;
+    else if (*naveX < -X_MAX +   raio) *naveX = -X_MAX + raio;
+    if      (*naveY >  Y_MAX - altura) *naveY =  Y_MAX - altura;
+    else if (*naveY <      0 + altura) *naveY =      0 + altura;
 
     /* Direção tende a voltar ao centro */
     atualizaDirecao(&(nave->angHoriz));
