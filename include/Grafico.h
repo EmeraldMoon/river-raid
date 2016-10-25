@@ -28,15 +28,15 @@
 /* Distância da câmera à nave */
 #define DIST_CAMERA 250
 
+/* Constantes para os poliedros */
+#define SLICES 16
+#define STACKS 10
+
 /* 
  *  Constante para mudança de projeções ortogonais
  *  de terceira para primeira pessoa
  */
 #define CONST_CAMERA(k) (-Y_MAX/(2.0*k) + 1)
-
-/* Constantes para os poliedros */
-#define SLICES 16
-#define STACKS 10
 
 /* Tipos de luz */
 #define LUZ_AMBIENTE GL_LIGHT0

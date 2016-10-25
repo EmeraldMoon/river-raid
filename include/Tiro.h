@@ -13,17 +13,16 @@
 
 #include "Base.h"
 #include "Lista.h"
-#include "Nave.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*----------------------------------------*/
 
-#define BALA_VEL   9  /* Módulo da velocidade */
+#define BALA_VEL   9  /* módulo da velocidade */
 #define BALA_DANO 15
 #define BALA_RAIO  3
 
-/* Desvio-padrão caso (precisão == 0) */
+/* Desvio-padrão de mira caso precisão == 0 */
 #define DESVIO_MAX PI/4
 
 /*------------------------------------------------------------------*/
@@ -34,28 +33,33 @@
 typedef struct projetil Projetil;
 struct projetil
 {
+    /* Corpo esférico */
     Corpo corpo;
 
     /* Componentes de velocidade do tiro */
     double vx, vy, vz;
 
     /* Energia removida do elemento em caso de acerto */
-    unsigned int dano;
+    int dano;
 
     /* Se 'true', tiro foi disparado pela nave */
     bool amigo;
 };
-
-extern Lista *projeteis;
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*----------------------------------------*/
 
 /*
- *  Insere um projétil na respectiva lista.
+ *  Inicializa lista de projéteis (vazia).
  */
-void criaProjetil(Projetil *bullet);
+void carregaProjeteis();
+
+/*
+ *  Insere um projétil na respectiva lista.
+ *  Devolve um ponteiro para o mesmo.
+ */
+Projetil *criaProjetil();
 
 /*  
  *  Aplica no respectivo projétil dois desvios em graus, um horizontal
@@ -76,16 +80,14 @@ void moveProjetil(Projetil *bullet);
  *
  *  A função devolve true caso haja um acerto qualquer, ou false caso contrário.
  */
-bool verificaAcerto(Projetil *bullet, Nave *nave);
-
-/*
- *  O projétil em questão saiu da tela de jogo?
- *  Considera-se fora de jogo caso saia por um dos limites da tela.
- *  Parâmetros naveZ refere-se à posição da nave no eixo Z.
- */
-bool projetilSaiu(Projetil *bullet, double naveZ);
+bool verificaAcerto(Projetil *bullet);
 
 /*
  *  Recebe um projétil e o desenha na tela.
  */
 void desenhaProjetil(Projetil *bullet);
+
+/*
+ *  Devolve ponteiro para lista de projéteis.
+ */
+Lista *getListaProjeteis();

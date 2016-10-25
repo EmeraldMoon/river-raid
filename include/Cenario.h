@@ -20,13 +20,12 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*/
 
-/* 
- *  Coordenadas máximas da área de jogo
- *  (Z_MAX refere-se á distância máxima visível)
- */
-#define X_MAX  360
-#define Y_MAX  200
-#define Z_MAX 1600
+/* Coordenadas máximas da área de jogo. */
+#define X_MAX 360
+#define Y_MAX 200
+
+/* Distância máxima visível */
+#define Z_DIST 1600
 
 /* Variação de vy dos projéteis por timestep */
 #define ACEL_GRAVIDADE 0.005

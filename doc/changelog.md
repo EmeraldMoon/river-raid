@@ -145,7 +145,7 @@ Segunda parte
 ###### 21/05:
   - Somos agora (não tão) orgulhosamente usuários do ***GitHub***. Dessa vez para valer.
   - Novo integrante adicionado ao grupo. Corrigidos erros imperdoáveis de português.
-  - ***Tiro.c***: Detecção de saída do projétil passa a levar em conta limite *Z_MAX* da tela.
+  - ***Tiro.c***: Detecção de saída do projétil passa a levar em conta limite *Z_DIST* da tela.
   - ***Nave.c, Defesa.c***: Corrigido posicionamento dos projéteis ao serem disparados. Removidas funções supérfluas.
 
 ### Versão 0.5

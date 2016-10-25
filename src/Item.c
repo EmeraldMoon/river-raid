@@ -7,50 +7,60 @@
 #include "Grafico.h"
 #include "Textura.h"
 
-static double rotacao = 0;
+/*-------------------------*
+ |   D E F I N I Ç Õ E S   |
+ *-------------------------*----------------------------------------*/
+
+/* Lista de itens no cenário */
+static Lista *itens;
 
 /*-------------------*
  |   F U N Ç Õ E S   |
- *-------------------*/
+ *-------------------*----------------------------------------------*/
 
-void criaItem(Item *item)
+void carregaItens()
 {
-    listaInsere(items, item);
+    itens = criaLista();
 }
 
 /*------------------------------------------------------------------*/
 
-void geraItem(int z)
+void geraItem(double z)
 {
+    /* Aloca espaço para o item */
     Item *item = mallocSafe(sizeof *item);
-    int sorte = uniformeInt(0, 100);
 
+    /* Corpo cilídrico */
+    item->corpo.raio   = ITEM_RAIO;
+    item->corpo.altura = 2 * item->corpo.raio;
+    posicionaCorpo(&item->corpo, z);
+
+    /* Escolhe o tipo aleatoriamente */
+    int sorte = uniforme(0, 100);
     if      (sorte  < 60)               return;
-    else if (sorte >= 60 && sorte < 85) item->tipo = HP;
-    else if (sorte >= 86 && sorte < 96) item->tipo = ESCUDO;
-    else if (sorte >= 96)               item->tipo = VIDA;
+    else if (60 <= sorte && sorte < 85) item->tipo = HP;
+    else if (86 <= sorte && sorte < 96) item->tipo = ESCUDO;
+    else if (96 <= sorte)               item->tipo = VIDA;
 
-    item->corpo.x = uniformeDouble(-X_MAX + ITEM_RAIO, X_MAX - ITEM_RAIO);
-    item->corpo.y = uniformeInt(Y_MAX/8, Y_MAX/2);
-    item->corpo.z = z;
-
-    criaItem(item);
+    listaInsere(itens, item);
 }
 
 /*------------------------------------------------------------------*/
 
 void ativaItem(Item *item, Nave *nave)
 {
-    switch(item->tipo) {
+    switch (item->tipo) {
         case HP:
-            nave->atribs.hp += NAVE_HPMAX/6;
-            if (nave->atribs.hp > NAVE_HPMAX) nave->atribs.hp = NAVE_HPMAX;
+            nave->atribs.hp += PODER_ITEM_HP;
+            if (nave->atribs.hp > NAVE_HPMAX) {
+                nave->atribs.hp = NAVE_HPMAX;
+            }
             break;
         case VIDA:
             ++nave->vidas;
             break;
         case ESCUDO:
-            nave->escudo = 2*NAVE_HPMAX;
+            nave->escudo = PODER_ITEM_ESCUDO;
             break;
     }
 }
@@ -59,6 +69,7 @@ void ativaItem(Item *item, Nave *nave)
 
 void desenhaItem(Item *item)
 {
+    static double rotacao = 0;
     rotacao += PI/6;
 
     glPushMatrix();
@@ -87,4 +98,11 @@ void desenhaItem(Item *item)
     glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();
+}
+
+/*------------------------------------------------------------------*/
+
+Lista *getListaItens()
+{
+    return itens;
 }

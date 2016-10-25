@@ -11,9 +11,6 @@
 
 /* Elementos básicos do jogo */
 Nave *nave;
-Lista *inimigos;
-Lista *projeteis;
-Lista *items;
 
 /* Variáveis globais de tempo */
 GLuint dt, t0 = 0;
@@ -27,9 +24,9 @@ static void imprimeElementos();
 void inicializaCenario(bool godMode)
 {
     carregaNave(godMode);
-    inimigos  = criaLista();
-    projeteis = criaLista();
-    items = criaLista();
+    carregaInimigos();
+    carregaProjeteis();
+    carregaItens();
 }
 
 /*------------------------------------------------------------------*/
@@ -81,7 +78,7 @@ void atualiza()
     if (nave->invencibilidade > 0) (nave->invencibilidade)--;
 
     /* Loop para tratar de inimigos */
-    Celula *p = inimigos;
+    Celula *p = getListaInimigos();
     while (p->prox != NULL) {
         Inimigo *foe = p->prox->item;
         if (ocorreuColisao(&nave->corpo, &foe->corpo)) danificaNave(DANO_COLISAO);
@@ -89,8 +86,8 @@ void atualiza()
         if (corpoSaiu(&foe->corpo, nave->corpo.z)) listaRemove(p);
         else p = p->prox;
     }
-    /* Loop para tratar de itens */
-    Celula *q = items;
+    /* Loop para tratar de getListaItens() */
+    Celula *q = getListaItens();
     while (q->prox != NULL) {
         Item *item = q->prox->item;
         if (ocorreuColisao(&nave->corpo, &item->corpo)) {
@@ -101,20 +98,20 @@ void atualiza()
         else q = q->prox;
     }
     /* Loop para verificar estado dos projéteis */
-    p = projeteis;
+    p = getListaProjeteis();
     while (p->prox != NULL) {
         Projetil *bullet = p->prox->item;
         moveProjetil(bullet);
-        if (verificaAcerto(bullet, nave) || corpoSaiu(&bullet->corpo, nave->corpo.z)) listaRemove(p);
+        if (verificaAcerto(bullet) || corpoSaiu(&bullet->corpo, nave->corpo.z)) listaRemove(p);
         else p = p->prox;
     }
     if (nave->vidas <= 0) encerraJogo();
     if (--contFoe == 0) {
-        geraInimigo();
+        geraInimigo(nave->corpo.z + Z_DIST);
         contFoe = TEMPO_INIMIGOS;
     }
     if (--contItem == 0) {
-        geraItem();
+        geraItem(nave->corpo.z + Z_DIST);
         contItem = TEMPO_ITEM;
     }
     /*imprimeElementos();*/
@@ -124,9 +121,9 @@ void atualiza()
 
 void encerraJogo()
 {
-    liberaLista(inimigos);
-    liberaLista(projeteis);
-    liberaLista(items);
+    liberaLista(getListaInimigos());
+    liberaLista(getListaProjeteis());
+    liberaLista(getListaItens());
     liberaTexturas();
 
     printf("Score final: %d\n", nave->score);
@@ -162,7 +159,7 @@ static void imprimeElementos()
     puts("\n{Inimigos}");
     puts("    ( x, y, z)          Recarga    Precisão    Energia ");
     puts("-------------------     -------    --------   ---------");
-    for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
+    for (Celula *p = getListaInimigos(); p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         printf(" (%4g, %3g, %4g)       %2d/%2d       %3.0f%%       %2d/%2d\n",
             foe->corpo.x, foe->corpo.y, (foe->corpo.z - nave->corpo.z),
@@ -172,7 +169,7 @@ static void imprimeElementos()
     puts("\n{Projéteis}");
     puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
     puts("-------------------    --------------------     --------");
-    for (Celula *p = projeteis; p->prox != NULL; p = p->prox) {
+    for (Celula *p = getListaProjeteis(); p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
         printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
             bullet->corpo.x, bullet->corpo.y, (bullet->corpo.z - nave->corpo.z),

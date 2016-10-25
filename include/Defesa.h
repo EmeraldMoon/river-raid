@@ -21,13 +21,14 @@
 #define TEMPO_INIMIGOS 150
 
 /* Atributos padrão */
-#define FOE_HPMAX   80
-#define FOE_RAIO    40
-#define FOE_ALTURA 100
+#define FOE_HPMAX     80
+#define FOE_RAIO      40
+#define FOE_ALTURA   100
+#define DANO_COLISAO  20
 
 /* Pontuação */
-#define PONTOS_ACERTO    100
-#define PONTOS_DESTRUCT 1000
+#define PONTOS_ACERTO      100
+#define PONTOS_DESTRUICAO 1000
 
 /* Arquivo e número de vértices referentes ao modelo das defesas */
 #define DEFESA_MODELO_VERTICES "Defesa.vert"
@@ -45,6 +46,7 @@
 typedef struct inimigo Inimigo;
 struct inimigo
 {
+    /* Corpo cilíndrico do inimigo */
     Corpo corpo;
 
     /* HP e cooldown */
@@ -52,44 +54,43 @@ struct inimigo
 
     /* Chance (esperada) de um projétil disparado acertar a nave */
     double precisao;
-};
 
-extern Lista *inimigos;
+    /* Dano causado à nave ao colidir com inimigo */
+    int danoColisao;
+
+    /* Pontuação conferida ao jogador em caso de acerto e destruição */
+    int pontosAcerto;
+    int pontosDestruicao;
+};
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*----------------------------------------*/
 
 /*
- *  Carrega modelo gráfico de inimigos para a memória.
+ *  Carrega informações de inimigos para a memória.
+ *  Cria lista de inimigos.
  */
-void carregaModeloInimigos();
+void carregaInimigos();
 
 /*
- *  Insere um inimigo na respectiva lista.
- */
-void criaInimigo(Inimigo *foe);
-
-/*
- *  Gera uma torre ao fundo do cenário, com altura, posição
+ *  Gera uma torre na distância z, com altura, posição
  *  horizontal e outros atributos aleatórios.
  */
-void geraInimigo();
+void geraInimigo(double z);
 
 /*
- *  Dispara um projétil em direção à nave e atualiza o tempo
- *  de recarga do inimigo. A fim de aumentar a chance de acerto,
- *  os tiros são mirados logo à frente da posição da nave.
+ *  Dispara um projétil em direção à nave e
+ *  reinicia o tempo de recarga do inimigo.
  */
 void inimigoDispara(Inimigo *foe, Nave *nave);
-
-/*
- *  Verifica se o inimigo passou pela nave e saiu
- *  da tela (possivelmente sem ser destruído).
- */
-bool inimigoSaiu(Inimigo *foe);
 
 /*
  *  Recebe um inimigo e o desenha na tela.
  */
 void desenhaInimigo(Inimigo *foe);
+
+/*
+ *  Devolve ponteiro para a lista de inimigos.
+ */
+Lista *getListaInimigos();

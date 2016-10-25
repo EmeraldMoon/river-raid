@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------*
  |                                                                  |
- |  Manipulação de itens que ajudam o jogador (a.k.a. "powerups").  |
+ |  Manipulação de getListaItens() que ajudam o jogador (a.k.a. "powerups").  |
  |                                                                  |
  *------------------------------------------------------------------*/
 
@@ -14,16 +14,19 @@
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /* Tempo de espera até criar um item */
 #define TEMPO_ITEM 240
 
+/* Efeitos quantitativos dos respectivos itens */
+#define PODER_ITEM_HP     NAVE_HPMAX / 6
+#define PODER_ITEM_ESCUDO 2 * NAVE_HPMAX
+
 /* Atributos padrão */
 #define ITEM_RAIO 20
 
-/* Tipos de item disponíveis no jogo */
-// typedef enum {HP, VIDA, ESCUDO} ItemTipo;
+/*------------------------------------------------------------------*/
 
 /*
  *  Representa um item coletável.
@@ -31,28 +34,32 @@
 typedef struct item Item;
 struct item
 {
+    /* Corpo esférico */
 	Corpo corpo;
 
-	/* Indica tipo do item */
+	/* Indica tipo do item
+       - HP aumenta barra de energia da nave
+       - VIDA aumenta número de vidas
+       - ESCUDO gera escudo provisória que toma parte do dano.
+    */
     enum {HP, VIDA, ESCUDO} tipo;
 };
 
-extern Lista *items;
-
 /*-------------------------*
  |   P R O T Ó T I P O S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /*
- *  Insere um item na respectiva lista.
+ *  Inicializa lista de itens (vazia).
  */
-void criaItem(Item *item);
+void carregaItens();
 
 /*
- *  Gera um item ao fundo do cenário, com altura, posição
- *  horizontal e outros atributos aleatórios.
+ *  Gera um item na distância z, de posição horizontal e
+ *  tipo aleatórios. Cada tipo de item possui uma
+ *  probabilidade diferente de aparecer.
  */
-void geraItem();
+void geraItem(double z);
 
 /*
  *  Ativa o efeito do item na nave.
@@ -60,11 +67,11 @@ void geraItem();
 void ativaItem(Item *item, Nave *nave);
 
 /*
- *  Verifica se o item passou pela nave e saiu da tela.
- */
-bool itemSaiu(Item *item);
-
-/*
  *  Recebe um item e o desenha na tela.
  */
 void desenhaItem(Item *item);
+
+/*
+ *  Devolve ponteiro para lista de getListaItens().
+ */
+Lista *getListaItens();

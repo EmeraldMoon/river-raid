@@ -98,14 +98,10 @@ GLboolean estaEmPrimeiraPessoa()
     return primeiraPessoa;
 }
 
-/*------------------------------------------------------------------*/
-
 GLboolean estaPausado()
 {
     return pausado;
 }
-
-/*------------------------------------------------------------------*/
 
 GLboolean exibindoFPS()
 {

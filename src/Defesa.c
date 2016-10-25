@@ -1,86 +1,82 @@
 #include <math.h>  /* sqrt */
 
-#include "Random.h"
 #include "Defesa.h"
+#include "Random.h"
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Modelo.h"
 #include "Textura.h"
 
+/*------------------------------------------------------------------*/
+
 /* Matrizes representando vértices e normais do inimigo */
 static GLdouble defesaVertices[DEFESA_NUM_VERTICES][3];
 static GLdouble defesaNormais[DEFESA_NUM_NORMAIS][3];
 
+/* Lista de inimigos em jogo */
+static Lista *inimigos;
+
 /*-------------------*
  |   F U N Ç Õ E S   |
- *-------------------*/
+ *-------------------*----------------------------------------------*/
 
-void carregaModeloInimigos()
+void carregaInimigos()
 {
     leVetores(defesaVertices, DEFESA_NUM_VERTICES, DEFESA_MODELO_VERTICES);
     leVetores(defesaNormais,  DEFESA_NUM_NORMAIS,  DEFESA_MODELO_NORMAIS);
-}
-
-/*------------------------------------------------------------------*/
-
-void criaInimigo(Inimigo *foe)
-{
-    listaInsere(inimigos, foe);
+    inimigos = criaLista();
 }
 
 /*------------------------------------------------------------------*/
 
 void geraInimigo(double z)
 {
+    /* Aloca memória */
     Inimigo *foe = mallocSafe(sizeof *foe);
 
-    foe->corpo.x = (X_MAX - FOE_RAIO) * uniformeDouble(-1.0, 1.0);
-    foe->corpo.y = uniformeInt(Y_MAX/8, Y_MAX/2);
-    foe->corpo.z = z;
+    posicionaCorpo(&foe->corpo, z);
+    
+    foe->corpo.raio       = FOE_RAIO;
+    foe->corpo.altura     = 2 * foe->corpo.y;
+    foe->atribs.hp        = FOE_HPMAX;
+    foe->atribs.cooldown  = foe->atribs.espera = uniforme(80, 105);
+    foe->precisao         = uniforme(0.8, 1.0);
+    foe->danoColisao      = DANO_COLISAO;
+    foe->pontosAcerto     = PONTOS_ACERTO;
+    foe->pontosDestruicao = PONTOS_DESTRUICAO;
 
-    foe->atribs.hp       = FOE_HPMAX;
-    foe->atribs.cooldown = uniformeInt(80, 105);
-    foe->atribs.espera   = foe->atribs.cooldown;
-    foe->corpo.raio     = FOE_RAIO;
-    foe->corpo.altura   = 2 * foe->corpo.y;
-    foe->precisao      = uniformeDouble(0.8, 1.0);
-
-    criaInimigo(foe);
+    listaInsere(inimigos, foe);
 }
 
 /*------------------------------------------------------------------*/
 
 void inimigoDispara(Inimigo *foe, Nave *nave)
 {
-    Projetil *bullet = mallocSafe(sizeof *bullet);
-    int dx, dy, dz;
-    double d, k, r;
-
-    bullet->dano       = BALA_DANO;
-    bullet->corpo.raio = BALA_RAIO;
+    /* Aloca espaço para o tiro disparado */
+    Projetil *bullet = criaProjetil();
     bullet->amigo = false;
 
     /* Calcula distância entre coordenadas de inimigo e nave.
        No caso do eixo z, considera-se a posição um pouco à frente. */
-    dx = nave->corpo.x - foe->corpo.x;
-    dy = nave->corpo.y - foe->corpo.y;
-    dz = (nave->corpo.z + nave->corpo.raio) - foe->corpo.z;
-    d = norma(dx, dy, dz);
+    double dx = nave->corpo.x - foe->corpo.x;
+    double dy = nave->corpo.y - foe->corpo.y;
+    double dz = (nave->corpo.z + nave->corpo.raio) - foe->corpo.z;
+    double d = norma(dx, dy, dz);
 
     /* Gera vetor velocidade na referida direção */
-    k = BALA_VEL/d;
+    double k = BALA_VEL/d;
     bullet->vx = k * dx;
     bullet->vy = k * dy;
     bullet->vz = k * dz;
 
     /* Posição inicial de projétil segue direção da nave */
-    r = (foe->corpo.raio + BALA_RAIO)/d;
+    double r = (foe->corpo.raio + BALA_RAIO)/d;
     bullet->corpo.x = foe->corpo.x + (r * dx);
     bullet->corpo.y = foe->corpo.y + (r * dy);
     bullet->corpo.z = foe->corpo.z + (r * dz);
-    
+
+    /* Aplica desvio de precisão */    
     aplicaPrecisao(bullet, foe->precisao);
-    criaProjetil(bullet);
 
     /* Reinicia contagem até próximo tiro */
     foe->atribs.espera = foe->atribs.cooldown;
@@ -113,4 +109,11 @@ void desenhaInimigo(Inimigo *foe)
     glDisable(GL_TEXTURE_GEN_S);
     glDisable(GL_TEXTURE_GEN_T);
     glPopMatrix();
+}
+
+/*------------------------------------------------------------------*/
+
+Lista *getListaInimigos()
+{
+    return inimigos;
 }

@@ -45,7 +45,7 @@ void inicializaGraficos()
     /* Carrega texturas e modelos */
     carregaTexturas();
     nave = carregaNave(false);
-    carregaModeloInimigos();
+    carregaInimigos();
 
     /* Ativa efeitos de transparência */
     glEnable(GL_BLEND); 
@@ -105,11 +105,11 @@ void desenha()
        (ponto de visão, ponto de fuga, vertical da câmera) */
     if (estaEmPrimeiraPessoa()) {
         gluLookAt(nave->corpo.x, nave->corpo.y, nave->corpo.z,
-                  nave->corpo.x, nave->corpo.y, nave->corpo.z + Z_MAX,
+                  nave->corpo.x, nave->corpo.y, nave->corpo.z + Z_DIST,
                   0.0, 1.0, 0.0);
     } else {
         gluLookAt(0.0, Y_MAX/2, nave->corpo.z - DIST_CAMERA,
-                  0.0, Y_MAX/2, nave->corpo.z + Z_MAX,
+                  0.0, Y_MAX/2, nave->corpo.z + Z_DIST,
                   0.0, 1.0, 0.0);
     }
     /* Elementos estáticos do cenário, com texturas */
@@ -121,15 +121,15 @@ void desenha()
     parede(tick);
     
     /* Elementos dinâmicos do jogo, ainda sem texturas */
-    for (Celula *p = items; p->prox != NULL; p = p->prox) {
+    for (Celula *p = getListaItens(); p->prox != NULL; p = p->prox) {
         Item *item = p->prox->item;
         desenhaItem(item);
     }
-    for (Celula *p = inimigos; p->prox != NULL; p = p->prox) {
+    for (Celula *p = getListaInimigos(); p->prox != NULL; p = p->prox) {
         Inimigo *foe = p->prox->item;
         desenhaInimigo(foe);
     }
-    for (Celula *p = projeteis; p->prox != NULL; p = p->prox) {
+    for (Celula *p = getListaProjeteis(); p->prox != NULL; p = p->prox) {
         Projetil *bullet = p->prox->item;
         desenhaProjetil(bullet);
     }
@@ -162,7 +162,7 @@ void remodela(GLsizei largura, GLsizei altura)
     glScaled(-1.0, 1.0, 1.0);
 
     /* (ângulo de visão, proporção de tela, distâncias min e max) */
-    gluPerspective(90.0, (GLdouble) largura/altura, 1.0, 1.5*Z_MAX + DIST_CAMERA);
+    gluPerspective(90.0, (GLdouble) largura/altura, 1.0, 1.5*Z_DIST + DIST_CAMERA);
 
     /* Volta ao modo original */
     glMatrixMode(GL_MODELVIEW);
@@ -282,7 +282,7 @@ void fps(GLuint tempo, GLuint tick)
 static void fundo()
 {
     glPushMatrix();
-    glTranslated(0.0, 0.0, nave->corpo.z + Z_MAX);
+    glTranslated(0.0, 0.0, nave->corpo.z + Z_DIST);
     glBindTexture(GL_TEXTURE_2D, fundoTextura);
 
     const double coord[4][2] = {
@@ -328,8 +328,8 @@ static void rio(GLuint tick)
     };
 
     const int vertex[4][3] = {
-        { -DIST_RIO, 0, Z_MAX + DIST_CAMERA },
-        {  DIST_RIO, 0, Z_MAX + DIST_CAMERA },
+        { -DIST_RIO, 0, Z_DIST + DIST_CAMERA },
+        {  DIST_RIO, 0, Z_DIST + DIST_CAMERA },
         {  DIST_RIO, 0,                   0 },
         { -DIST_RIO, 0,                   0 }
     };
@@ -368,8 +368,8 @@ static void parede(GLuint tick)
 
     const int verticesFFLCH[4][3] = {
         { -DIST_PAREDE, Y_MAX, 0 },
-        { -DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA },
-        { -DIST_PAREDE, 0, Z_MAX + DIST_CAMERA },
+        { -DIST_PAREDE, Y_MAX, Z_DIST + DIST_CAMERA },
+        { -DIST_PAREDE, 0, Z_DIST + DIST_CAMERA },
         { -DIST_PAREDE, 0, 0 }
     };
 
@@ -383,8 +383,8 @@ static void parede(GLuint tick)
 
     const int verticesPOLI[4][3] = {
         { DIST_PAREDE, Y_MAX, 0 },
-        { DIST_PAREDE, Y_MAX, Z_MAX + DIST_CAMERA },
-        { DIST_PAREDE, 0, Z_MAX + DIST_CAMERA },
+        { DIST_PAREDE, Y_MAX, Z_DIST + DIST_CAMERA },
+        { DIST_PAREDE, 0, Z_DIST + DIST_CAMERA },
         { DIST_PAREDE, 0, 0 }
     };
 
@@ -399,11 +399,11 @@ static void parede(GLuint tick)
     glPopMatrix();
 }
 
-/*------------------------------------------------------------------*
- *
- *  Prepara o openGL para desenhar objetos em 2D que ficarão fixos
+/*------------------------------------------------------------------*/
+
+/*
+ *  Prepara o OpenGL para desenhar objetos em 2D que ficarão fixos
  *  à tela através da matriz de projeção.
- *
  */
 static void ortogonalInicio()
 {
@@ -418,10 +418,8 @@ static void ortogonalInicio()
     glMatrixMode(GL_MODELVIEW);
 }
 
-/*------------------------------------------------------------------*
- *
+/*
  *  Finaliza os desenhos de projeções em 2D pelo openGL.
- *
  */
 static void ortogonalFim()
 {

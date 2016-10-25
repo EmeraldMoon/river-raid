@@ -12,16 +12,10 @@
  *-------------------------*----------------------------------------*/
 
 /*
- *  Recebe dois inteiros tais que a <= b.
- *  Devolve um inteiro uniformemente no intervalo [a,b].
- */
-int uniformeInt(int a, int b);
-
-/*
  *  Recebe dois valores reais tais que a <= b.
  *  Devolve um número real uniformemente no intervalo [a,b).
  */
-double uniformeDouble(double a, double b);
+double uniforme(double a, double b);
 
 /*
  *  Gera um número real sob uma distribuição Normal com 

@@ -31,9 +31,6 @@
 #define INVENCIVEL_DANO 30  /* ao ser atingida */
 #define INVENCIVEL_VIDA 90  /* ao perder uma vida */
 
-/* Energia perdida caso ocorra colisão com inimigos */
-#define DANO_COLISAO 20
-
 /* Arquivo e número de vértices referentes ao modelo da nave */
 #define NAVE_MODELO_VERTICES "Nave.vert"
 #define NAVE_NUM_VERTICES 696
@@ -110,4 +107,9 @@ void danificaNave(int dano);
 /*
  *  Desenha a representação visual da nave na tela.
  */
-void desenhaNave(); 
+void desenhaNave();
+
+/*
+ *  Devolve um ponteiro para a nave.
+ */
+Nave *getNave();

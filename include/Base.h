@@ -29,6 +29,7 @@
 typedef struct corpo Corpo;
 struct corpo
 {
+    /* Posição do corpo no cenário */
     double x;  /* posição horizontal (centro == 0) */
     double y;  /* altura em relação ao solo */
     double z;  /* distância desde o início do cenário */
@@ -37,8 +38,8 @@ struct corpo
     enum {ESFERA, CILINDRO} forma;
 
     /* Dimensões do corpo.
-       Se forma == ESFERA, então raio == altura. */
-    int raio, altura;
+       Se forma == ESFERA, então altura == 2 * raio. */
+    double raio, altura;
 };
 
 /*
@@ -61,7 +62,14 @@ struct atributos
  *-------------------------*----------------------------------------*/
 
 /*
+ *  Posiciona um corpo de forma aleatória com posições
+ *  aleatórias x e y e coordenada fixa z.
+ */
+void posicionaCorpo(Corpo *corpo, double z);
+
+/*
  *  Verifica se ocorreu colisão entre dois corpos.
+ *  Os dois corpos são considerados cilíndricos, para facilitar.
  */
 bool ocorreuColisao(Corpo *a, Corpo *b);
 

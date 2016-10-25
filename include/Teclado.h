@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <stdbool.h>
 #include <GL/freeglut.h>
 
 /*-------------------------*

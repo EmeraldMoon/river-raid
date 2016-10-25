@@ -2,11 +2,12 @@
 #include <GL/freeglut.h>
 
 #include "Nave.h"
+#include "Tiro.h"
 #include "Cenario.h"
-#include "Grafico.h"
-#include "Teclado.h"
 #include "Textura.h"
 #include "Modelo.h"
+#include "Cores.h"
+#include "Grafico.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -36,7 +37,7 @@ Nave *carregaNave(bool _godMode)
 
     nave->corpo.raio      = NAVE_RAIO;
     nave->corpo.altura    = NAVE_ALTURA;
-    nave->vz              = NAVE_VEL;
+    nave->vz           = NAVE_VEL;
     nave->atribs.cooldown = NAVE_COOL;
     nave->score = 0;
 
@@ -73,23 +74,26 @@ static void atualizaDirecao(double *ang);
 
 void moveNave()
 {
-    const int   RAIO = nave->corpo.raio;
-    const int ALTURA = nave->corpo.altura;
+    double *naveX = &nave->corpo.x;
+    double *naveY = &nave->corpo.y;
+    double *naveZ = &nave->corpo.z;
 
     /* Obtém vetores componentes */
     nave->vx = nave->vz * tan(nave->angHoriz);
     nave->vy = nave->vz * tan(nave->angVert);
 
     /* Atualiza posição por vetores */
-    nave->corpo.x += nave->vx;
-    nave->corpo.y += nave->vy;
-    nave->corpo.z += nave->vz;
+    *naveX += nave->vx;
+    *naveY += nave->vy;
+    *naveZ += nave->vz;
 
     /* Impede que nave ultrapasse os limites do cenário */
-    if      (nave->corpo.x >  (X_MAX - RAIO) ) nave->corpo.x =  (X_MAX - RAIO);
-    else if (nave->corpo.x < -(X_MAX - RAIO) ) nave->corpo.x = -(X_MAX + RAIO);
-    if      (nave->corpo.y >   Y_MAX - ALTURA) nave->corpo.y =   Y_MAX - ALTURA;
-    else if (nave->corpo.y <       0 + ALTURA) nave->corpo.y =       0 + ALTURA;
+    double raio   = nave->corpo.raio;
+    double altura = nave->corpo.altura;
+    if      (*naveX >  (X_MAX - raio) ) *naveX =  (X_MAX - raio);
+    else if (*naveX < -(X_MAX - raio) ) *naveX = -(X_MAX + raio);
+    if      (*naveY >   Y_MAX - altura) *naveY =   Y_MAX - altura;
+    else if (*naveY <       0 + altura) *naveY =       0 + altura;
 
     /* Direção tende a voltar ao centro */
     atualizaDirecao(&(nave->angHoriz));
@@ -116,14 +120,12 @@ static void atualizaDirecao(double *ang)
 
 void naveDispara()
 {
-    Projetil *bullet = mallocSafe(sizeof *bullet);
+    /* Cria objeto do projétil */
+    Projetil *bullet = criaProjetil();
+    bullet->amigo = true;
 
     /* Módulo do vetor de velocidade */
     double modulo = norma(nave->vx, nave->vy, nave->vz);
-
-    bullet->dano       = BALA_DANO;
-    bullet->corpo.raio = BALA_RAIO;
-    bullet->amigo = true;
 
     /* Componentes da velocidade da bala são proporcionais à nave */
     double k = BALA_VEL/modulo;
@@ -136,9 +138,6 @@ void naveDispara()
     bullet->corpo.x = nave->corpo.x + (r * nave->vx);
     bullet->corpo.y = nave->corpo.y + (r * nave->vy);
     bullet->corpo.z = nave->corpo.z + (r * nave->vz);
-    
-    /* Cria objeto do projétil */
-    criaProjetil(bullet);
 
     /* Reinicia contagem até próximo tiro */
     nave->atribs.espera = nave->atribs.cooldown;
@@ -219,4 +218,11 @@ void desenhaNave()
     glDisable(GL_TEXTURE_GEN_T);
     glEnable(GL_LIGHTING);
     glPopMatrix();
+}
+
+/*------------------------------------------------------------------*/
+
+Nave *getNave()
+{
+    return nave;
 }
