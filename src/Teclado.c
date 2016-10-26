@@ -1,4 +1,5 @@
-#include <ctype.h>  /* toupper */
+#include <ctype.h>    /* toupper */
+#include <stdbool.h>  /* bool */
 
 #include "Teclado.h"
 #include "Nave.h"
@@ -17,21 +18,21 @@
 #define TECLA_SAIDA  'Q'
 
 /* Vetores para reconhecimento de teclado */
-static GLboolean        keyStates[128] = {GL_FALSE};
-static GLboolean keySpecialStates[128] = {GL_FALSE};
+static bool        keyStates[128] = {false};
+static bool keySpecialStates[128] = {false};
 
 /* Variáveis booleanas indicadoras */
-static GLboolean primeiraPessoa = GL_FALSE;
-static GLboolean       exibeFPS = GL_FALSE;
-static GLboolean        pausado = GL_FALSE;
+static bool primeiraPessoa = false;
+static bool       exibeFPS = false;
+static bool        pausado = false;
 
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-void keyPressed(unsigned char key, GLint x, GLint y)
+void keyPressed(unsigned char key, int x, int y)
 {
-    keyStates[toupper(key)] = GL_TRUE;
+    keyStates[toupper(key)] = true;
 
     if (keyStates[TECLA_CAMERA]) primeiraPessoa = !primeiraPessoa;
     if (keyStates[TECLA_FPS])          exibeFPS = !exibeFPS;
@@ -39,19 +40,19 @@ void keyPressed(unsigned char key, GLint x, GLint y)
     if (keyStates[TECLA_SAIDA]) encerraJogo();
 }
  
-void keyUp(unsigned char key, GLint x, GLint y)
+void keyUp(unsigned char key, int x, int y)
 {  
-    keyStates[toupper(key)] = GL_FALSE;
+    keyStates[toupper(key)] = false;
 }
 
-void keySpecialPressed(GLint key, GLint x, GLint y)
+void keySpecialPressed(int key, int x, int y)
 {
-    keySpecialStates[key] = GL_TRUE;
+    keySpecialStates[key] = true;
 }
 
-void keySpecialUp(GLint key, GLint x, GLint y)
+void keySpecialUp(int key, int x, int y)
 {
-    keySpecialStates[key] = GL_FALSE;
+    keySpecialStates[key] = false;
 }
 
 /*------------------------------------------------------------------*/
@@ -85,17 +86,17 @@ void keySpecialOperations()
 
 /*------------------------------------------------------------------*/
 
-GLboolean estaEmPrimeiraPessoa()
+bool estaEmPrimeiraPessoa()
 {
     return primeiraPessoa;
 }
 
-GLboolean estaPausado()
+bool estaPausado()
 {
     return pausado;
 }
 
-GLboolean exibindoFPS()
+bool exibindoFPS()
 {
     return exibeFPS;
 }

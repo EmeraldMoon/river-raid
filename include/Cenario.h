@@ -19,7 +19,7 @@
 #define Y_MAX 200
 
 /* Distância máxima visível */
-#define Z_DIST 1600
+#define Z_DIST 3000
 
 /* Variação negativa de vy dos projéteis por timestep */
 #define ACEL_GRAVIDADE 0.005

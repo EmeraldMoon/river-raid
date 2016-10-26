@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <GL/freeglut.h>
+#include <stdbool.h>  /* bool */
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
@@ -17,10 +17,10 @@
  *  pressionada ou solta, alterando seu registro de estado.
  *  Também são responsáveis por realizar ações de algumas teclas.
  */
-void keyPressed(unsigned char key, GLint x, GLint y);
-void keyUp(unsigned char key, GLint x, GLint y);
-void keySpecialPressed(GLint key, GLint x, GLint y);
-void keySpecialUp(GLint key, GLint x, GLint y);
+void keyPressed(unsigned char key, int x, int y);
+void keyUp(unsigned char key, int x, int y);
+void keySpecialPressed(int key, int x, int y);
+void keySpecialUp(int key, int x, int y);
 
 /*
  *  Funções usadas para teclas que necessitam ser verificadas
@@ -32,6 +32,6 @@ void keySpecialOperations();
 /*
  *  Devolvem condições auto-explicativas.
  */
-GLboolean estaEmPrimeiraPessoa();
-GLboolean estaPausado();
-GLboolean exibindoFPS();
+bool estaEmPrimeiraPessoa();
+bool estaPausado();
+bool exibindoFPS();

@@ -24,7 +24,7 @@
 #define CONST_CAMERA(k) (-Y_MAX/(2.0*k) + 1)
 
 /* Tamanho da tela */
-static GLsizei largura, altura;
+static int largura, altura;
 
 /* Ponteiro para acessar a nave neste módulo */
 static Nave *nave;
@@ -44,8 +44,8 @@ void inicializaGraficos(GLboolean noDepth)
 {
     nave = getNave();
     
-    /* Inicializa glut. Este hack evita passar &argc e argv. */
-    glutInit(malloc(0), NULL);
+    /* Inicializa glut. */
+    glutInit(malloc(0), NULL);  /* evita passar &argc e argv */
     glutInitDisplayMode(GLUT_DOUBLE | (noDepth ? 0 : GLUT_DEPTH));
 
     /* Desenha e centraliza janela de jogo */
@@ -57,34 +57,31 @@ void inicializaGraficos(GLboolean noDepth)
     carregaTexturas();
 
     /* Ativa efeitos de transparência */
-    // glEnable(GL_BLEND); 
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND); 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     /* Ativa efeitos de luz */
     glEnable(LUZ_AMBIENTE);
     glEnable(GL_COLOR_MATERIAL);
 
-    /* Nevoeiro sobre o cenário */
-    const GLint cor[3] = {MAGENTA};
+    /* Nevoeiro sobre o cenário
+       (só aceita valores float, infelizmente). */
+    const GLfloat cor[3] = {0.0f, 0.0f, 0.0f};
     glEnable(GL_FOG);
-    glFogi(GL_FOG_MODE, GL_EXP);
-    glFogf(GL_FOG_DENSITY, 0.0009f);
-    glFogiv(GL_FOG_COLOR, cor);
-    glHint(GL_FOG_HINT, GL_NICEST);
+    glFogf(GL_FOG_DENSITY, 0.0008f);
+    glFogfv(GL_FOG_COLOR, cor);
 
-    /* ---- Loop principal ---- */
-
+    /* Funções perpétuas de desenho */
     glutDisplayFunc(desenha);
     glutReshapeFunc(remodela);
 
+    /* Funções de callback do teclado */
     glutKeyboardFunc(keyPressed);
     glutKeyboardUpFunc(keyUp);
     glutSpecialFunc(keySpecialPressed);
     glutSpecialUpFunc(keySpecialUp);
 
-    /* ---- Loop principal ---- */
-
-    /* Cuida do resto do jogo */
+    /* Passa controle do resto do jogo ao OpenGL */
     glutMainLoop();
 }
 
@@ -95,6 +92,7 @@ void desenha()
     /* Contagem de timesteps */
     static GLuint tick = 0;
 
+    /* Se jogo estiver pausado, nada é desenhado */
     if (estaPausado()) {
         controlaTempo();
         return;
@@ -163,11 +161,11 @@ void desenha()
 
 /*------------------------------------------------------------------*/
 
-void remodela(GLsizei _largura, GLsizei _altura)
+void remodela(int width, int height)
 {
     /* Variáveis de módulo */
-    largura = _largura;
-    altura  = _altura;
+    largura = width;
+    altura  = height;
 
     /* Define tamanho do retângulo de visão */
     glViewport(0, 0, largura, altura);
