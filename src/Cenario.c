@@ -1,6 +1,7 @@
 #include <stdio.h>    /* puts, printf, system */
 #include <stdlib.h>   /* exit */
 #include <stdbool.h>  /* bool */
+#include <math.h>     /* sin */
 #include <GL/freeglut.h>
 
 #include "Cenario.h"
@@ -20,7 +21,7 @@
 static bool debug = false;
 
 /* Guarda intervalo entre chamadas de controlaTempo() */
-static int dt;
+static int dt, t0 = 0;
 
 static void imprimeElementos();
 
@@ -44,7 +45,7 @@ void inicializaJogo(bool godMode, bool _debug)
 void controlaTempo()
 {
     static const int INTERVALO = 1000/FPS;
-    static int t0 = 0, tExtra = 0;
+    static int tExtra = 0;
 
     /* Obtém tempo desde última atualização */
     dt = glutGet(GLUT_ELAPSED_TIME) - t0;
@@ -150,6 +151,162 @@ void encerraJogo()
 
     printf("Score final: %d\n", getNave()->score);
     exit(EXIT_SUCCESS);
+}
+
+/*------------------------------------------------------------------*/
+
+static void desenhaFundo();
+static void desenhaRio();
+static void desenhaParede();
+
+void desenhaCenario()
+{
+    /* Ativa opções para desenho de objetos */
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_DEPTH_TEST);
+
+    /* Desenha elementos estáticos do cenário */
+    desenhaRio();
+    desenhaParede();
+    desenhaFundo();
+    
+    /* Desenha elementos dinâmicos do jogo */
+    for (Celula *p = getListaItens()->prox; p != NULL; p = p->prox) {
+        Item *item = p->item;
+        desenhaItem(item);
+    }
+    for (Celula *p = getListaInimigos()->prox; p != NULL; p = p->prox) {
+        Inimigo *foe = p->item;
+        desenhaInimigo(foe);
+    }
+    for (Celula *p = getListaProjeteis()->prox; p != NULL; p = p->prox) {
+        Projetil *bullet = p->item;
+        desenhaProjetil(bullet);
+    }
+    desenhaNave();
+
+    /* Desativa opções para não prejudicar desenho de hud e etc */
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+}
+
+/*
+ *  Desenha o "chão" do cenário, o limite inferior do jogo.
+ *  Simula uma sensação de movimento com o correr do rio.
+ */
+static void desenhaRio()
+{
+    GLdouble t = (t0 % 10000) / 10;
+    const GLdouble DIST_RIO = X_MAX + getNave()->corpo.raio * sin(ANG_MAX);
+
+    glPushMatrix();
+    glTranslated(0.0, 0.0, getNave()->corpo.z - DIST_CAMERA);
+    glBindTexture(GL_TEXTURE_2D, rioTextura);
+
+    const double coord[4][2] = {
+        { 0, 8 + t/128 }, { 4, 8 + t/128 },
+        { 4,     t/128 }, { 0,     t/128 }
+    };
+
+    const int vertex[4][3] = {
+        { -DIST_RIO, 0, Z_DIST + DIST_CAMERA },
+        {  DIST_RIO, 0, Z_DIST + DIST_CAMERA },
+        {  DIST_RIO, 0,                   0 },
+        { -DIST_RIO, 0,                   0 }
+    };
+
+    glBegin(GL_QUADS); 
+    for (int i = 0; i < 4; i++) {
+        glTexCoord2dv(coord[i]);
+        glVertex3iv(vertex[i]);
+    } 
+    glEnd();
+
+    glPopMatrix();
+}
+
+/*
+ *  Desenha as paredes que limitam lateralmente o jogo, 
+ *  atribuindo-lhes uma textura e também produzindo movimento.
+ */
+static void desenhaParede()
+{
+    const GLdouble DIST_PAREDE = X_MAX + getNave()->corpo.raio * sin(ANG_MAX);
+    GLdouble t = (t0 % 10000) / 10;
+    
+    glPushMatrix();
+    glTranslated(0, 0, getNave()->corpo.z - DIST_CAMERA);
+    glBindTexture(GL_TEXTURE_2D, paredeTextura);
+
+    const double coords[4][2] = {
+        {      t/128, 1 },
+        { 16 + t/128, 1 },
+        { 16 + t/128, 0 },
+        {      t/128, 0 }
+    };
+
+    const int verticesFFLCH[4][3] = {
+        { -DIST_PAREDE, Y_MAX, 0 },
+        { -DIST_PAREDE, Y_MAX, Z_DIST + DIST_CAMERA },
+        { -DIST_PAREDE, 0, Z_DIST + DIST_CAMERA },
+        { -DIST_PAREDE, 0, 0 }
+    };
+
+    /* Parede esquerda */
+    glBegin(GL_QUADS);
+    for (int i = 0; i < 4; i++) {
+        glTexCoord2dv(coords[i]);
+        glVertex3iv(verticesFFLCH[i]);
+    }
+    glEnd();
+
+    const int verticesPOLI[4][3] = {
+        { DIST_PAREDE, Y_MAX, 0 },
+        { DIST_PAREDE, Y_MAX, Z_DIST + DIST_CAMERA },
+        { DIST_PAREDE, 0, Z_DIST + DIST_CAMERA },
+        { DIST_PAREDE, 0, 0 }
+    };
+
+    /* Parede direita */
+    glBegin(GL_QUADS);
+    for (int i = 0; i < 4; i++) {
+        glTexCoord2dv(coords[i]);
+        glVertex3iv(verticesPOLI[i]);
+    }
+    glEnd();
+
+    glPopMatrix();
+}
+
+/*
+ *  Desenha o plano de fundo, atribuindo-lhe uma textura.
+ */
+static void desenhaFundo()
+{
+    glPushMatrix();
+    glTranslated(0.0, 0.0, getNave()->corpo.z + Z_DIST);
+    glBindTexture(GL_TEXTURE_2D, fundoTextura);
+
+    const double coord[4][2] = {
+        { 0.0, 1.0 }, { 4.0, 1.0 },
+        { 4.0, 0.0 }, { 0.0, 0.0 }
+    };
+
+    const int vertex[4][3] = {
+        { -35*X_MAX, 20*Y_MAX, 0.0 },
+        {  35*X_MAX, 20*Y_MAX, 0.0 },
+        {  35*X_MAX,      0.0, 0.0 },
+        { -35*X_MAX,      0.0, 0.0 }
+    };
+
+    glBegin(GL_QUADS); 
+    for (int i = 0; i < 4; i++) {
+        glTexCoord2dv(coord[i]);
+        glVertex3iv(vertex[i]);
+    } 
+    glEnd();
+
+    glPopMatrix();
 }
 
 /*------------------------------------------------------------------*/

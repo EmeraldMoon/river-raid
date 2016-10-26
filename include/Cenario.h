@@ -57,6 +57,13 @@ int getDelayTempo();
 void atualizaCenario();
 
 /*
+ *  Desenha todos os elementos do cenário, desde os meramente
+ *  visuais (rio, paredes e fundo) até os objetos do jogo
+ *  (nave, inimigos, tiros e itens).
+ */
+void desenhaCenario();
+
+/*
  *  Libera toda a memória alocada para as listas
  *  e texturas e encerra execução do jogo.
  */

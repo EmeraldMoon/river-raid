@@ -59,7 +59,7 @@ Terceira parte
   - Tentativa de sincronizar o jogo para ter a mesma velocidade independente do fps atual. Funciona em partes, exceto quando o slowdown for grande demais.
   - Opção de mudar a câmera de terceira para primeira pessoa e vice-versa com uma tecla.
   - Possibilidade de pausar o jogo através de uma tecla, congelando as atualizações enquanto a mesma tecla não for pressionada novamente.
-  - ***Grafico.c***: Corrigido o tamanho do plano na função *rio()*. Criou-se a impressão de que o rio está "mais rápido" que a nave.
+  - ***Grafico.c***: Corrigido o tamanho do plano na função *desenhaRio()*. Criou-se a impressão de que o rio está "mais rápido" que a nave.
 
 ###### 08/06:
   - ***Grafico.c***: Uso de mipmaps nas texturas, produzindo um efeito mais suave ao desenhá-las à distância.

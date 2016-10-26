@@ -1,12 +1,8 @@
 #include <stdio.h>   /* sprintf */
-#include <math.h>    /* sin */
 
 #include "Grafico.h"
 #include "Lista.h"
 #include "Nave.h"
-#include "Defesa.h"
-#include "Tiro.h"
-#include "Item.h"
 #include "Cenario.h"
 #include "Teclado.h"
 #include "Textura.h"
@@ -29,13 +25,6 @@ static int largura, altura;
 /* Ponteiro para acessar a nave neste módulo */
 static Nave *nave;
 
-static void fundo();
-static void rio(GLuint tick);
-static void parede(GLuint tick);
-
-static void ortogonalInicio();
-static void ortogonalFim();
-
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
@@ -45,7 +34,8 @@ void inicializaGraficos(GLboolean noDepth)
     nave = getNave();
     
     /* Inicializa glut. */
-    glutInit(malloc(0), NULL);  /* evita passar &argc e argv */
+    int temp = 0;
+    glutInit(&temp, NULL);  /* evita passar &argc e argv */
     glutInitDisplayMode(GLUT_DOUBLE | (noDepth ? 0 : GLUT_DEPTH));
 
     /* Desenha e centraliza janela de jogo */
@@ -101,15 +91,14 @@ void desenha()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    /* Configura a luz ambiente */
-    const GLfloat luzTela[3] = { 
-        1.0, 
-        (estaEmPrimeiraPessoa()) ? 1.0 - (double) 1.5*nave->invencibilidade/INVENCIVEL_VIDA : 1.0,
-        (estaEmPrimeiraPessoa()) ? 1.0 - (double) 1.5*nave->invencibilidade/INVENCIVEL_VIDA : 1.0
+    /* Configura a luz ambiente.
+       No modo 1º pessoa, tela fica vermelha após dano. */
+    double k = estaEmPrimeiraPessoa() *
+               (1.5 * nave->invencibilidade/INVENCIVEL_VIDA);
+    GLfloat luzTela[3] = { 
+        1.0, 1.0 - k, 1.0 - k
     };
-    glLightfv(LUZ_AMBIENTE, GL_SPECULAR, luzTela);
-    glLightfv(LUZ_AMBIENTE, GL_AMBIENT,  luzTela);
-    glLightfv(LUZ_AMBIENTE, GL_DIFFUSE,  luzTela);
+    glLightfv(LUZ_AMBIENTE, GL_AMBIENT, luzTela);
 
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */
@@ -122,31 +111,8 @@ void desenha()
                   0.0, Y_MAX/2, nave->corpo.z + Z_DIST,
                   0.0, 1.0, 0.0);
     }
-    /* Elementos estáticos do cenário, com texturas */
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    fundo();
-    rio(tick);
-    parede(tick);
-    
-    /* Elementos dinâmicos do jogo, ainda sem texturas */
-    for (Celula *p = getListaItens(); p->prox != NULL; p = p->prox) {
-        Item *item = p->prox->item;
-        desenhaItem(item);
-    }
-    for (Celula *p = getListaInimigos(); p->prox != NULL; p = p->prox) {
-        Inimigo *foe = p->prox->item;
-        desenhaInimigo(foe);
-    }
-    for (Celula *p = getListaProjeteis(); p->prox != NULL; p = p->prox) {
-        Projetil *bullet = p->prox->item;
-        desenhaProjetil(bullet);
-    }
-    desenhaNave();
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_LIGHTING);
+    /* Desenha cenário e elementos de jogo */
+    desenhaCenario();
 
     if (exibindoFPS()) fps(getDelayTempo(), tick);
     hud();
@@ -183,6 +149,9 @@ void remodela(int width, int height)
 }
 
 /*------------------------------------------------------------------*/
+
+static void ortogonalInicio();
+static void ortogonalFim();
 
 void hud()
 {
@@ -284,133 +253,6 @@ void fps(GLuint tempo, GLuint tick)
 
     ortogonalFim();
 }
-
-/*------------------------------------------------------------------*
- *
- *  Desenha o plano de fundo, atribuindo-lhe uma textura.
- *
- */
-static void fundo()
-{
-    glPushMatrix();
-    glTranslated(0.0, 0.0, nave->corpo.z + Z_DIST);
-    glBindTexture(GL_TEXTURE_2D, fundoTextura);
-
-    const double coord[4][2] = {
-        { 0.0, 1.0 }, { 4.0, 1.0 },
-        { 4.0, 0.0 }, { 0.0, 0.0 }
-    };
-
-    const int vertex[4][3] = {
-        { -35*X_MAX, 20*Y_MAX, 0.0 },
-        {  35*X_MAX, 20*Y_MAX, 0.0 },
-        {  35*X_MAX,      0.0, 0.0 },
-        { -35*X_MAX,      0.0, 0.0 }
-    };
-
-    glBegin(GL_QUADS); 
-    for (int i = 0; i < 4; i++) {
-        glTexCoord2dv(coord[i]);
-        glVertex3iv(vertex[i]);
-    } 
-    glEnd();
-
-    glPopMatrix();
-}
-
-/*------------------------------------------------------------------*
- *
- *  Desenha o "chão" do cenário, o limite inferior do jogo. Faz o
- *  rio se movimentar, a fim de produzir uma sensação de movimento.
- *
- */
-static void rio(GLuint tick)
-{
-    GLdouble t = tick % 10000;
-    const GLdouble DIST_RIO = X_MAX + nave->corpo.raio * sin(ANG_MAX);
-
-    glPushMatrix();
-    glTranslated(0.0, 0.0, nave->corpo.z - DIST_CAMERA);
-    glBindTexture(GL_TEXTURE_2D, rioTextura);
-
-    const double coord[4][2] = {
-        { 0, 8 + t/128 }, { 4, 8 + t/128 },
-        { 4,     t/128 }, { 0,     t/128 }
-    };
-
-    const int vertex[4][3] = {
-        { -DIST_RIO, 0, Z_DIST + DIST_CAMERA },
-        {  DIST_RIO, 0, Z_DIST + DIST_CAMERA },
-        {  DIST_RIO, 0,                   0 },
-        { -DIST_RIO, 0,                   0 }
-    };
-
-    glBegin(GL_QUADS); 
-    for (int i = 0; i < 4; i++) {
-        glTexCoord2dv(coord[i]);
-        glVertex3iv(vertex[i]);
-    } 
-    glEnd();
-
-    glPopMatrix();
-}
-
-/*------------------------------------------------------------------*
- *
- *  Desenha as paredes que limitam lateralmente o jogo, 
- *  atribuindo-lhes uma textura e também produzindo movimento.
- *
- */
-static void parede(GLuint tick)
-{
-    const GLdouble DIST_PAREDE = X_MAX + nave->corpo.raio * sin(ANG_MAX);
-    GLdouble t = tick % 10000;
-    
-    glPushMatrix();
-    glTranslated(0, 0, nave->corpo.z - DIST_CAMERA);
-    glBindTexture(GL_TEXTURE_2D, paredeTextura);
-
-    const double coords[4][2] = {
-        {      t/128, 1 },
-        { 16 + t/128, 1 },
-        { 16 + t/128, 0 },
-        {      t/128, 0 }
-    };
-
-    const int verticesFFLCH[4][3] = {
-        { -DIST_PAREDE, Y_MAX, 0 },
-        { -DIST_PAREDE, Y_MAX, Z_DIST + DIST_CAMERA },
-        { -DIST_PAREDE, 0, Z_DIST + DIST_CAMERA },
-        { -DIST_PAREDE, 0, 0 }
-    };
-
-    /* Parede esquerda */
-    glBegin(GL_QUADS);
-    for (int i = 0; i < 4; i++) {
-        glTexCoord2dv(coords[i]);
-        glVertex3iv(verticesFFLCH[i]);
-    }
-    glEnd();
-
-    const int verticesPOLI[4][3] = {
-        { DIST_PAREDE, Y_MAX, 0 },
-        { DIST_PAREDE, Y_MAX, Z_DIST + DIST_CAMERA },
-        { DIST_PAREDE, 0, Z_DIST + DIST_CAMERA },
-        { DIST_PAREDE, 0, 0 }
-    };
-
-    /* Parede direita */
-    glBegin(GL_QUADS);
-    for (int i = 0; i < 4; i++) {
-        glTexCoord2dv(coords[i]);
-        glVertex3iv(verticesPOLI[i]);
-    }
-    glEnd();
-
-    glPopMatrix();
-}
-
-/*------------------------------------------------------------------*/
 
 /*
  *  Prepara o OpenGL para desenhar objetos em 2D que ficarão fixos
