@@ -1,26 +1,20 @@
 /*------------------------------------------------------------------*
  |                                                                  |
- |  Funções relacionadas à parte gráfica (OpenGL). Cuida da         |
- |  atualização, desenho e montagem do cenário e seus elementos.    |
+ |  Funções relacionadas à parte gráfica (OpenGL).                  |
  |                                                                  |
  *------------------------------------------------------------------*/
 
 #pragma once
 
-#include <stdbool.h>
 #include <GL/freeglut.h>
-
-#include "Nave.h"
-#include "Cores.h"
-#include "Teclado.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
-/* Dimensões da janela */
-#define JANELA_LARGURA 2 * 5 * X_MAX
-#define JANELA_ALTURA      5 * Y_MAX
+/* Dimensões da janela (widescreen por padrão) */
+#define JANELA_LARGURA 3 * X_MAX
+#define JANELA_ALTURA  JANELA_LARGURA/16.0 * 9
 
 /* Número de quadros desenhados por segundo */
 #define FPS 60
@@ -32,27 +26,16 @@
 #define SLICES 16
 #define STACKS 10
 
-/* 
- *  Constante para mudança de projeções ortogonais
- *  de terceira para primeira pessoa
- */
-#define CONST_CAMERA(k) (-Y_MAX/(2.0*k) + 1)
-
-/* Tipos de luz */
-#define LUZ_AMBIENTE GL_LIGHT0
-
-/* Mensagem a ser exibida quando jogo está pausado */
-#define PAUSA_MENSAGEM (unsigned char *) "(Pausa)"
-
 /*-------------------------*
  |   P R O T Ó T I P O S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /*
- *  Inicializa objetos da parte gráfica e passa o comando
- *  do restante do programa ao OpenGL.
+ *  Inicializa elementos do glut e OpenGL e passa
+ *  o comando do restante do programa ao OpenGL.
+ *  noDepth indica se deveremos usar o buffer de profundidade.
  */
-void inicializaGraficos();
+void inicializaGraficos(GLboolean noDepth);
 
 /*
  *  Loop principal da parte visual. Cuida do posicionamento

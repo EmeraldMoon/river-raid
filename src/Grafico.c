@@ -8,18 +8,26 @@
 #include "Tiro.h"
 #include "Item.h"
 #include "Cenario.h"
+#include "Teclado.h"
 #include "Textura.h"
+#include "Cores.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
+
+/* Tipo de luz a ser usada */
+#define LUZ_AMBIENTE GL_LIGHT0
+
+/* Constante para mudança de projeções ortogonais
+   de terceira para primeira pessoa. */
+#define CONST_CAMERA(k) (-Y_MAX/(2.0*k) + 1)
+
+/* Tamanho da tela */
+static GLsizei largura, altura;
 
 /* Ponteiro para acessar a nave neste módulo */
 static Nave *nave;
-
-/* Tamanho da tela */
-GLsizei larg;
-GLsizei alt;
 
 static void fundo();
 static void rio(GLuint tick);
@@ -30,37 +38,34 @@ static void ortogonalFim();
 
 /*-------------------*
  |   F U N Ç Õ E S   |
- *-------------------*/
+ *-------------------*----------------------------------------------*/
 
-void inicializaGraficos()
+void inicializaGraficos(GLboolean noDepth)
 {
-    /* Inicializa glut e ativa flags (em tese deveríamos passar
-       argc e argv no glutInit(), mas este hack resolve as coisas). */
-    glutInit((malloc(0)), NULL);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+    nave = getNave();
+    
+    /* Inicializa glut. Este hack evita passar &argc e argv. */
+    glutInit(malloc(0), NULL);
+    glutInitDisplayMode(GLUT_DOUBLE | (noDepth ? 0 : GLUT_DEPTH));
 
     /* Desenha e centraliza janela de jogo */
-    glutInitWindowSize(JANELA_LARGURA, JANELA_ALTURA);
-    glutInitWindowPosition(
-        (glutGet(GLUT_SCREEN_WIDTH)  - JANELA_LARGURA)/2,
-        (glutGet(GLUT_SCREEN_HEIGHT) - JANELA_ALTURA)/2);
+    glutInitWindowSize(glutGet(GLUT_SCREEN_WIDTH),
+                       glutGet(GLUT_SCREEN_HEIGHT));
     glutCreateWindow("River Raid");
 
-    /* Carrega texturas e modelos */
+    /* Carrega texturas */
     carregaTexturas();
-    nave = getNave();
 
     /* Ativa efeitos de transparência */
-    glEnable(GL_BLEND); 
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glEnable(GL_BLEND); 
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     /* Ativa efeitos de luz */
     glEnable(LUZ_AMBIENTE);
     glEnable(GL_COLOR_MATERIAL);
-    glShadeModel(GL_SMOOTH);
 
     /* Nevoeiro sobre o cenário */
-    const GLint cor[3] = { BLACK };
+    const GLint cor[3] = {MAGENTA};
     glEnable(GL_FOG);
     glFogi(GL_FOG_MODE, GL_EXP);
     glFogf(GL_FOG_DENSITY, 0.0009f);
@@ -90,6 +95,10 @@ void desenha()
     /* Contagem de timesteps */
     static GLuint tick = 0;
 
+    if (estaPausado()) {
+        controlaTempo();
+        return;
+    }
     /* Faz a limpeza dos buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -144,6 +153,8 @@ void desenha()
     if (exibindoFPS()) fps(getDelayTempo(), tick);
     hud();
 
+    controlaTempo();
+
     /* Atualiza o cronômetro */
     tick++;
 
@@ -152,12 +163,14 @@ void desenha()
 
 /*------------------------------------------------------------------*/
 
-void remodela(GLsizei largura, GLsizei altura)
+void remodela(GLsizei _largura, GLsizei _altura)
 {
+    /* Variáveis de módulo */
+    largura = _largura;
+    altura  = _altura;
+
     /* Define tamanho do retângulo de visão */
     glViewport(0, 0, largura, altura);
-    larg = largura;
-    alt  = altura;
 
     /* Espelha horizontalmente a imagem no eixo x */
     glMatrixMode(GL_PROJECTION);
@@ -175,12 +188,12 @@ void remodela(GLsizei largura, GLsizei altura)
 
 void hud()
 {
-    const GLdouble RAIO = larg/75.0;
-    const GLdouble K = CONST_CAMERA(31*alt/32.0); /* Constante de mudança de câmera */
-    const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + larg/10.0
-                                               : larg/10.0);
-    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*alt/32.0
-                                               : 31*alt/32.0);
+    const GLdouble RAIO = largura/75.0;
+    const GLdouble K = CONST_CAMERA(31*altura/32.0); /* Constante de mudança de câmera */
+    const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + largura/10.0
+                                               : largura/10.0);
+    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*altura/32.0
+                                               : 31*altura/32.0);
     const GLdouble Z = (estaEmPrimeiraPessoa() ? nave->corpo.z
                                                : nave->corpo.z - DIST_CAMERA);
 
@@ -189,15 +202,15 @@ void hud()
     /* Desenha vidas restantes da nave */
     for (GLint i = 0; i < nave->vidas; i++) {
         glBegin(GL_TRIANGLE_FAN); {
-            glColor(CYAN);
+            getColor(CYAN);
             glVertex3d( X + 3*RAIO*i, Y, Z );
-            glColor(WHITE);
+            getColor(WHITE);
             glVertex3d( X + 3*RAIO*i, Y + RAIO, Z );
             glVertex3d( X + RAIO + 3*RAIO*i, Y, Z );
-            glColor(CYAN);
+            getColor(CYAN);
             glVertex3d( X + 3*RAIO*i, Y - RAIO, Z );
             glVertex3d( X - RAIO + 3*RAIO*i, Y, Z );
-            glColor(WHITE);
+            getColor(WHITE);
             glVertex3d( X + 3*RAIO*i, Y + RAIO, Z );
         } glEnd();
     }
@@ -206,11 +219,11 @@ void hud()
     const double vertexLifebox[4][3] = {
         {          X - 1.0, Y - 2*RAIO - 3, Z },
         {          X - 1.0, Y - 2*RAIO + 2, Z },
-        { X + 0.2*larg + 1, Y - 2*RAIO + 2, Z },
-        { X + 0.2*larg + 1, Y - 2*RAIO - 3, Z }
+        { X + 0.2*largura + 1, Y - 2*RAIO + 2, Z },
+        { X + 0.2*largura + 1, Y - 2*RAIO - 3, Z }
     };
 
-    glColor(DARK_BLUE);
+    getColor(DARK_BLUE);
     glBegin(GL_QUADS); 
     for (int i = 0; i < 4; i++)
         glVertex3dv(vertexLifebox[i]);
@@ -220,8 +233,8 @@ void hud()
     const double vertexLifebar[4][3] = {
         {                               X, Y - 2*RAIO - 2, Z },
         {                               X, Y - 2*RAIO + 1, Z },
-        { X + 0.2*larg*nave->atribs.hp/100.0, Y - 2*RAIO + 1, Z },
-        { X + 0.2*larg*nave->atribs.hp/100.0, Y - 2*RAIO - 2, Z }
+        { X + 0.2*largura*nave->atribs.hp/100.0, Y - 2*RAIO + 1, Z },
+        { X + 0.2*largura*nave->atribs.hp/100.0, Y - 2*RAIO - 2, Z }
     };
 
     /* Cor varia dependendo da energia da nave */
@@ -234,30 +247,27 @@ void hud()
     /* Imprime pontuação */
     char score[16];
     sprintf(score, "Score: %d ", nave->score);
-    glColor(WHITE);
+    getColor(WHITE);
     glRasterPos3d(X, Y -2*RAIO - 25, Z);
     glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) score);
 
     /* Informa se jogo está pausado */
     if (estaPausado()) {
-        glColor(WHITE);
-        glutBitmapString(GLUT_BITMAP_HELVETICA_18, PAUSA_MENSAGEM);
+        getColor(WHITE);
+        glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) "(Pausa)");
     }
 
     ortogonalFim();
-    if (!estaPausado()) controlaTempo();
 }
-
-/*------------------------------------------------------------------*/
 
 void fps(GLuint tempo, GLuint tick)
 {
     static int tempoAnt = 60;
-    const GLdouble K = CONST_CAMERA(31*alt/32.0); /* Constante de mudança de câmera */
-    const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + 9*larg/10.0
-                                               : 9*larg/10.0);
-    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*alt/32.0
-                                               : 31*alt/32.0);
+    const GLdouble K = CONST_CAMERA(31*altura/32.0); /* Constante de mudança de câmera */
+    const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + 9*largura/10.0
+                                               : 9*largura/10.0);
+    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*altura/32.0
+                                               : 31*altura/32.0);
     const GLdouble Z = (estaEmPrimeiraPessoa() ? nave->corpo.z
                                                : nave->corpo.z - DIST_CAMERA);
 
@@ -266,7 +276,7 @@ void fps(GLuint tempo, GLuint tick)
     /* Imprime fps atual */
     char mostrador[16];
     sprintf(mostrador, "%.2f fps", (double) 1000/tempoAnt);
-    glColor(YELLOW);
+    getColor(YELLOW);
 
     glRasterPos3d(X, Y, Z);
     glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) mostrador);
@@ -413,7 +423,9 @@ static void ortogonalInicio()
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    gluOrtho2D(0, larg, 0, alt); /* Ajusta ao tamanho da tela */
+
+    /* Ajusta ao tamanho da tela */ 
+    gluOrtho2D(0, largura, 0, altura);
 
     /* x cresce para a direita, y cresce para cima */
     glScaled(-1.0, 1.0, 1.0); 

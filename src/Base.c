@@ -19,6 +19,8 @@ void posicionaCorpo(Corpo *corpo, double z)
     corpo->z = z;
 }
 
+/*------------------------------------------------------------------*/
+
 /*
  *  Em tese deveríamos fazer uma verificação diferente, na vertical,
  *  para caso um dos corpos fosse esférico, mas isso envolveria
@@ -35,10 +37,13 @@ bool ocorreuColisao(Corpo *a, Corpo *b)
     /* Evita cálculos desnecessários */
     if (dx >= somaRaios || dz >= somaRaios) return false;
 
-    /* Circunferências horizontais devem ser secantes. */
+    /* Distância vertical deve ser menor que soma das semi-alutras.
+       Circunferências horizontais devem ser secantes. */
     return (abs(dy) < (a->altura + b->altura)/2
                 && hypot(dx, dz) < somaRaios);
 }
+
+/*------------------------------------------------------------------*/
 
 bool corpoSaiu(Corpo *corpo, double naveZ)
 {

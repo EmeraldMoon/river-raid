@@ -19,10 +19,6 @@
 /* Tempo de espera até criar um item */
 #define TEMPO_ITEM 240
 
-/* Efeitos quantitativos dos respectivos itens */
-#define PODER_ITEM_HP     NAVE_HPMAX / 6
-#define PODER_ITEM_ESCUDO 2 * NAVE_HPMAX
-
 /* Atributos padrão */
 #define ITEM_RAIO 20
 

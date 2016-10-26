@@ -7,6 +7,7 @@
 #include "Defesa.h"
 #include "Cenario.h"
 #include "Grafico.h"
+#include "Cores.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -124,8 +125,8 @@ void desenhaProjetil(Projetil *bullet)
     glTranslated(bullet->corpo.x, bullet->corpo.y, bullet->corpo.z);
 
     /* Provisório, no futuro cada tiro terá sua estrutura */
-    if (bullet->amigo) glColor(LIGHT_GRAY);
-    else               glColor(LIME);
+    if (bullet->amigo) getColor(LIGHT_GRAY);
+    else               getColor(LIME);
   
     glutSolidSphere(bullet->corpo.raio, SLICES, STACKS);
     glPopMatrix();

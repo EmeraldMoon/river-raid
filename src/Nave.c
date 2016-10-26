@@ -4,18 +4,18 @@
 #include "Nave.h"
 #include "Tiro.h"
 #include "Cenario.h"
+#include "Teclado.h"
 #include "Textura.h"
 #include "Modelo.h"
-#include "Cores.h"
 #include "Grafico.h"
+#include "Cores.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*----------------------------------------*/
 
 /* Ponteiro para estrutura da nave */
-// static Nave *nave; provisório \/
-Nave *nave;
+static Nave *nave;
 
 /* Matriz representando vértices da nave */
 static GLdouble naveVertices[NAVE_NUM_VERTICES][3];
@@ -106,6 +106,9 @@ void moveNave()
  */
 static void atualizaDirecao(double *ang)
 {
+    /* Taxa de alteração automática por timestep */
+    static const double ANG_AUTO = ANG_MAX/60;
+
     if (*ang > 0.0) {
         *ang -= ANG_AUTO;
         if (*ang < 0.0) *ang = 0.0;
@@ -180,7 +183,7 @@ void desenhaNave()
     if (nave->escudo > 0 && !estaEmPrimeiraPessoa()) {
         NAVE_COR = 255;
         glPushMatrix();
-        glColorAlpha(DARK_BLUE, 250 * nave->escudo/(2.0*NAVE_HPMAX));
+        getColorAlpha(DARK_BLUE, 250 * nave->escudo/(2.0*NAVE_HPMAX));
         glDisable(GL_TEXTURE_2D);
         glTranslated(nave->corpo.x, nave->corpo.y, nave->corpo.z);
         glRotated(rotacao, 1.0, 1.0, 0.0);
@@ -193,7 +196,7 @@ void desenhaNave()
     glRotated(nave->angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
     glRotated(-nave->angVert * 180.0/PI, 1.0, 0.0, 0.0);
 
-    glColorAlpha(3*NAVE_COR, 3*NAVE_COR, 0, 3*NAVE_COR);
+    getColorAlpha(3*NAVE_COR, 3*NAVE_COR, 0, 3*NAVE_COR);
     if (estaEmPrimeiraPessoa()) {
         glDisable(GL_TEXTURE_2D);
         glutWireCone(0.25, 2, 4, 0);

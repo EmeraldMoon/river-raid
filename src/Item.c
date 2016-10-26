@@ -6,6 +6,7 @@
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Textura.h"
+#include "Cores.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -51,7 +52,7 @@ void ativaItem(Item *item, Nave *nave)
 {
     switch (item->tipo) {
         case HP:
-            nave->atribs.hp += PODER_ITEM_HP;
+            nave->atribs.hp += nave->atribs.hp / 6;
             if (nave->atribs.hp > NAVE_HPMAX) {
                 nave->atribs.hp = NAVE_HPMAX;
             }
@@ -60,7 +61,7 @@ void ativaItem(Item *item, Nave *nave)
             ++nave->vidas;
             break;
         case ESCUDO:
-            nave->escudo = PODER_ITEM_ESCUDO;
+            nave->escudo = 2 * nave->atribs.hp;
             break;
     }
 }
@@ -82,15 +83,15 @@ void desenhaItem(Item *item)
 
     switch(item->tipo) {
         case HP:
-            glColorAlpha(LIGHT_GREEN, 230);
+            getColorAlpha(LIGHT_GREEN, 230);
             glutSolidCube(ITEM_RAIO);
             break;
         case VIDA:
-            glColorAlpha(GOLD, 130);
+            getColorAlpha(GOLD, 130);
             glutSolidCube(ITEM_RAIO);
             break;
         case ESCUDO:
-            glColorAlpha(DARK_BLUE, 130);
+            getColorAlpha(DARK_BLUE, 130);
             glutWireSphere(ITEM_RAIO, SLICES, STACKS);
             break;
     }

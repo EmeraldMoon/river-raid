@@ -7,6 +7,7 @@
 #include "Grafico.h"
 #include "Modelo.h"
 #include "Textura.h"
+#include "Cores.h"
 
 /*------------------------------------------------------------------*/
 
@@ -88,7 +89,7 @@ void inimigoDispara(Inimigo *foe, Nave *nave)
 void desenhaInimigo(Inimigo *foe)
 {
     glPushMatrix();
-    glColorAlpha(WHITE, 255);
+    getColorAlpha(WHITE, 255);
     glTranslated(foe->corpo.x, 0.0, foe->corpo.z);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_TEXTURE_GEN_S);

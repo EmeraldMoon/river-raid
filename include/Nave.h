@@ -22,10 +22,8 @@
 #define NAVE_RAIO    40
 #define NAVE_ALTURA  20
 
-/* Ângulos da nave, em radianos */
-#define ANG_MAX          PI/6  /* ângulo de inclinação máxima */
-#define ANG_MANUAL ANG_MAX/20  /* taxa de alteração por comando do usuário */
-#define ANG_AUTO   ANG_MAX/60  /* taxa de alteração automática */
+/* Ângulo de inclinação máxima da nave */
+#define ANG_MAX PI/6
 
 /* Nº de timesteps de invencibilidade */
 #define INVENCIVEL_DANO 30  /* ao ser atingida */

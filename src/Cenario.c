@@ -1,6 +1,5 @@
 #include <stdio.h>    /* puts, printf, system */
 #include <stdlib.h>   /* exit */
-#include <string.h>   /* strcmp */
 #include <stdbool.h>  /* bool */
 #include <GL/freeglut.h>
 
@@ -20,11 +19,8 @@
 /* Indica se serão impressas informações de debug */
 static bool debug = false;
 
-/* Variáveis de controle de tempo */
-static int t0 = 0;
+/* Guarda intervalo entre chamadas de controlaTempo() */
 static int dt;
-
-/*------------------------------------------------------------------*/
 
 static void imprimeElementos();
 
@@ -32,19 +28,15 @@ static void imprimeElementos();
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-void inicializaJogo(int argc, char *argv[])
+void inicializaJogo(bool godMode, bool _debug)
 {
-    /* Tratamento de argumentos via linha de comando */
-    bool godMode = false;
-    for (int i = 0; i < argc; i++) {
-        if      (strcmp(argv[i], "-iddqd") == 0) godMode = true;
-        else if (strcmp(argv[i],     "-d") == 0)   debug = true;
-    }
     /* Carrega listas, modelos e texturas */
     carregaNave(godMode);
     carregaInimigos();
     carregaProjeteis();
     carregaItens();
+    
+    debug = _debug;
 }
 
 /*------------------------------------------------------------------*/
@@ -52,12 +44,14 @@ void inicializaJogo(int argc, char *argv[])
 void controlaTempo()
 {
     static const int INTERVALO = 1000/FPS;
-    static int tExtra = 0;
+    static int t0 = 0, tExtra = 0;
 
     /* Obtém tempo desde última atualização */
     dt = glutGet(GLUT_ELAPSED_TIME) - t0;
 
-    /* Limita FPS para programa não ir rápido demais */
+    /* Limita FPS para programa não ir rápido demais (isso é mais por
+       segurança. A opção de double buffered geralmente controla sozinha
+       essa parte, mas é dependente do PC; logo, não podemos confiar). */
     if (dt < INTERVALO) {
         glutTimerFunc(INTERVALO - dt, controlaTempo, 0);
         return;
@@ -68,7 +62,7 @@ void controlaTempo()
     /* Caso tempo acumulado chegue a um ou mais frames inteiros, 
        faz a interpolação deles entre o anterior e o próximo desenho. */
     for (;;) {
-        atualizaCenario();
+        if (!estaPausado()) atualizaCenario();
         if (tExtra < INTERVALO) break;
         tExtra -= INTERVALO;
     }
@@ -134,11 +128,11 @@ void atualizaCenario()
     }
     if (nave->vidas <= 0) encerraJogo();
 
-    if (--contFoe == 0) {
+    if (--contFoe <= 0) {
         geraInimigo(nave->corpo.z + Z_DIST);
         contFoe = TEMPO_INIMIGOS;
     }
-    if (--contItem == 0) {
+    if (--contItem <= 0) {
         geraItem(nave->corpo.z + Z_DIST);
         contItem = TEMPO_ITEM;
     }

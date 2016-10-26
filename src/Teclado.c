@@ -6,7 +6,7 @@
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /* Constantes para teclas */
 #define TECLA_TIRO   ' '  /* barra de espaços */
@@ -17,42 +17,32 @@
 #define TECLA_SAIDA  'Q'
 
 /* Vetores para reconhecimento de teclado */
-static GLboolean keyStates[128]        = {GL_FALSE};
+static GLboolean        keyStates[128] = {GL_FALSE};
 static GLboolean keySpecialStates[128] = {GL_FALSE};
 
-/* Variáveis de indicação */
+/* Variáveis booleanas indicadoras */
 static GLboolean primeiraPessoa = GL_FALSE;
-static GLboolean exibeFPS = GL_FALSE;
-static GLboolean pausado = GL_FALSE;
+static GLboolean       exibeFPS = GL_FALSE;
+static GLboolean        pausado = GL_FALSE;
 
 /*-------------------*
  |   F U N Ç Õ E S   |
- *-------------------*/
+ *-------------------*----------------------------------------------*/
 
 void keyPressed(unsigned char key, GLint x, GLint y)
 {
     keyStates[toupper(key)] = GL_TRUE;
 
     if (keyStates[TECLA_CAMERA]) primeiraPessoa = !primeiraPessoa;
-    if (keyStates[TECLA_FPS])    exibeFPS = !exibeFPS;
-    if (keyStates[TECLA_PAUSA]) {
-        pausado = !pausado;
-        if (!estaPausado()) {
-/*            t0 = glutGet(GLUT_ELAPSED_TIME);
-*/            desenha();
-        }
-    }
-    if (keyStates[TECLA_SAIDA])  encerraJogo();
+    if (keyStates[TECLA_FPS])          exibeFPS = !exibeFPS;
+    if (keyStates[TECLA_PAUSA])         pausado = !pausado;
+    if (keyStates[TECLA_SAIDA]) encerraJogo();
 }
-
-/*------------------------------------------------------------------*/
  
 void keyUp(unsigned char key, GLint x, GLint y)
 {  
     keyStates[toupper(key)] = GL_FALSE;
 }
-
-/*------------------------------------------------------------------*/
 
 void keySpecialPressed(GLint key, GLint x, GLint y)
 {
@@ -69,13 +59,16 @@ void keySpecialUp(GLint key, GLint x, GLint y)
 void keyOperations()
 {
     if ((keyStates[TECLA_TIRO] || keyStates[TECLA_TIRO2])
-            && getNave()->atribs.espera-- == 0) {
+            && --getNave()->atribs.espera <= 0) {
         naveDispara();
     }
 }
 
 void keySpecialOperations()
 {
+    /* Taxa de alteração de ângulo por comando do usuário */
+    static const double ANG_MANUAL = ANG_MAX/20;
+
     Nave *nave = getNave();
 
     if      (keySpecialStates[GLUT_KEY_UP])    nave->angVert  += ANG_MANUAL;

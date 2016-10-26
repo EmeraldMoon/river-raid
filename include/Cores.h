@@ -8,11 +8,11 @@
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
 /* Para chamadas das funções de cor */
-#define glColor      glColor3ub
-#define glColorAlpha glColor4ub
+#define getColor      glColor3ub
+#define getColorAlpha glColor4ub
 
 /* Constantes em RGB (red, green, blue) */
 #define ALICE_BLUE              239, 248, 255
