@@ -34,7 +34,7 @@ void geraItem(double z)
     /* Corpo cilídrico */
     item->corpo.raio   = ITEM_RAIO;
     item->corpo.altura = 2 * item->corpo.raio;
-    posicionaCorpo(&item->corpo, z);
+    geraCorpo(&item->corpo, z);
 
     /* Escolhe o tipo aleatoriamente */
     int sorte = uniforme(0, 100);
@@ -74,29 +74,26 @@ void desenhaItem(Item *item)
     rotacao += PI/6;
 
     glPushMatrix();
+    glDisable(GL_TEXTURE_2D);
+
+    /* Posiciona e rotaciona item */
     glTranslated(item->corpo.x, item->corpo.y, item->corpo.z);
     glRotated(rotacao, 1.0, 1.0, 1.0);
 
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_LIGHTING);
-    //glBindTexture(GL_TEXTURE_2D, itemTextura);
-
     switch(item->tipo) {
         case HP:
-            getColorAlpha(LIGHT_GREEN, 230);
+            setColorAlpha(LIGHT_GREEN, 230);
             glutSolidCube(ITEM_RAIO);
             break;
         case VIDA:
-            getColorAlpha(GOLD, 130);
+            setColorAlpha(GOLD, 130);
             glutSolidCube(ITEM_RAIO);
             break;
         case ESCUDO:
-            getColorAlpha(DARK_BLUE, 130);
+            setColorAlpha(DARK_BLUE, 130);
             glutWireSphere(ITEM_RAIO, SLICES, STACKS);
             break;
     }
-
-    glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();
 }

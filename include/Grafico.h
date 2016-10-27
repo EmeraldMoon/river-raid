@@ -1,6 +1,7 @@
 /*------------------------------------------------------------------*
  |                                                                  |
  |  Funções relacionadas à parte gráfica (OpenGL).                  |
+ |  Cuida também do desenho de elementos fixos do cenário.          |
  |                                                                  |
  *------------------------------------------------------------------*/
 
@@ -36,27 +37,3 @@
  *  noDepth indica se deveremos usar o buffer de profundidade.
  */
 void inicializaGraficos(GLboolean noDepth);
-
-/*
- *  Loop principal da parte visual. Cuida do posicionamento
- *  da câmera e chamada de funções de atualização.
- */
-void desenha();
-
-/*
- *  Redesenha a área de jogo quando (e enquanto)
- *  janela for redimensionada.
- */
-void remodela(GLsizei largura, GLsizei altura);
-
-/*
- *  Mostra na tela os indicadores básicos do jogo:
- *  energia, vidas restantes e pontuação.
- */
-void hud();
-
-/*
- *  Exibe o número de quadros por segundo que o jogo está desenhando
- *  no momento, caso a opção esteja ativada.
- */
-void fps(GLuint tempo, GLuint tick);

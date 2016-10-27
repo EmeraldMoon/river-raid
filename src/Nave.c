@@ -176,50 +176,42 @@ void desenhaNave()
 {
     static double rotacao = 0;
     rotacao += PI/6;
+    GLdouble naveCor = 255 - 190.0/INVENCIVEL_VIDA * nave->invencibilidade;
 
-    GLdouble NAVE_COR =
-        255 - 190.0/INVENCIVEL_VIDA * nave->invencibilidade;
+    glDisable(GL_TEXTURE_2D);
 
-    if (nave->escudo > 0 && !estaEmPrimeiraPessoa()) {
-        NAVE_COR = 255;
+    /* Se ativo, desenha escudo ao redor da nave */
+    if (nave->escudo > 0) {
+        naveCor = 255;
         glPushMatrix();
-        getColorAlpha(DARK_BLUE, 250 * nave->escudo/(2.0*NAVE_HPMAX));
-        glDisable(GL_TEXTURE_2D);
         glTranslated(nave->corpo.x, nave->corpo.y, nave->corpo.z);
         glRotated(rotacao, 1.0, 1.0, 0.0);
-        glutWireSphere(1.75*NAVE_RAIO, SLICES, STACKS);
+        setColorAlpha(DARK_BLUE, 255 * nave->escudo/(2.0 * NAVE_HPMAX));
+        glutWireSphere(1.75 * NAVE_RAIO, SLICES, STACKS);
         glPopMatrix();
     }
     glPushMatrix();
-    glDisable(GL_LIGHTING);
+
+    /* Posiciona nave rotacionada de acordo com ângulos de inclinação */
     glTranslated(nave->corpo.x, nave->corpo.y, nave->corpo.z);
     glRotated(nave->angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
     glRotated(-nave->angVert * 180.0/PI, 1.0, 0.0, 0.0);
 
-    getColorAlpha(3*NAVE_COR, 3*NAVE_COR, 0, 3*NAVE_COR);
+    setColorAlpha(3 * naveCor, 3 * naveCor, 0, 3 * naveCor);
     if (estaEmPrimeiraPessoa()) {
-        glDisable(GL_TEXTURE_2D);
-        glutWireCone(0.25, 2, 4, 0);
+        /* Exibe uma mira na tela */
+        glutWireCone(0.25, 2, 4, 0); 
     }
     else {
         glEnable(GL_TEXTURE_2D);
-        glEnable(GL_TEXTURE_GEN_S);
-        glEnable(GL_TEXTURE_GEN_T);
         glBindTexture(GL_TEXTURE_2D, naveTextura);
-        glScaled(20.0, 40.0, 25.0);
-
-        glEnableClientState(GL_VERTEX_ARRAY);
+        glScaled(2 * nave->corpo.raio, nave->corpo.altura,
+                 2 * nave->corpo.raio);
 
         /* Desenha os vértices do arquivo */
         glVertexPointer(3, GL_DOUBLE, 0, naveVertices);
         glDrawArrays(GL_TRIANGLES, 0, NAVE_NUM_VERTICES);
-
-        glDisableClientState(GL_VERTEX_ARRAY);
     }
-
-    glDisable(GL_TEXTURE_GEN_S);
-    glDisable(GL_TEXTURE_GEN_T);
-    glEnable(GL_LIGHTING);
     glPopMatrix();
 }
 

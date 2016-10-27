@@ -13,14 +13,12 @@
 #define PAREDE_TEXTURA "texture/brick.ppm"
 #define NAVE_TEXTURA   "texture/silver.ppm"
 #define DEFESA_TEXTURA "texture/magma.ppm"
-#define ITEM_TEXTURA   "texture/box.ppm"
 
 GLuint fundoTextura;
 GLuint rioTextura;
 GLuint paredeTextura;
 GLuint naveTextura;
 GLuint defesaTextura;
-GLuint itemTextura;
 
 static void ignoraComentario(FILE *file);
 static void erro(FILE *file, const char *filename);
@@ -36,7 +34,6 @@ void carregaTexturas()
     carregaTextura(PAREDE_TEXTURA, &paredeTextura, true);
     carregaTextura(NAVE_TEXTURA,   &naveTextura,   false);
     carregaTextura(DEFESA_TEXTURA, &defesaTextura, false);
-    carregaTextura(ITEM_TEXTURA,   &itemTextura,   false);
 }
 
 /*------------------------------------------------------------------*/
@@ -49,7 +46,6 @@ void carregaTextura(const char *filename, GLuint *textura, bool mipmap)
         perror("carregaTextura()");
         exit(EXIT_FAILURE);
     }
-
     /* Faz verificação da chave mágica */
     char aux[3];
     fscanf(file, "%2s", aux);
@@ -91,7 +87,6 @@ void carregaTextura(const char *filename, GLuint *textura, bool mipmap)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, largura, altura,
                     0, GL_RGB, GL_UNSIGNED_BYTE, dados);
     }
-    
     free(dados);
     /* Hell ends here */
 }
@@ -105,7 +100,6 @@ void liberaTexturas()
     glDeleteTextures(1, &paredeTextura);
     glDeleteTextures(1, &naveTextura);
     glDeleteTextures(1, &defesaTextura);
-    glDeleteTextures(1, &itemTextura);
 }
 
 /*------------------------------------------------------------------*

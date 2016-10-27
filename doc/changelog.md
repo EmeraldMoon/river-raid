@@ -94,7 +94,7 @@ Terceira parte
 ### Versão 0.8
 
 ###### 30/05:
-  - ***Cores.h***: Contém constantes RGB para praticamente todas as cores em existência, junto com um macro para *getColor()* reduzido. Assim, é possível inserir cores em outros módulos de maneira mais direta e sem preocupação com comentários adicionais.
+  - ***Cores.h***: Contém constantes RGB para praticamente todas as cores em existência, junto com um macro para *setColor()* reduzido. Assim, é possível inserir cores em outros módulos de maneira mais direta e sem preocupação com comentários adicionais.
   - Corrigido problema de cooldown não estar sendo aplicado aos tiros da nave. Agora é possível atirar em velocidade normal.
 
 ###### 29/05:

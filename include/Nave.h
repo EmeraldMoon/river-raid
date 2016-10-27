@@ -19,8 +19,8 @@
 #define NAVE_VEL      4
 #define NAVE_HPMAX  100
 #define NAVE_COOL     6
-#define NAVE_RAIO    40
-#define NAVE_ALTURA  20
+#define NAVE_RAIO    20
+#define NAVE_ALTURA  40
 
 /* Ângulo de inclinação máxima da nave */
 #define ANG_MAX PI/6

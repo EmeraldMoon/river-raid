@@ -11,8 +11,8 @@
  *-------------------------*----------------------------------------*/
 
 /* Para chamadas das funções de cor */
-#define getColor      glColor3ub
-#define getColorAlpha glColor4ub
+#define setColor      glColor3ub
+#define setColorAlpha glColor4ub
 
 /* Constantes em RGB (red, green, blue) */
 #define ALICE_BLUE              239, 248, 255

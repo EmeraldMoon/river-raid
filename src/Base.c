@@ -12,7 +12,7 @@
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-void posicionaCorpo(Corpo *corpo, double z)
+void geraCorpo(Corpo *corpo, double z)
 {
     corpo->x = (X_MAX - corpo->raio) * uniforme(-1.0, 1.0);
     corpo->y = uniforme(Y_MAX/8, Y_MAX/2);

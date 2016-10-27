@@ -1,4 +1,5 @@
 #include <stdio.h>   /* sprintf */
+#include <math.h>    /* ceil */
 
 #include "Grafico.h"
 #include "Lista.h"
@@ -15,15 +16,19 @@
 /* Tipo de luz a ser usada */
 #define LUZ_AMBIENTE GL_LIGHT0
 
-/* Constante para mudança de projeções ortogonais
-   de terceira para primeira pessoa. */
-#define CONST_CAMERA(k) (-Y_MAX/(2.0*k) + 1)
-
 /* Tamanho da tela */
 static int largura, altura;
 
 /* Ponteiro para acessar a nave neste módulo */
 static Nave *nave;
+
+/* Funções perpétuas usadas pelo OpenGL */
+static void desenha();
+static void remodela(int width, int height);
+
+/* Funções de desenhos fixos na tela */
+static void exibeHud();
+static void exibeFps();
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -54,6 +59,9 @@ void inicializaGraficos(GLboolean noDepth)
     glEnable(LUZ_AMBIENTE);
     glEnable(GL_COLOR_MATERIAL);
 
+    /* Permite desenhar modelos de vértices */
+    glEnableClientState(GL_VERTEX_ARRAY);
+
     /* Nevoeiro sobre o cenário
        (só aceita valores float, infelizmente). */
     const GLfloat cor[3] = {0.0f, 0.0f, 0.0f};
@@ -77,11 +85,12 @@ void inicializaGraficos(GLboolean noDepth)
 
 /*------------------------------------------------------------------*/
 
-void desenha()
+/*
+ *  Loop principal da parte visual. Cuida do posicionamento da câmera,
+ *  controle dos buffers e chamada de funções de atualização.
+ */
+static void desenha()
 {
-    /* Contagem de timesteps */
-    static GLuint tick = 0;
-
     /* Se jogo estiver pausado, nada é desenhado */
     if (estaPausado()) {
         controlaTempo();
@@ -95,9 +104,7 @@ void desenha()
        No modo 1º pessoa, tela fica vermelha após dano. */
     double k = estaEmPrimeiraPessoa() *
                (1.5 * nave->invencibilidade/INVENCIVEL_VIDA);
-    GLfloat luzTela[3] = { 
-        1.0, 1.0 - k, 1.0 - k
-    };
+    GLfloat luzTela[3] = { 1.0, 1.0 - k, 1.0 - k };
     glLightfv(LUZ_AMBIENTE, GL_AMBIENT, luzTela);
 
     /* Configura a posição da câmera.
@@ -114,20 +121,24 @@ void desenha()
     /* Desenha cenário e elementos de jogo */
     desenhaCenario();
 
-    if (exibindoFPS()) fps(getDelayTempo(), tick);
-    hud();
+    /* Desenha elementos fixos da tela */
+    if (exibindoFPS()) exibeFps();
+    exibeHud();
 
-    controlaTempo();
-
-    /* Atualiza o cronômetro */
-    tick++;
-
+    /* Troca os buffers e pinta a tela */
     glutSwapBuffers();
+
+    /* Passa para o proceesamento não gráfico */
+    controlaTempo();
 }
 
 /*------------------------------------------------------------------*/
 
-void remodela(int width, int height)
+/*
+ *  Redesenha a área de jogo quando (e enquanto)
+ *  janela for redimensionada.
+ */
+static void remodela(int width, int height)
 {
     /* Variáveis de módulo */
     largura = width;
@@ -142,7 +153,7 @@ void remodela(int width, int height)
     glScaled(-1.0, 1.0, 1.0);
 
     /* (ângulo de visão, proporção de tela, distâncias min e max) */
-    gluPerspective(90.0, (GLdouble) largura/altura, 1.0, 1.5*Z_DIST + DIST_CAMERA);
+    gluPerspective(90.0, (GLdouble) largura/altura, 1.0, Z_DIST);
 
     /* Volta ao modo original */
     glMatrixMode(GL_MODELVIEW);
@@ -150,13 +161,17 @@ void remodela(int width, int height)
 
 /*------------------------------------------------------------------*/
 
-static void ortogonalInicio();
-static void ortogonalFim();
+static void projecaoInicio();
+static void projecaoFim();
 
-void hud()
+/*
+ *  Mostra na tela os indicadores básicos do jogo:
+ *  energia, vidas restantes e pontuação.
+ */
+static void exibeHud()
 {
     const GLdouble RAIO = largura/75.0;
-    const GLdouble K = CONST_CAMERA(31*altura/32.0); /* Constante de mudança de câmera */
+    const GLdouble K = -Y_MAX/(62/32.0 * altura) + 1; /* Constante de mudança de câmera */
     const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + largura/10.0
                                                : largura/10.0);
     const GLdouble Y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*altura/32.0
@@ -164,20 +179,20 @@ void hud()
     const GLdouble Z = (estaEmPrimeiraPessoa() ? nave->corpo.z
                                                : nave->corpo.z - DIST_CAMERA);
 
-    ortogonalInicio();
+    projecaoInicio();
 
     /* Desenha vidas restantes da nave */
     for (GLint i = 0; i < nave->vidas; i++) {
         glBegin(GL_TRIANGLE_FAN); {
-            getColor(CYAN);
+            setColor(CYAN);
             glVertex3d( X + 3*RAIO*i, Y, Z );
-            getColor(WHITE);
+            setColor(WHITE);
             glVertex3d( X + 3*RAIO*i, Y + RAIO, Z );
             glVertex3d( X + RAIO + 3*RAIO*i, Y, Z );
-            getColor(CYAN);
+            setColor(CYAN);
             glVertex3d( X + 3*RAIO*i, Y - RAIO, Z );
             glVertex3d( X - RAIO + 3*RAIO*i, Y, Z );
-            getColor(WHITE);
+            setColor(WHITE);
             glVertex3d( X + 3*RAIO*i, Y + RAIO, Z );
         } glEnd();
     }
@@ -190,7 +205,7 @@ void hud()
         { X + 0.2*largura + 1, Y - 2*RAIO - 3, Z }
     };
 
-    getColor(DARK_BLUE);
+    setColor(DARK_BLUE);
     glBegin(GL_QUADS); 
     for (int i = 0; i < 4; i++)
         glVertex3dv(vertexLifebox[i]);
@@ -214,58 +229,69 @@ void hud()
     /* Imprime pontuação */
     char score[16];
     sprintf(score, "Score: %d ", nave->score);
-    getColor(WHITE);
+    setColor(WHITE);
     glRasterPos3d(X, Y -2*RAIO - 25, Z);
     glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) score);
 
     /* Informa se jogo está pausado */
     if (estaPausado()) {
-        getColor(WHITE);
+        setColor(WHITE);
         glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) "(Pausa)");
     }
 
-    ortogonalFim();
+    projecaoFim();
 }
 
-void fps(GLuint tempo, GLuint tick)
+/*
+ *  Exibe o número de quadros por segundo que o jogo está
+ *  desenhando no momento, caso a opção esteja ativada.
+ */
+static void exibeFps()
 {
-    static int tempoAnt = 60;
-    const GLdouble K = CONST_CAMERA(31*altura/32.0); /* Constante de mudança de câmera */
-    const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + 9*largura/10.0
-                                               : 9*largura/10.0);
+    static int fps;
+    static int cont = 20;
+
+    /* FPS só é alterado na tela a cada tantos timesteps */
+    cont += getDelayTempo() * FPS/1000.0;
+    if (cont >= 20) {
+        fps = 1000.0/(getDelayTempo() - 1);
+        cont = cont % 20;
+    }
+    const GLdouble K = -Y_MAX/(62/32.0 * altura) + 1; /* Constante de mudança de câmera */
+    const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + 0.88 * largura
+                                               : 0.88 * largura);
     const GLdouble Y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*altura/32.0
                                                : 31*altura/32.0);
     const GLdouble Z = (estaEmPrimeiraPessoa() ? nave->corpo.z
                                                : nave->corpo.z - DIST_CAMERA);
 
-    ortogonalInicio();
+    projecaoInicio();
 
-    /* Imprime fps atual */
-    char mostrador[16];
-    sprintf(mostrador, "%.2f fps", (double) 1000/tempoAnt);
-    getColor(YELLOW);
-
+    /* Posiciona projeção */
     glRasterPos3d(X, Y, Z);
+
+    /* String que guarda fps */
+    char mostrador[16];
+    sprintf(mostrador, "%2d fps", (fps > 60) ? 60 : fps);
+
+    setColor(YELLOW);
     glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) mostrador);
 
-    /* Talvez provisório também. Evita que mude rápido demais */
-    if (tick % 15 == 0) tempoAnt = tempo;
-
-    ortogonalFim();
+    projecaoFim();
 }
 
 /*
- *  Prepara o OpenGL para desenhar objetos em 2D que ficarão fixos
- *  à tela através da matriz de projeção.
+ *  Prepara o OpenGL para desenhar objetos em 2D que
+ *  ficarão fixos à tela através da matriz de projeção.
  */
-static void ortogonalInicio()
+static void projecaoInicio()
 {
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
 
     /* Ajusta ao tamanho da tela */ 
-    gluOrtho2D(0, largura, 0, altura);
+    gluOrtho2D(0.0, largura, 0.0, altura);
 
     /* x cresce para a direita, y cresce para cima */
     glScaled(-1.0, 1.0, 1.0); 
@@ -276,7 +302,7 @@ static void ortogonalInicio()
 /*
  *  Finaliza os desenhos de projeções em 2D pelo openGL.
  */
-static void ortogonalFim()
+static void projecaoFim()
 {
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();

@@ -21,7 +21,7 @@
 static bool debug = false;
 
 /* Guarda intervalo entre chamadas de controlaTempo() */
-static int dt, t0 = 0;
+static int t0 = 0, dt;
 
 static void imprimeElementos();
 
@@ -158,6 +158,8 @@ void encerraJogo()
 static void desenhaFundo();
 static void desenhaRio();
 static void desenhaParede();
+static void desenhaSuperficie(GLuint texture, GLdouble coord[4][2],
+                              GLdouble vertex[4][3]);
 
 void desenhaCenario()
 {
@@ -196,33 +198,21 @@ void desenhaCenario()
  */
 static void desenhaRio()
 {
-    GLdouble t = (t0 % 10000) / 10;
-    const GLdouble DIST_RIO = X_MAX + getNave()->corpo.raio * sin(ANG_MAX);
+    static GLdouble z = 0.0;
+    z += NAVE_VEL/800.0;
 
-    glPushMatrix();
-    glTranslated(0.0, 0.0, getNave()->corpo.z - DIST_CAMERA);
-    glBindTexture(GL_TEXTURE_2D, rioTextura);
-
-    const double coord[4][2] = {
-        { 0, 8 + t/128 }, { 4, 8 + t/128 },
-        { 4,     t/128 }, { 0,     t/128 }
+    const GLdouble K = 4.0;
+    GLdouble coord[4][2] = {
+        { 0.0, K + z }, {   K, K + z },
+        {   K,     z }, { 0.0,     z }
     };
-
-    const int vertex[4][3] = {
-        { -DIST_RIO, 0, Z_DIST + DIST_CAMERA },
-        {  DIST_RIO, 0, Z_DIST + DIST_CAMERA },
-        {  DIST_RIO, 0,                   0 },
-        { -DIST_RIO, 0,                   0 }
+    GLdouble vertex[4][3] = {
+        { -X_MAX, 0.0, Z_DIST + DIST_CAMERA },
+        {  X_MAX, 0.0, Z_DIST + DIST_CAMERA },
+        {  X_MAX, 0.0,                  0.0 },
+        { -X_MAX, 0.0,                  0.0 }
     };
-
-    glBegin(GL_QUADS); 
-    for (int i = 0; i < 4; i++) {
-        glTexCoord2dv(coord[i]);
-        glVertex3iv(vertex[i]);
-    } 
-    glEnd();
-
-    glPopMatrix();
+    desenhaSuperficie(rioTextura, coord, vertex);
 }
 
 /*
@@ -231,51 +221,27 @@ static void desenhaRio()
  */
 static void desenhaParede()
 {
-    const GLdouble DIST_PAREDE = X_MAX + getNave()->corpo.raio * sin(ANG_MAX);
     GLdouble t = (t0 % 10000) / 10;
-    
-    glPushMatrix();
-    glTranslated(0, 0, getNave()->corpo.z - DIST_CAMERA);
-    glBindTexture(GL_TEXTURE_2D, paredeTextura);
 
-    const double coords[4][2] = {
+    GLdouble coord[4][2] = {
         {      t/128, 1 },
         { 16 + t/128, 1 },
         { 16 + t/128, 0 },
         {      t/128, 0 }
     };
-
-    const int verticesFFLCH[4][3] = {
-        { -DIST_PAREDE, Y_MAX, 0 },
-        { -DIST_PAREDE, Y_MAX, Z_DIST + DIST_CAMERA },
-        { -DIST_PAREDE, 0, Z_DIST + DIST_CAMERA },
-        { -DIST_PAREDE, 0, 0 }
+    GLdouble vertex[4][3] = {
+        { -X_MAX, Y_MAX, 0 },
+        { -X_MAX, Y_MAX, Z_DIST + DIST_CAMERA },
+        { -X_MAX, 0, Z_DIST + DIST_CAMERA },
+        { -X_MAX, 0, 0 }
     };
+    desenhaSuperficie(paredeTextura, coord, vertex);
 
-    /* Parede esquerda */
-    glBegin(GL_QUADS);
+    /* Troca o sinal das coordenadas x, para desenhar a outra parede */
     for (int i = 0; i < 4; i++) {
-        glTexCoord2dv(coords[i]);
-        glVertex3iv(verticesFFLCH[i]);
+        vertex[i][0] *= -1;
     }
-    glEnd();
-
-    const int verticesPOLI[4][3] = {
-        { DIST_PAREDE, Y_MAX, 0 },
-        { DIST_PAREDE, Y_MAX, Z_DIST + DIST_CAMERA },
-        { DIST_PAREDE, 0, Z_DIST + DIST_CAMERA },
-        { DIST_PAREDE, 0, 0 }
-    };
-
-    /* Parede direita */
-    glBegin(GL_QUADS);
-    for (int i = 0; i < 4; i++) {
-        glTexCoord2dv(coords[i]);
-        glVertex3iv(verticesPOLI[i]);
-    }
-    glEnd();
-
-    glPopMatrix();
+    desenhaSuperficie(paredeTextura, coord, vertex);
 }
 
 /*
@@ -283,26 +249,36 @@ static void desenhaParede()
  */
 static void desenhaFundo()
 {
-    glPushMatrix();
-    glTranslated(0.0, 0.0, getNave()->corpo.z + Z_DIST);
-    glBindTexture(GL_TEXTURE_2D, fundoTextura);
-
-    const double coord[4][2] = {
+    GLdouble coord[4][2] = {
         { 0.0, 1.0 }, { 4.0, 1.0 },
         { 4.0, 0.0 }, { 0.0, 0.0 }
     };
-
-    const int vertex[4][3] = {
+    GLdouble vertex[4][3] = {
         { -35*X_MAX, 20*Y_MAX, 0.0 },
         {  35*X_MAX, 20*Y_MAX, 0.0 },
         {  35*X_MAX,      0.0, 0.0 },
         { -35*X_MAX,      0.0, 0.0 }
     };
+    desenhaSuperficie(fundoTextura, coord, vertex);
+}
+
+/*
+ *  Faz o desenho de uma superfície quadrilateral na tela.
+ *    - vertex: indica os vértices da superfície;
+ *    - texture: inteiro representando a textura;
+ *    - coord: coordenadas da textura.
+ */
+static void desenhaSuperficie(GLuint texture, double coord[4][2],
+                              GLdouble vertex[4][3])
+{
+    glPushMatrix();
+    glTranslated(0.0, 0.0, getNave()->corpo.z - DIST_CAMERA);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     glBegin(GL_QUADS); 
     for (int i = 0; i < 4; i++) {
         glTexCoord2dv(coord[i]);
-        glVertex3iv(vertex[i]);
+        glVertex3dv(vertex[i]);
     } 
     glEnd();
 

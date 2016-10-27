@@ -9,11 +9,13 @@
 #include "Textura.h"
 #include "Cores.h"
 
-/*------------------------------------------------------------------*/
+/*-------------------------*
+ |   D E F I N I Ç Õ E S   |
+ *-------------------------*----------------------------------------*/
 
 /* Matrizes representando vértices e normais do inimigo */
 static GLdouble defesaVertices[DEFESA_NUM_VERTICES][3];
-static GLdouble defesaNormais[DEFESA_NUM_NORMAIS][3];
+/*static GLdouble defesaNormais[DEFESA_NUM_NORMAIS][3];*/
 
 /* Lista de inimigos em jogo */
 static Lista *inimigos;
@@ -25,7 +27,7 @@ static Lista *inimigos;
 void carregaInimigos()
 {
     leVetores(defesaVertices, DEFESA_NUM_VERTICES, DEFESA_MODELO_VERTICES);
-    leVetores(defesaNormais,  DEFESA_NUM_NORMAIS,  DEFESA_MODELO_NORMAIS);
+    /*leVetores(defesaNormais,  DEFESA_NUM_NORMAIS,  DEFESA_MODELO_NORMAIS);*/
     inimigos = criaLista();
 }
 
@@ -36,7 +38,7 @@ void geraInimigo(double z)
     /* Aloca memória */
     Inimigo *foe = mallocSafe(sizeof *foe);
 
-    posicionaCorpo(&foe->corpo, z);
+    geraCorpo(&foe->corpo, z);
     
     foe->corpo.raio       = FOE_RAIO;
     foe->corpo.altura     = 2 * foe->corpo.y;
@@ -46,6 +48,7 @@ void geraInimigo(double z)
     foe->danoColisao      = DANO_COLISAO;
     foe->pontosAcerto     = PONTOS_ACERTO;
     foe->pontosDestruicao = PONTOS_DESTRUICAO;
+    foe->tempoDano        = 0;
 
     listaInsere(inimigos, foe);
 }
@@ -88,25 +91,24 @@ void inimigoDispara(Inimigo *foe, Nave *nave)
 
 void desenhaInimigo(Inimigo *foe)
 {
+    GLdouble foeCor = 255.0 * (foe->tempoDano)/FOE_TEMPO_DANO;
+    if (foe->tempoDano > 0) foe->tempoDano--;
+
     glPushMatrix();
-    getColorAlpha(WHITE, 255);
-    glTranslated(foe->corpo.x, 0.0, foe->corpo.z);
-    glEnable(GL_TEXTURE_2D);
     glEnable(GL_TEXTURE_GEN_S);
     glEnable(GL_TEXTURE_GEN_T);
+
+    /* Aplica textura */
+    setColorAlpha(WHITE, 255);
     glBindTexture(GL_TEXTURE_2D, defesaTextura);
-    /*glRotated(-90.0, 1.0, 0.0, 0.0);*/
-    /*glutWireCylinder(foe->corpo.raio, foe->corpo.altura, SLICES, STACKS);*/
-    glScaled(400, 1.2*foe->corpo.altura, 400);
 
-    glEnableClientState(GL_VERTEX_ARRAY);
+    /* Posiciona e dimensiona inimigo */
+    glTranslated(foe->corpo.x, 0.0, foe->corpo.z);
+    glScaled(400, foe->corpo.altura, 400);
 
-    /* Desenha os vértices do Defesa.ogl */
+    /* Desenha modelo baseado em vértices e normais */
     glVertexPointer(3, GL_DOUBLE, 0, defesaVertices);
-    glNormalPointer(GL_DOUBLE, 0, defesaNormais);
     glDrawArrays(GL_TRIANGLES, 0, DEFESA_NUM_VERTICES);
-    
-    glDisableClientState(GL_VERTEX_ARRAY);
 
     glDisable(GL_TEXTURE_GEN_S);
     glDisable(GL_TEXTURE_GEN_T);

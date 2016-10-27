@@ -23,12 +23,14 @@
 /* Atributos padrão */
 #define FOE_HPMAX     80
 #define FOE_RAIO      40
-#define FOE_ALTURA   100
 #define DANO_COLISAO  20
 
 /* Pontuação */
 #define PONTOS_ACERTO      100
 #define PONTOS_DESTRUICAO 1000
+
+/* Tempo que um inimigo pisca após ser acertado */
+#define FOE_TEMPO_DANO 100
 
 /* Arquivo e número de vértices referentes ao modelo das defesas */
 #define DEFESA_MODELO_VERTICES "Defesa.vert"
@@ -61,6 +63,9 @@ struct inimigo
     /* Pontuação conferida ao jogador em caso de acerto e destruição */
     int pontosAcerto;
     int pontosDestruicao;
+
+    /* Para fins visuais */
+    int tempoDano;
 };
 
 /*-------------------------*

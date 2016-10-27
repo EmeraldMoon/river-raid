@@ -62,10 +62,10 @@ struct atributos
  *-------------------------*----------------------------------------*/
 
 /*
- *  Posiciona um corpo de forma aleatória com posições
+ *  Posiciona um corpo de forma randômica com posições
  *  aleatórias x e y e coordenada fixa z.
  */
-void posicionaCorpo(Corpo *corpo, double z);
+void geraCorpo(Corpo *corpo, double z);
 
 /*
  *  Verifica se ocorreu colisão entre dois corpos.

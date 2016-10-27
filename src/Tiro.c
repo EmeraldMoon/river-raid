@@ -109,6 +109,8 @@ bool verificaAcerto(Projetil *bullet)
             if (foe->atribs.hp <= 0) {
                 listaRemove(p);
                 nave->score += foe->pontosDestruicao;
+            } else {
+                foe->tempoDano = FOE_TEMPO_DANO;
             }
         }
         return true;
@@ -122,13 +124,16 @@ void desenhaProjetil(Projetil *bullet)
 {
     glPushMatrix();
     glDisable(GL_TEXTURE_2D);
-    glTranslated(bullet->corpo.x, bullet->corpo.y, bullet->corpo.z);
 
-    /* Provisório, no futuro cada tiro terá sua estrutura */
-    if (bullet->amigo) getColor(LIGHT_GRAY);
-    else               getColor(LIME);
+    /* Cores diferentes para tiros diferentes */
+    if (bullet->amigo) setColor(LIGHT_GRAY);
+    else               setColor(YELLOW);
   
+    /* Desenha esfera na posição (x, y, z) */
+    glTranslated(bullet->corpo.x, bullet->corpo.y, bullet->corpo.z);
     glutSolidSphere(bullet->corpo.raio, SLICES, STACKS);
+
+    glEnable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 
