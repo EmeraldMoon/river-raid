@@ -23,7 +23,7 @@ static Modelo modeloParede;
 static Modelo modeloFundo;
 
 /* Guarda intervalo entre chamadas de controlaTempo() */
-static int t0 = 0, dt;
+static int dt;
 
 /* Indica se serão impressas informações de debug */
 static bool debug = false;
@@ -55,7 +55,7 @@ void carregaCenario(bool godMode, bool _debug)
 void controlaTempo()
 {
     static const int INTERVALO = 1000/FPS;
-    static int tExtra = 0;
+    static int t0 = 0, tExtra = 0;
 
     /* Obtém tempo desde última atualização */
     dt = glutGet(GLUT_ELAPSED_TIME) - t0;
@@ -207,17 +207,15 @@ void desenhaCenario()
  */
 static void desenhaRio()
 {
-    static GLdouble z = 0.0;
-    z += NAVE_VEL/800.0;
+    GLdouble z = getNave()->corpo.z/768.0;  /* 512 + 256 */
 
-    const GLdouble K = 4.0;
     GLdouble coord[4][2] = {
-        { 0.0, K + z }, {   K, K + z },
-        {   K,     z }, { 0.0,     z }
+        { 0.0, 4.0 + z }, { 4.0, 4.0 + z },
+        { 4.0,     + z }, { 0.0,     + z }
     };
     GLdouble vertex[4][3] = {
-        { -X_MAX, 0.0, Z_DIST + DIST_CAMERA },
-        {  X_MAX, 0.0, Z_DIST + DIST_CAMERA },
+        { -X_MAX, 0.0, DIST_CAMERA + Z_DIST },
+        {  X_MAX, 0.0, DIST_CAMERA + Z_DIST },
         {  X_MAX, 0.0,                  0.0 },
         { -X_MAX, 0.0,                  0.0 }
     };
@@ -230,19 +228,19 @@ static void desenhaRio()
  */
 static void desenhaParede()
 {
-    GLdouble t = (t0 % 10000) / 10;
+    GLdouble z = getNave()->corpo.z/192.0;  /* 128 + 64 */
 
     GLdouble coord[4][2] = {
-        {        t/128, 1.0 },
-        { 16.0 + t/128, 1.0 },
-        { 16.0 + t/128, 0.0 },
-        {        t/128, 0.0 }
+        {        z, 1.0 },
+        { 16.0 + z, 1.0 },
+        { 16.0 + z, 0.0 },
+        {        z, 0.0 }
     };
     GLdouble vertex[4][3] = {
-        { -X_MAX, Y_MAX, 0 },
-        { -X_MAX, Y_MAX, Z_DIST + DIST_CAMERA },
-        { -X_MAX,     0, Z_DIST + DIST_CAMERA },
-        { -X_MAX,     0, 0 }
+        { -X_MAX, Y_MAX, 0.0 },
+        { -X_MAX, Y_MAX, DIST_CAMERA + Z_DIST },
+        { -X_MAX,   0.0, DIST_CAMERA + Z_DIST },
+        { -X_MAX,   0.0, 0.0 }
     };
     desenhaSuperficie(modeloParede.texturaId, coord, vertex);
 

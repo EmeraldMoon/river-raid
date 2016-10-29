@@ -188,10 +188,10 @@ static void exibeHud()
         glVertex3d(x + i * 3*raio,        y, z);
         setColor(WHITE);
         glVertex3d(x + i * 3*raio, y + raio, z);
-        glVertex3d(x + raio * (1 + i*3),  y, z);
+        glVertex3d(x + raio * (1 + 3*i),  y, z);
         setColor(CYAN);
         glVertex3d(x + i * 3*raio, y - raio, z);
-        glVertex3d(x - raio * (1 - i*3),  y, z);
+        glVertex3d(x - raio * (1 - 3*i),  y, z);
         setColor(WHITE);
         glVertex3d(x + i * 3*raio, y + raio, z);
         glEnd();

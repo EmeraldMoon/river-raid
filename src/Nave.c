@@ -172,14 +172,14 @@ void danificaNave(int dano)
  
 void desenhaNave()
 {
-    static double rotacao = 0;
-    rotacao += PI/6;
     GLdouble naveCor = 255 - 190.0/INVENCIVEL_VIDA * nave->invencibilidade;
 
     glDisable(GL_TEXTURE_2D);
 
     /* Se ativo, desenha escudo ao redor da nave */
     if (nave->escudo > 0) {
+        static double rotacao = 0;
+        rotacao += PI/6;
         naveCor = 255;
         glPushMatrix();
         glTranslated(nave->corpo.x, nave->corpo.y, nave->corpo.z);
