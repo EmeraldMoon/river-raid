@@ -48,7 +48,7 @@ automaticamente e a pontuação final é revelada.
 Pela simplicidade do projeto, só há um tipo de inimigo e uma variedade de tiro para
 as entidades.
 
-Os getListaItens() existentes são:
+Os itens existentes são:
 
 - **Cubo Amarelo:** A nave ganha uma vida extra.
 

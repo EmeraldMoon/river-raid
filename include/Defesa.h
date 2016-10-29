@@ -30,7 +30,7 @@
 #define PONTOS_DESTRUICAO 1000
 
 /* Tempo que um inimigo pisca após ser acertado */
-#define FOE_TEMPO_DANO 100
+#define FOE_TEMPO_DANO 30
 
 /* Arquivo e número de vértices referentes ao modelo das defesas */
 #define DEFESA_MODELO_VERTICES "Defesa.vert"

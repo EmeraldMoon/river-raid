@@ -14,7 +14,7 @@
 
 void geraCorpo(Corpo *corpo, double z)
 {
-    corpo->x = (X_MAX - corpo->raio) * uniforme(-1.0, 1.0);
+    corpo->x = (X_MAX - corpo->raio) * uniforme(-0.9, 0.9);
     corpo->y = uniforme(Y_MAX/8, Y_MAX/2);
     corpo->z = z;
 }

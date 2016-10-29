@@ -23,7 +23,7 @@ typedef struct modelo Modelo;
 struct modelo
 {
     /* Vetor de coordenadas de vértices e número deles */
-    GLdouble *coord;
+    GLdouble *coords;
     GLsizei numVertices;
 
     /* Identificador de textura */

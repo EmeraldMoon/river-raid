@@ -91,23 +91,23 @@ void inimigoDispara(Inimigo *foe, Nave *nave)
 
 void desenhaInimigo(Inimigo *foe)
 {
-    GLdouble foeCor = 255.0 * (foe->tempoDano)/FOE_TEMPO_DANO;
     if (foe->tempoDano > 0) foe->tempoDano--;
 
     glPushMatrix();
     glEnable(GL_TEXTURE_GEN_S);
     glEnable(GL_TEXTURE_GEN_T);
 
-    /* Aplica textura */
-    setColorAlpha(WHITE, 255);
-    glBindTexture(GL_TEXTURE_2D, modelo.texturaId);
+    /* Aplica cor e textura */
+    setColor(WHITE);
+    glBindTexture(GL_TEXTURE_2D,
+                  (foe->tempoDano == 0) ? modelo.texturaId : 0);
 
     /* Posiciona e dimensiona inimigo */
     glTranslated(foe->corpo.x, 0.0, foe->corpo.z);
-    glScaled(400, foe->corpo.altura, 400);
+    glScaled(8 * foe->corpo.raio, foe->corpo.altura, 8 * foe->corpo.raio);
 
     /* Desenha modelo baseado em vértices e normais */
-    glVertexPointer(3, GL_DOUBLE, 0, modelo.coord);
+    glVertexPointer(3, GL_DOUBLE, 0, modelo.coords);
     glDrawArrays(GL_TRIANGLES, 0, modelo.numVertices);
 
     glDisable(GL_TEXTURE_GEN_S);

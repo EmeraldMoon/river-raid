@@ -28,14 +28,14 @@ void leVertices(const char nomeArq[], Modelo *modelo)
     rewind(arq);
 
     /* Lê todas as coordenadas */
-    GLdouble *coord = mallocSafe(3 * n * (sizeof coord[0]));
+    GLdouble *coords = mallocSafe(3 * n * (sizeof coords[0]));
     for (GLsizei i = 0; i < 3 * n; i++) {
-        fscanf(arq, "%lf", &coord[i]);
+        fscanf(arq, "%lf", &coords[i]);
     }
     fclose(arq);
 
     /* Atualiza valores do modelo */
-    modelo->coord = coord;
+    modelo->coords = coords;
     modelo->numVertices = n;
 }
 

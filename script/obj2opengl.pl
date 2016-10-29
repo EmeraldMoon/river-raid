@@ -111,7 +111,7 @@ if($verbose) {
 	printInputAndOptions();
 }
 
-# TODO check integrity: Does every referenced vertex, normal and coord exist?
+# TODO check integrity: Does every referenced vertex, normal and coords exist?
 loadData();
 normalizeNormals();
 

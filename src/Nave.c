@@ -207,7 +207,7 @@ void desenhaNave()
                  2 * nave->corpo.raio);
 
         /* Desenha os vértices do arquivo */
-        glVertexPointer(3, GL_DOUBLE, 0, modelo.coord);
+        glVertexPointer(3, GL_DOUBLE, 0, modelo.coords);
         glDrawArrays(GL_TRIANGLES, 0, modelo.numVertices);
     }
     glPopMatrix();

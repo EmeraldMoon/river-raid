@@ -28,8 +28,6 @@ static int dt;
 /* Indica se serão impressas informações de debug */
 static bool debug = false;
 
-static void imprimeElementos();
-
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
@@ -91,6 +89,8 @@ int getDelayTempo()
 
 /*------------------------------------------------------------------*/
 
+static void imprimeElementos();
+
 void atualizaCenario()
 {
     static int contFoe  = TEMPO_INIMIGOS;
@@ -150,150 +150,6 @@ void atualizaCenario()
     if (debug) imprimeElementos();
 }
 
-/*------------------------------------------------------------------*/
-
-void encerraJogo()
-{
-    liberaLista(getListaInimigos());
-    liberaLista(getListaProjeteis());
-    liberaLista(getListaItens());
-
-    printf("Score final: %d\n", getNave()->score);
-    exit(EXIT_SUCCESS);
-}
-
-/*------------------------------------------------------------------*/
-
-static void desenhaFundo();
-static void desenhaRio();
-static void desenhaParede();
-static void desenhaSuperficie(GLuint texture, GLdouble coord[4][2],
-                              GLdouble vertex[4][3]);
-
-void desenhaCenario()
-{
-    /* Ativa opções para desenho de objetos */
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_DEPTH_TEST);
-
-    /* Desenha elementos estáticos do cenário */
-    desenhaRio();
-    desenhaParede();
-    desenhaFundo();
-    
-    /* Desenha elementos dinâmicos do jogo */
-    for (Celula *p = getListaItens()->prox; p != NULL; p = p->prox) {
-        Item *item = p->item;
-        desenhaItem(item);
-    }
-    for (Celula *p = getListaInimigos()->prox; p != NULL; p = p->prox) {
-        Inimigo *foe = p->item;
-        desenhaInimigo(foe);
-    }
-    for (Celula *p = getListaProjeteis()->prox; p != NULL; p = p->prox) {
-        Projetil *bullet = p->item;
-        desenhaProjetil(bullet);
-    }
-    desenhaNave();
-
-    /* Desativa opções para não prejudicar desenho de hud e etc */
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_DEPTH_TEST);
-}
-
-/*
- *  Desenha o "chão" do cenário, o limite inferior do jogo.
- *  Simula uma sensação de movimento com o correr do rio.
- */
-static void desenhaRio()
-{
-    GLdouble z = getNave()->corpo.z/768.0;  /* 512 + 256 */
-
-    GLdouble coord[4][2] = {
-        { 0.0, 4.0 + z }, { 4.0, 4.0 + z },
-        { 4.0,     + z }, { 0.0,     + z }
-    };
-    GLdouble vertex[4][3] = {
-        { -X_MAX, 0.0, DIST_CAMERA + Z_DIST },
-        {  X_MAX, 0.0, DIST_CAMERA + Z_DIST },
-        {  X_MAX, 0.0,                  0.0 },
-        { -X_MAX, 0.0,                  0.0 }
-    };
-    desenhaSuperficie(modeloRio.texturaId, coord, vertex);
-}
-
-/*
- *  Desenha as paredes que limitam lateralmente o jogo, 
- *  atribuindo-lhes uma textura e também produzindo movimento.
- */
-static void desenhaParede()
-{
-    GLdouble z = getNave()->corpo.z/192.0;  /* 128 + 64 */
-
-    GLdouble coord[4][2] = {
-        {        z, 1.0 },
-        { 16.0 + z, 1.0 },
-        { 16.0 + z, 0.0 },
-        {        z, 0.0 }
-    };
-    GLdouble vertex[4][3] = {
-        { -X_MAX, Y_MAX, 0.0 },
-        { -X_MAX, Y_MAX, DIST_CAMERA + Z_DIST },
-        { -X_MAX,   0.0, DIST_CAMERA + Z_DIST },
-        { -X_MAX,   0.0, 0.0 }
-    };
-    desenhaSuperficie(modeloParede.texturaId, coord, vertex);
-
-    /* Troca o sinal das coordenadas x, para desenhar a outra parede */
-    for (int i = 0; i < 4; i++) {
-        vertex[i][0] *= -1;
-    }
-    desenhaSuperficie(modeloParede.texturaId, coord, vertex);
-}
-
-/*
- *  Desenha o plano de fundo, atribuindo-lhe uma textura.
- */
-static void desenhaFundo()
-{
-    GLdouble coord[4][2] = {
-        { 0.0, 1.0 }, { 4.0, 1.0 },
-        { 4.0, 0.0 }, { 0.0, 0.0 }
-    };
-    GLdouble vertex[4][3] = {
-        { -35 * X_MAX, 20 * Y_MAX, 0.0 },
-        {  35 * X_MAX, 20 * Y_MAX, 0.0 },
-        {  35 * X_MAX,        0.0, 0.0 },
-        { -35 * X_MAX,        0.0, 0.0 }
-    };
-    desenhaSuperficie(modeloFundo.texturaId, coord, vertex);
-}
-
-/*
- *  Faz o desenho de uma superfície quadrilateral na tela.
- *    - vertices: indica os vértices da superfície;
- *    - texturaId: inteiro representando a textura;
- *    - coord: coordenadas da textura.
- */
-static void desenhaSuperficie(GLuint texturaId, GLdouble coord[4][2],
-                              GLdouble vertices[4][3])
-{
-    glPushMatrix();
-    glTranslated(0.0, 0.0, getNave()->corpo.z - DIST_CAMERA);
-    glBindTexture(GL_TEXTURE_2D, texturaId);
-
-    glBegin(GL_QUADS); 
-    for (int i = 0; i < 4; i++) {
-        glTexCoord2dv(coord[i]);
-        glVertex3dv(vertices[i]);
-    } 
-    glEnd();
-
-    glPopMatrix();
-}
-
-/*------------------------------------------------------------------*/
-
 /*
  *  Mostra informação a respeito dos elementos do jogo no
  *  timestep atual. Usada para depuração.
@@ -340,4 +196,146 @@ static void imprimeElementos()
                bullet->vx, bullet->vy, bullet->vz,
                bullet->amigo ? "sim" : "não");
     }
+}
+
+/*------------------------------------------------------------------*/
+
+static void desenhaFundo();
+static void desenhaRio();
+static void desenhaParede();
+static void desenhaSuperficie(GLuint texture, GLdouble coords[4][2],
+                              GLdouble vertex[4][3]);
+
+void desenhaCenario()
+{
+    /* Ativa opções para desenho de objetos */
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_DEPTH_TEST);
+
+    /* Desenha elementos estáticos do cenário */
+    desenhaRio();
+    desenhaParede();
+    desenhaFundo();
+    
+    /* Desenha elementos dinâmicos do jogo */
+    for (Celula *p = getListaItens()->prox; p != NULL; p = p->prox) {
+        Item *item = p->item;
+        desenhaItem(item);
+    }
+    for (Celula *p = getListaInimigos()->prox; p != NULL; p = p->prox) {
+        Inimigo *foe = p->item;
+        desenhaInimigo(foe);
+    }
+    for (Celula *p = getListaProjeteis()->prox; p != NULL; p = p->prox) {
+        Projetil *bullet = p->item;
+        desenhaProjetil(bullet);
+    }
+    desenhaNave();
+
+    /* Desativa opções para não prejudicar desenho de hud e etc */
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+}
+
+/*
+ *  Desenha o "chão" do cenário, o limite inferior do jogo.
+ *  Simula uma sensação de movimento com o correr do rio.
+ */
+static void desenhaRio()
+{
+    GLdouble z = getNave()->corpo.z/768.0;  /* 512 + 256 */
+
+    GLdouble coords[4][2] = {
+        { 0.0, 4.0 + z }, { 4.0, 4.0 + z },
+        { 4.0,     + z }, { 0.0,     + z }
+    };
+    GLdouble vertex[4][3] = {
+        { -X_MAX, 0.0, DIST_CAMERA + Z_DIST },
+        {  X_MAX, 0.0, DIST_CAMERA + Z_DIST },
+        {  X_MAX, 0.0,                  0.0 },
+        { -X_MAX, 0.0,                  0.0 }
+    };
+    desenhaSuperficie(modeloRio.texturaId, coords, vertex);
+}
+
+/*
+ *  Desenha as paredes que limitam lateralmente o jogo, 
+ *  atribuindo-lhes uma textura e também produzindo movimento.
+ */
+static void desenhaParede()
+{
+    GLdouble z = getNave()->corpo.z/192.0;  /* 128 + 64 */
+
+    GLdouble coords[4][2] = {
+        {        z, 1.0 },
+        { 16.0 + z, 1.0 },
+        { 16.0 + z, 0.0 },
+        {        z, 0.0 }
+    };
+    GLdouble vertex[4][3] = {
+        { -X_MAX, Y_MAX, 0.0 },
+        { -X_MAX, Y_MAX, DIST_CAMERA + Z_DIST },
+        { -X_MAX,   0.0, DIST_CAMERA + Z_DIST },
+        { -X_MAX,   0.0, 0.0 }
+    };
+    desenhaSuperficie(modeloParede.texturaId, coords, vertex);
+
+    /* Troca o sinal das coordenadas x, para desenhar a outra parede */
+    for (int i = 0; i < 4; i++) {
+        vertex[i][0] *= -1;
+    }
+    desenhaSuperficie(modeloParede.texturaId, coords, vertex);
+}
+
+/*
+ *  Desenha o plano de fundo, atribuindo-lhe uma textura.
+ */
+static void desenhaFundo()
+{
+    GLdouble coords[4][2] = {
+        { 0.0, 1.0 }, { 4.0, 1.0 },
+        { 4.0, 0.0 }, { 0.0, 0.0 }
+    };
+    GLdouble vertex[4][3] = {
+        { -35 * X_MAX, 20 * Y_MAX, 0.0 },
+        {  35 * X_MAX, 20 * Y_MAX, 0.0 },
+        {  35 * X_MAX,        0.0, 0.0 },
+        { -35 * X_MAX,        0.0, 0.0 }
+    };
+    desenhaSuperficie(modeloFundo.texturaId, coords, vertex);
+}
+
+/*
+ *  Faz o desenho de uma superfície quadrilateral na tela.
+ *    - vertices: indica os vértices da superfície;
+ *    - texturaId: inteiro representando a textura;
+ *    - coords: coordenadas da textura.
+ */
+static void desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
+                              GLdouble vertices[4][3])
+{
+    glPushMatrix();
+    glTranslated(0.0, 0.0, getNave()->corpo.z - DIST_CAMERA);
+    glBindTexture(GL_TEXTURE_2D, texturaId);
+
+    glBegin(GL_QUADS); 
+    for (int i = 0; i < 4; i++) {
+        glTexCoord2dv(coords[i]);
+        glVertex3dv(vertices[i]);
+    } 
+    glEnd();
+
+    glPopMatrix();
+}
+
+/*------------------------------------------------------------------*/
+
+void encerraJogo()
+{
+    liberaLista(getListaInimigos());
+    liberaLista(getListaProjeteis());
+    liberaLista(getListaItens());
+
+    printf("Score final: %d\n", getNave()->score);
+    exit(EXIT_SUCCESS);
 }
