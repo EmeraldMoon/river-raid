@@ -74,7 +74,7 @@ struct nave
  *  Cria uma nave, alocando memória e carregando modelo do OpenGL.
  *  Se godMode, então ela será eternamente invencível.
  */
-Nave *carregaNave(bool godMode);
+void carregaNave(bool godMode);
 
 /*
  *  Recebe a posição no eixo Oz da nave e um número de vidas.

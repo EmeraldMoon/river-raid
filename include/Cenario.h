@@ -30,9 +30,8 @@
 
 /*
  *  Inicializa listas e carrega modelos e texturas para a memória.
- *  Recebe algumas opções anteriormente colhidas da linha de comando.
  */
-void inicializaJogo(bool godMode, bool debug);
+void carregaCenario(bool godMode, bool debug);
 
 /*
  *  Faz a chamada das funções de atualização e desenho, além de

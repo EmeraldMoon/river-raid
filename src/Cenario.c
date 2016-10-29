@@ -10,18 +10,23 @@
 #include "Tiro.h"
 #include "Item.h"
 #include "Teclado.h"
-#include "Textura.h"
+#include "Modelo.h"
 #include "Grafico.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*----------------------------------------*/
 
-/* Indica se serão impressas informações de debug */
-static bool debug = false;
+/* Modelos do cenário */
+static Modelo modeloRio;
+static Modelo modeloParede;
+static Modelo modeloFundo;
 
 /* Guarda intervalo entre chamadas de controlaTempo() */
 static int t0 = 0, dt;
+
+/* Indica se serão impressas informações de debug */
+static bool debug = false;
 
 static void imprimeElementos();
 
@@ -29,13 +34,18 @@ static void imprimeElementos();
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-void inicializaJogo(bool godMode, bool _debug)
+void carregaCenario(bool godMode, bool _debug)
 {
-    /* Carrega listas, modelos e texturas */
+    /* Carrega listas e modelos */
     carregaNave(godMode);
     carregaInimigos();
     carregaProjeteis();
     carregaItens();
+
+    /* Texturas do cenário */
+    carregaTextura("water.ppm", true, &modeloRio);
+    carregaTextura("brick.ppm", true, &modeloParede);
+    carregaTextura("space.ppm", true, &modeloFundo);
     
     debug = _debug;
 }
@@ -107,15 +117,15 @@ void atualizaCenario()
         else p = p->prox;
     }
     /* Loop para tratar de itens */
-    Celula *q = getListaItens();
-    while (q->prox != NULL) {
-        Item *item = q->prox->item;
+    p = getListaItens();
+    while (p->prox != NULL) {
+        Item *item = p->prox->item;
         if (ocorreuColisao(&nave->corpo, &item->corpo)) {
             ativaItem(item, nave);
-            listaRemove(q);
+            listaRemove(p);
         }
-        else if (corpoSaiu(&item->corpo, nave->corpo.z)) listaRemove(q);
-        else q = q->prox;
+        else if (corpoSaiu(&item->corpo, nave->corpo.z)) listaRemove(p);
+        else p = p->prox;
     }
     /* Loop para verificar estado dos projéteis */
     p = getListaProjeteis();
@@ -147,7 +157,6 @@ void encerraJogo()
     liberaLista(getListaInimigos());
     liberaLista(getListaProjeteis());
     liberaLista(getListaItens());
-    liberaTexturas();
 
     printf("Score final: %d\n", getNave()->score);
     exit(EXIT_SUCCESS);
@@ -212,7 +221,7 @@ static void desenhaRio()
         {  X_MAX, 0.0,                  0.0 },
         { -X_MAX, 0.0,                  0.0 }
     };
-    desenhaSuperficie(rioTextura, coord, vertex);
+    desenhaSuperficie(modeloRio.texturaId, coord, vertex);
 }
 
 /*
@@ -224,24 +233,24 @@ static void desenhaParede()
     GLdouble t = (t0 % 10000) / 10;
 
     GLdouble coord[4][2] = {
-        {      t/128, 1 },
-        { 16 + t/128, 1 },
-        { 16 + t/128, 0 },
-        {      t/128, 0 }
+        {        t/128, 1.0 },
+        { 16.0 + t/128, 1.0 },
+        { 16.0 + t/128, 0.0 },
+        {        t/128, 0.0 }
     };
     GLdouble vertex[4][3] = {
         { -X_MAX, Y_MAX, 0 },
         { -X_MAX, Y_MAX, Z_DIST + DIST_CAMERA },
-        { -X_MAX, 0, Z_DIST + DIST_CAMERA },
-        { -X_MAX, 0, 0 }
+        { -X_MAX,     0, Z_DIST + DIST_CAMERA },
+        { -X_MAX,     0, 0 }
     };
-    desenhaSuperficie(paredeTextura, coord, vertex);
+    desenhaSuperficie(modeloParede.texturaId, coord, vertex);
 
     /* Troca o sinal das coordenadas x, para desenhar a outra parede */
     for (int i = 0; i < 4; i++) {
         vertex[i][0] *= -1;
     }
-    desenhaSuperficie(paredeTextura, coord, vertex);
+    desenhaSuperficie(modeloParede.texturaId, coord, vertex);
 }
 
 /*
@@ -254,31 +263,31 @@ static void desenhaFundo()
         { 4.0, 0.0 }, { 0.0, 0.0 }
     };
     GLdouble vertex[4][3] = {
-        { -35*X_MAX, 20*Y_MAX, 0.0 },
-        {  35*X_MAX, 20*Y_MAX, 0.0 },
-        {  35*X_MAX,      0.0, 0.0 },
-        { -35*X_MAX,      0.0, 0.0 }
+        { -35 * X_MAX, 20 * Y_MAX, 0.0 },
+        {  35 * X_MAX, 20 * Y_MAX, 0.0 },
+        {  35 * X_MAX,        0.0, 0.0 },
+        { -35 * X_MAX,        0.0, 0.0 }
     };
-    desenhaSuperficie(fundoTextura, coord, vertex);
+    desenhaSuperficie(modeloFundo.texturaId, coord, vertex);
 }
 
 /*
  *  Faz o desenho de uma superfície quadrilateral na tela.
- *    - vertex: indica os vértices da superfície;
- *    - texture: inteiro representando a textura;
+ *    - vertices: indica os vértices da superfície;
+ *    - texturaId: inteiro representando a textura;
  *    - coord: coordenadas da textura.
  */
-static void desenhaSuperficie(GLuint texture, double coord[4][2],
-                              GLdouble vertex[4][3])
+static void desenhaSuperficie(GLuint texturaId, GLdouble coord[4][2],
+                              GLdouble vertices[4][3])
 {
     glPushMatrix();
     glTranslated(0.0, 0.0, getNave()->corpo.z - DIST_CAMERA);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, texturaId);
 
     glBegin(GL_QUADS); 
     for (int i = 0; i < 4; i++) {
         glTexCoord2dv(coord[i]);
-        glVertex3dv(vertex[i]);
+        glVertex3dv(vertices[i]);
     } 
     glEnd();
 

@@ -1,4 +1,5 @@
 #include <stdio.h>   /* sprintf */
+#include <string.h>  /* strcmp */
 #include <math.h>    /* ceil */
 
 #include "Grafico.h"
@@ -6,7 +7,7 @@
 #include "Nave.h"
 #include "Cenario.h"
 #include "Teclado.h"
-#include "Textura.h"
+#include "Modelo.h"
 #include "Cores.h"
 
 /*-------------------------*
@@ -34,22 +35,23 @@ static void exibeFps();
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-void inicializaGraficos(GLboolean noDepth)
+void inicializaJogo(int argc, char *argv[])
 {
-    nave = getNave();
-    
+    /* Tratamento de argumentos via linha de comando */
+    bool godMode = false, debug = false, noDepth = false;;
+    for (int i = 0; i < argc; i++) {
+        if      (strcmp(argv[i], "-iddqd") == 0) godMode = true;
+        else if (strcmp(argv[i], "-d"    ) == 0)   debug = true;
+        else if (strcmp(argv[i], "-l"    ) == 0) noDepth = true;
+    }    
     /* Inicializa glut. */
-    int temp = 0;
-    glutInit(&temp, NULL);  /* evita passar &argc e argv */
+    glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | (noDepth ? 0 : GLUT_DEPTH));
 
     /* Desenha e centraliza janela de jogo */
     glutInitWindowSize(glutGet(GLUT_SCREEN_WIDTH),
                        glutGet(GLUT_SCREEN_HEIGHT));
     glutCreateWindow("River Raid");
-
-    /* Carrega texturas */
-    carregaTexturas();
 
     /* Ativa efeitos de transparência */
     glEnable(GL_BLEND); 
@@ -79,6 +81,11 @@ void inicializaGraficos(GLboolean noDepth)
     glutSpecialFunc(keySpecialPressed);
     glutSpecialUpFunc(keySpecialUp);
 
+    /* Carrega modelos e listas */
+    carregaCenario(godMode, debug);
+
+    nave = getNave();
+
     /* Passa controle do resto do jogo ao OpenGL */
     glutMainLoop();
 }
@@ -91,11 +98,6 @@ void inicializaGraficos(GLboolean noDepth)
  */
 static void desenha()
 {
-    /* Se jogo estiver pausado, nada é desenhado */
-    if (estaPausado()) {
-        controlaTempo();
-        return;
-    }
     /* Faz a limpeza dos buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -114,8 +116,8 @@ static void desenha()
                   nave->corpo.x, nave->corpo.y, nave->corpo.z + Z_DIST,
                   0.0, 1.0, 0.0);
     } else {
-        gluLookAt(0.0, Y_MAX/2, nave->corpo.z - DIST_CAMERA,
-                  0.0, Y_MAX/2, nave->corpo.z + Z_DIST,
+        gluLookAt(0.0, Y_MAX/2.0, nave->corpo.z - DIST_CAMERA,
+                  0.0, Y_MAX/2.0, nave->corpo.z + Z_DIST,
                   0.0, 1.0, 0.0);
     }
     /* Desenha cenário e elementos de jogo */
@@ -170,74 +172,72 @@ static void projecaoFim();
  */
 static void exibeHud()
 {
-    const GLdouble RAIO = largura/75.0;
-    const GLdouble K = -Y_MAX/(62/32.0 * altura) + 1; /* Constante de mudança de câmera */
-    const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + largura/10.0
-                                               : largura/10.0);
-    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*altura/32.0
+    GLdouble raio = largura/75.0;
+    GLdouble k = -Y_MAX/(62/32.0 * altura) + 1; /* Constante de mudança de câmera */
+    GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave->corpo.x);
+    GLdouble y = (estaEmPrimeiraPessoa() ? nave->corpo.y + k*31*altura/32.0
                                                : 31*altura/32.0);
-    const GLdouble Z = (estaEmPrimeiraPessoa() ? nave->corpo.z
-                                               : nave->corpo.z - DIST_CAMERA);
+    GLdouble z = nave->corpo.z - (!estaEmPrimeiraPessoa() * DIST_CAMERA);
 
     projecaoInicio();
 
-    /* Desenha vidas restantes da nave */
-    for (GLint i = 0; i < nave->vidas; i++) {
-        glBegin(GL_TRIANGLE_FAN); {
-            setColor(CYAN);
-            glVertex3d( X + 3*RAIO*i, Y, Z );
-            setColor(WHITE);
-            glVertex3d( X + 3*RAIO*i, Y + RAIO, Z );
-            glVertex3d( X + RAIO + 3*RAIO*i, Y, Z );
-            setColor(CYAN);
-            glVertex3d( X + 3*RAIO*i, Y - RAIO, Z );
-            glVertex3d( X - RAIO + 3*RAIO*i, Y, Z );
-            setColor(WHITE);
-            glVertex3d( X + 3*RAIO*i, Y + RAIO, Z );
-        } glEnd();
+    /* Desenha vidas extras da nave */
+    for (int i = 0; i < nave->vidas; i++) {
+        glBegin(GL_TRIANGLE_FAN);
+        setColor(CYAN);
+        glVertex3d(x + i * 3*raio,        y, z);
+        setColor(WHITE);
+        glVertex3d(x + i * 3*raio, y + raio, z);
+        glVertex3d(x + raio * (1 + i*3),  y, z);
+        setColor(CYAN);
+        glVertex3d(x + i * 3*raio, y - raio, z);
+        glVertex3d(x - raio * (1 - i*3),  y, z);
+        setColor(WHITE);
+        glVertex3d(x + i * 3*raio, y + raio, z);
+        glEnd();
     }
 
     /* Caixa da lifebar */
-    const double vertexLifebox[4][3] = {
-        {          X - 1.0, Y - 2*RAIO - 3, Z },
-        {          X - 1.0, Y - 2*RAIO + 2, Z },
-        { X + 0.2*largura + 1, Y - 2*RAIO + 2, Z },
-        { X + 0.2*largura + 1, Y - 2*RAIO - 3, Z }
+    GLdouble vertexLifebox[4][3] = {
+        {               x - 1, y - 2*raio - 3, z },
+        {               x - 1, y - 2*raio + 2, z },
+        { x + 0.2*largura + 1, y - 2*raio + 2, z },
+        { x + 0.2*largura + 1, y - 2*raio - 3, z }
     };
-
+    /* Desenha a cabixa */
     setColor(DARK_BLUE);
     glBegin(GL_QUADS); 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
         glVertex3dv(vertexLifebox[i]);
+    }
     glEnd();
+
+    /* A lifebar em si */
+    int hp = nave->atribs.hp;
+    GLdouble vertexLifebar[4][3] = {
+        {                               x, y - 2*raio - 2, z },
+        {                               x, y - 2*raio + 1, z },
+        { x + 0.2*largura * hp/NAVE_HPMAX, y - 2*raio + 1, z },
+        { x + 0.2*largura * hp/NAVE_HPMAX, y - 2*raio - 2, z }
+    };
+    /* Cor varia dependendo da energia da nave */
+    double r = (double) hp/NAVE_HPMAX;
+    glColor3d(1 - r, r, 0.0);
 
     /* Desenha a lifebar */
-    const double vertexLifebar[4][3] = {
-        {                               X, Y - 2*RAIO - 2, Z },
-        {                               X, Y - 2*RAIO + 1, Z },
-        { X + 0.2*largura*nave->atribs.hp/100.0, Y - 2*RAIO + 1, Z },
-        { X + 0.2*largura*nave->atribs.hp/100.0, Y - 2*RAIO - 2, Z }
-    };
-
-    /* Cor varia dependendo da energia da nave */
-    glColor3ub(1 - 255*nave->atribs.hp/NAVE_HPMAX, 255*nave->atribs.hp/NAVE_HPMAX, 0);
     glBegin(GL_QUADS);
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
         glVertex3dv(vertexLifebar[i]);
+    }
     glEnd();
 
-    /* Imprime pontuação */
-    char score[16];
-    sprintf(score, "Score: %d ", nave->score);
+    /* Imprime pontuação (e, se for o caso, mensagem de pausa) */
+    unsigned char str[32];
+    sprintf((char *) str, "Score: %d %s", nave->score,
+                                          estaPausado() ? "(pausa)" : "");
     setColor(WHITE);
-    glRasterPos3d(X, Y -2*RAIO - 25, Z);
-    glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) score);
-
-    /* Informa se jogo está pausado */
-    if (estaPausado()) {
-        setColor(WHITE);
-        glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) "(Pausa)");
-    }
+    glRasterPos3d(x, y - 2*raio - 25, z);
+    glutBitmapString(GLUT_BITMAP_HELVETICA_18, str);
 
     projecaoFim();
 }
@@ -258,24 +258,24 @@ static void exibeFps()
         cont = cont % 20;
     }
     const GLdouble K = -Y_MAX/(62/32.0 * altura) + 1; /* Constante de mudança de câmera */
-    const GLdouble X = (estaEmPrimeiraPessoa() ? nave->corpo.x + 0.88 * largura
+    const GLdouble x = (estaEmPrimeiraPessoa() ? nave->corpo.x + 0.88 * largura
                                                : 0.88 * largura);
-    const GLdouble Y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*altura/32.0
+    const GLdouble y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*altura/32.0
                                                : 31*altura/32.0);
-    const GLdouble Z = (estaEmPrimeiraPessoa() ? nave->corpo.z
+    const GLdouble z = (estaEmPrimeiraPessoa() ? nave->corpo.z
                                                : nave->corpo.z - DIST_CAMERA);
 
     projecaoInicio();
 
     /* Posiciona projeção */
-    glRasterPos3d(X, Y, Z);
+    glRasterPos3d(x, y, z);
 
     /* String que guarda fps */
-    char mostrador[16];
-    sprintf(mostrador, "%2d fps", (fps > 60) ? 60 : fps);
+    unsigned char mostrador[16];
+    sprintf((char *) mostrador, "%2d fps", (fps > 60) ? 60 : fps);
 
     setColor(YELLOW);
-    glutBitmapString(GLUT_BITMAP_HELVETICA_18, (unsigned char *) mostrador);
+    glutBitmapString(GLUT_BITMAP_HELVETICA_18, mostrador);
 
     projecaoFim();
 }

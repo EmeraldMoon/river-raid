@@ -1,27 +1,48 @@
 /*------------------------------------------------------------------*
  |                                                                  |
- |  Definições de uso geral e estruturas comuns, a serem            |
- |  usadas em mais de um módulo do projeto.                         |
+ |  Cuida do carregamento e manuseio de texturas da parte gráfica.  |
  |                                                                  |
  *------------------------------------------------------------------*/
 
 #pragma once
 
-#include <GL/freeglut.h>  /* GLdouble, GLsizei */
+#include <GL/freeglut.h>
 
-/*-------------------------*----------------------------------------*
+/*-------------------------*
  |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+ *-------------------------*----------------------------------------*/
 
-/* Diretório onde arquivos .vert e .norm estão localizados */
-#define MODELO_DIR "model/"
-
-/*-------------------------*----------------------------------------*
- |   P R O T Ó T I P O S   |
- *-------------------------*/
+/* Diretórios para modelos e texturas */
+#define   MODEL_DIR   "model"
+#define TEXTURE_DIR "texture"
 
 /*
- *  Recebe uma matriz de doubles e dimensões (num x 3) e um nome
- *  de arquivo. Lê valores de vetores (vértices ou normais) para a matriz.
+ *  Modelo de um objeto desenhável do jogo.
  */
-void leVetores(GLdouble vetores[][3], GLsizei num, char nomeArq[]);
+typedef struct modelo Modelo;
+struct modelo
+{
+    /* Vetor de coordenadas de vértices e número deles */
+    GLdouble *coord;
+    GLsizei numVertices;
+
+    /* Identificador de textura */
+    GLuint texturaId;
+};
+
+/*-------------------------*
+ |   P R O T Ó T I P O S   |
+ *-------------------------*----------------------------------------*/
+
+/*
+ *  Recebe um nome de arquivo contendo vértices.
+ *  Carrega os vértices do arquivo para serem usados no modelo.
+ */
+void leVertices(const char nomeArq[], Modelo *modelo);
+
+/*
+ *  Recebe um nome de arquivo em formato PPM.
+ *  Carrega a textura deste arquivo para a memória.
+ *  mipmap indica se será usado o recurso de mipmapping.
+ */
+void carregaTextura(const char nomeArq[], GLboolean mipmap, Modelo *modelo);

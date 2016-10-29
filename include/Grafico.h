@@ -32,8 +32,7 @@
  *-------------------------*----------------------------------------*/
 
 /*
- *  Inicializa elementos do glut e OpenGL e passa
- *  o comando do restante do programa ao OpenGL.
- *  noDepth indica se deveremos usar o buffer de profundidade.
+ *  Inicializa elementos do jogo e passa o comando do restante
+ *  do programa ao OpenGL.
  */
-void inicializaGraficos(GLboolean noDepth);
+void inicializaJogo(int argc, char *argv[]);

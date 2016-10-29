@@ -6,19 +6,17 @@
 #include "Cenario.h"
 #include "Grafico.h"
 #include "Modelo.h"
-#include "Textura.h"
 #include "Cores.h"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*----------------------------------------*/
 
-/* Matrizes representando vértices e normais do inimigo */
-static GLdouble defesaVertices[DEFESA_NUM_VERTICES][3];
-/*static GLdouble defesaNormais[DEFESA_NUM_NORMAIS][3];*/
-
 /* Lista de inimigos em jogo */
 static Lista *inimigos;
+
+/* Modelo dos inimigos */
+static Modelo modelo;
 
 /*-------------------*
  |   F U N Ç Õ E S   |
@@ -26,8 +24,10 @@ static Lista *inimigos;
 
 void carregaInimigos()
 {
-    leVetores(defesaVertices, DEFESA_NUM_VERTICES, DEFESA_MODELO_VERTICES);
-    /*leVetores(defesaNormais,  DEFESA_NUM_NORMAIS,  DEFESA_MODELO_NORMAIS);*/
+    /* Carrega modelo da nave */
+    leVertices("Defesa.vert", &modelo);
+    carregaTextura("magma.ppm", false, &modelo);
+
     inimigos = criaLista();
 }
 
@@ -100,15 +100,15 @@ void desenhaInimigo(Inimigo *foe)
 
     /* Aplica textura */
     setColorAlpha(WHITE, 255);
-    glBindTexture(GL_TEXTURE_2D, defesaTextura);
+    glBindTexture(GL_TEXTURE_2D, modelo.texturaId);
 
     /* Posiciona e dimensiona inimigo */
     glTranslated(foe->corpo.x, 0.0, foe->corpo.z);
     glScaled(400, foe->corpo.altura, 400);
 
     /* Desenha modelo baseado em vértices e normais */
-    glVertexPointer(3, GL_DOUBLE, 0, defesaVertices);
-    glDrawArrays(GL_TRIANGLES, 0, DEFESA_NUM_VERTICES);
+    glVertexPointer(3, GL_DOUBLE, 0, modelo.coord);
+    glDrawArrays(GL_TRIANGLES, 0, modelo.numVertices);
 
     glDisable(GL_TEXTURE_GEN_S);
     glDisable(GL_TEXTURE_GEN_T);

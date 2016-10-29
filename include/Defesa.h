@@ -36,10 +36,6 @@
 #define DEFESA_MODELO_VERTICES "Defesa.vert"
 #define DEFESA_NUM_VERTICES 15538
 
-/* Idem, para normais */
-#define DEFESA_MODELO_NORMAIS "Defesa.norm"
-#define DEFESA_NUM_NORMAIS 7541
-
 /*------------------------------------------------------------------*/
 
 /*

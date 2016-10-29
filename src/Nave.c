@@ -5,7 +5,6 @@
 #include "Tiro.h"
 #include "Cenario.h"
 #include "Teclado.h"
-#include "Textura.h"
 #include "Modelo.h"
 #include "Grafico.h"
 #include "Cores.h"
@@ -17,8 +16,8 @@
 /* Ponteiro para estrutura da nave */
 static Nave *nave;
 
-/* Matriz representando vértices da nave */
-static GLdouble naveVertices[NAVE_NUM_VERTICES][3];
+/* Modelo da nave */
+static Modelo modelo;
 
 /* Booleano que define invencibilidade perpétua */
 static bool godMode;
@@ -27,13 +26,14 @@ static bool godMode;
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-Nave *carregaNave(bool _godMode)
+void carregaNave(bool _godMode)
 {
+    /* Carrega modelo da nave */
+    leVertices("Nave.vert", &modelo);
+    carregaTextura("silver.ppm", false, &modelo);
+
     /* Aloca memória para a nave */
     nave = mallocSafe(sizeof *nave);
-
-    /* Carrega vértices do modelo */
-    leVetores(naveVertices, NAVE_NUM_VERTICES, NAVE_MODELO_VERTICES);
 
     nave->corpo.raio      = NAVE_RAIO;
     nave->corpo.altura    = NAVE_ALTURA;
@@ -46,8 +46,6 @@ Nave *carregaNave(bool _godMode)
 
     /* Começa em z == 0.0 */
     recriaNave(0.0, NAVE_VIDAS);
-
-    return nave;
 }
 
 void recriaNave(int z, int nVidas)
@@ -204,13 +202,13 @@ void desenhaNave()
     }
     else {
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, naveTextura);
+        glBindTexture(GL_TEXTURE_2D, modelo.texturaId);
         glScaled(2 * nave->corpo.raio, nave->corpo.altura,
                  2 * nave->corpo.raio);
 
         /* Desenha os vértices do arquivo */
-        glVertexPointer(3, GL_DOUBLE, 0, naveVertices);
-        glDrawArrays(GL_TRIANGLES, 0, NAVE_NUM_VERTICES);
+        glVertexPointer(3, GL_DOUBLE, 0, modelo.coord);
+        glDrawArrays(GL_TRIANGLES, 0, modelo.numVertices);
     }
     glPopMatrix();
 }

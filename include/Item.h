@@ -1,6 +1,6 @@
 /*------------------------------------------------------------------*
  |                                                                  |
- |  Manipulação de getListaItens() que ajudam o jogador (a.k.a. "powerups").  |
+ |  Manipulação de itens que ajudam o jogador (a.k.a. "powerups").  |
  |                                                                  |
  *------------------------------------------------------------------*/
 

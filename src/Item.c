@@ -5,7 +5,6 @@
 #include "Nave.h"
 #include "Cenario.h"
 #include "Grafico.h"
-#include "Textura.h"
 #include "Cores.h"
 
 /*-------------------------*
