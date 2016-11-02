@@ -38,10 +38,12 @@ void geraInimigo(double z)
     /* Aloca memória */
     Inimigo *foe = mallocSafe(sizeof *foe);
 
+    /* Posicionamento do corpo */
     geraCorpo(&foe->corpo, z);
-    
     foe->corpo.raio       = FOE_RAIO;
     foe->corpo.altura     = 2 * foe->corpo.y;
+
+    /* Atributos restantes */
     foe->atribs.hp        = FOE_HPMAX;
     foe->atribs.cooldown  = foe->atribs.espera = uniforme(80, 105);
     foe->precisao         = uniforme(0.8, 1.0);
@@ -69,13 +71,13 @@ void inimigoDispara(Inimigo *foe, Nave *nave)
     double d = norma(dx, dy, dz);
 
     /* Gera vetor velocidade na referida direção */
-    double k = BALA_VEL/d;
+    double k = bullet->dano/d;
     bullet->vx = k * dx;
     bullet->vy = k * dy;
     bullet->vz = k * dz;
 
     /* Posição inicial de projétil segue direção da nave */
-    double r = (foe->corpo.raio + BALA_RAIO)/d;
+    double r = (foe->corpo.raio + bullet->corpo.raio)/d;
     bullet->corpo.x = foe->corpo.x + (r * dx);
     bullet->corpo.y = foe->corpo.y + (r * dy);
     bullet->corpo.z = foe->corpo.z + (r * dz);
@@ -104,7 +106,7 @@ void desenhaInimigo(Inimigo *foe)
 
     /* Posiciona e dimensiona inimigo */
     glTranslated(foe->corpo.x, 0.0, foe->corpo.z);
-    glScaled(8 * foe->corpo.raio, foe->corpo.altura, 8 * foe->corpo.raio);
+    glScaled(16 * foe->corpo.raio, foe->corpo.altura, 16 * foe->corpo.raio);
 
     /* Desenha modelo baseado em vértices e normais */
     glVertexPointer(3, GL_DOUBLE, 0, modelo.coords);
@@ -120,4 +122,13 @@ void desenhaInimigo(Inimigo *foe)
 Lista *getListaInimigos()
 {
     return inimigos;
+}
+
+/*------------------------------------------------------------------*/
+
+void liberaInimigos()
+{
+    liberaTextura(&modelo);
+    liberaVertices(&modelo);
+    liberaLista(inimigos);
 }

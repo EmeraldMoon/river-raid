@@ -29,10 +29,6 @@
 #define INVENCIVEL_DANO 30  /* ao ser atingida */
 #define INVENCIVEL_VIDA 90  /* ao perder uma vida */
 
-/* Arquivo e número de vértices referentes ao modelo da nave */
-#define NAVE_MODELO_VERTICES "Nave.vert"
-#define NAVE_NUM_VERTICES 696
-
 /*------------------------------------------------------------------*/
 
 /*
@@ -111,3 +107,8 @@ void desenhaNave();
  *  Devolve um ponteiro para a nave.
  */
 Nave *getNave();
+
+/*
+ *  Libera memória alocada para a nave.
+ */
+void liberaNave();

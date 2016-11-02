@@ -27,20 +27,21 @@ void carregaItens()
 
 void geraItem(double z)
 {
+    /* Escolhe o tipo aleatoriamente */
+    int tipo;
+    int sorte = uniforme(0, 100);
+    if      (sorte  < 60)               return;
+    else if (60 <= sorte && sorte < 85) tipo =     HP;
+    else if (86 <= sorte && sorte < 96) tipo = ESCUDO;
+    else if (96 <= sorte)               tipo =   VIDA;
+
     /* Aloca espaço para o item */
     Item *item = mallocSafe(sizeof *item);
 
-    /* Corpo cilídrico */
+    geraCorpo(&item->corpo, z);
     item->corpo.raio   = ITEM_RAIO;
     item->corpo.altura = 2 * item->corpo.raio;
-    geraCorpo(&item->corpo, z);
-
-    /* Escolhe o tipo aleatoriamente */
-    int sorte = uniforme(0, 100);
-    if      (sorte  < 60)               return;
-    else if (60 <= sorte && sorte < 85) item->tipo = HP;
-    else if (86 <= sorte && sorte < 96) item->tipo = ESCUDO;
-    else if (96 <= sorte)               item->tipo = VIDA;
+    item->tipo = tipo;
 
     listaInsere(itens, item);
 }
@@ -102,4 +103,11 @@ void desenhaItem(Item *item)
 Lista *getListaItens()
 {
     return itens;
+}
+
+/*------------------------------------------------------------------*/
+
+void liberaItens()
+{
+    liberaLista(itens);
 }

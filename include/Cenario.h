@@ -63,7 +63,7 @@ void atualizaCenario();
 void desenhaCenario();
 
 /*
- *  Libera toda a memória alocada para as listas
- *  e texturas e encerra execução do jogo.
+ *  Libera toda a memória alocada para as listas,
+ *  texturas e vértices e encerra execução do jogo.
  */
 void encerraJogo();

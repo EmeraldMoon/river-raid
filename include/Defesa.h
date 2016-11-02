@@ -18,7 +18,7 @@
  *-------------------------*----------------------------------------*/
 
 /* Tempo de espera até criar um inimigo */
-#define TEMPO_INIMIGOS 100
+#define TEMPO_INIMIGOS 120
 
 /* Atributos padrão */
 #define FOE_HPMAX     80
@@ -31,10 +31,6 @@
 
 /* Tempo que um inimigo pisca após ser acertado */
 #define FOE_TEMPO_DANO 30
-
-/* Arquivo e número de vértices referentes ao modelo das defesas */
-#define DEFESA_MODELO_VERTICES "Defesa.vert"
-#define DEFESA_NUM_VERTICES 15538
 
 /*------------------------------------------------------------------*/
 
@@ -95,3 +91,8 @@ void desenhaInimigo(Inimigo *foe);
  *  Devolve ponteiro para a lista de inimigos.
  */
 Lista *getListaInimigos();
+
+/*
+ *  Libera memória alocada para os inimigos.
+ */
+void liberaInimigos();

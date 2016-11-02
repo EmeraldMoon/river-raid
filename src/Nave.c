@@ -219,3 +219,12 @@ Nave *getNave()
 {
     return nave;
 }
+
+/*------------------------------------------------------------------*/
+
+void liberaNave()
+{
+    liberaTextura(&modelo);
+    liberaVertices(&modelo);
+    free(nave);
+}

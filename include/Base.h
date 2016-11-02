@@ -34,11 +34,8 @@ struct corpo
     double y;  /* altura em relação ao solo */
     double z;  /* distância desde o início do cenário */
 
-    /* A forma de colisão do corpo */
-    enum {ESFERA, CILINDRO} forma;
-
     /* Dimensões do corpo.
-       Se forma == ESFERA, então altura == 2 * raio. */
+       No caso de esféricos, altura == 2 * raio. */
     double raio, altura;
 };
 

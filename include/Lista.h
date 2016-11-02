@@ -44,7 +44,7 @@ void listaInsere(Lista *lista, void *item);
  *  Recebe uma célula da lista e remove a seguinte, 
  *  liberando a memória do item e da célula em si.
  */
-void listaRemove(Celula *cel);
+void listaRemoveProx(Celula *cel);
 
 /*
  *  Libera toda a memória alocada para a lista.

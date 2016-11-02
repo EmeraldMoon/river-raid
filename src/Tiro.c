@@ -53,7 +53,7 @@ static void calculaAngulo(double *a, double *b, double desvio);
  */
 void aplicaPrecisao(Projetil *bullet, double precisao)
 {
-    double desvio = (1 - precisao) * DESVIO_MAX;    
+    double desvio = (1 - precisao) * DESVIO_MAX;
 
     calculaAngulo(&bullet->vx, &bullet->vz, desvio);  /* desvio horizontal */
     calculaAngulo(&bullet->vy, &bullet->vz, desvio);  /* desvio vertical   */
@@ -65,7 +65,7 @@ void aplicaPrecisao(Projetil *bullet, double precisao)
  */
 static void calculaAngulo(double *a, double *b, double desvio)
 {
-    double v = hypot(*a, *b);
+    double   v = hypot(*a, *b);
     double ang = atan2(*b, *a);
     ang = normal(ang, desvio);
     *a = v * cos(ang);
@@ -107,7 +107,7 @@ bool verificaAcerto(Projetil *bullet)
             foe->atribs.hp -= bullet->dano;
             nave->score += foe->pontosAcerto;
             if (foe->atribs.hp <= 0) {
-                listaRemove(p);
+                listaRemoveProx(p);
                 nave->score += foe->pontosDestruicao;
             } else {
                 foe->tempoDano = FOE_TEMPO_DANO;
@@ -142,4 +142,11 @@ void desenhaProjetil(Projetil *bullet)
 Lista *getListaProjeteis()
 {
     return projeteis;
+}
+
+/*------------------------------------------------------------------*/
+
+void liberaProjeteis()
+{
+    liberaLista(projeteis);
 }

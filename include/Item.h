@@ -71,3 +71,8 @@ void desenhaItem(Item *item);
  *  Devolve ponteiro para lista de getListaItens().
  */
 Lista *getListaItens();
+
+/*
+ *  Libera memória alocada para os itens.
+ */
+void liberaItens();
