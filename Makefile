@@ -1,5 +1,5 @@
-CC     = gcc
-CFLAGS = -Wall -pedantic -Wno-unused-result -std=c11 -O3
+CPPC   = g++
+CFLAGS = -Wall -pedantic -Wno-unused-result -std=c11 -g
 LIBS   = -lm -lGL -lGLU -lglut
 BINDIR = bin
 SRCDIR = src
@@ -8,8 +8,8 @@ OBJDIR = obj
 DOCDIR = doc
 TEXDIR = texture
 MODDIR = model
-SRC    = $(wildcard $(SRCDIR)/*.c)
-OBJ    = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
+SRC    = $(wildcard $(SRCDIR)/*.cpp)
+OBJ    = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRC))
 TAR    = $(BIN).tar.gz
 BIN    = River
 
@@ -18,13 +18,13 @@ BIN    = River
 all: $(BINDIR)/$(BIN)
 
 $(BINDIR)/$(BIN): $(OBJ) | $(BINDIR)
-	$(CC) $^ $(LIBS) -o $@
-	@echo "\033[1m> Generating C binary \033[32m"$@"\033[0m."
+	$(CPPC) $^ $(LIBS) -o $@
+	@echo "\033[1m> Generating C++ binary \033[32m"$@"\033[0m."
 
 $(OBJ): | $(OBJDIR)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) -I$(INCDIR)/ -c $< -o $@
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CPPC) $(CFLAGS) -I$(INCDIR)/ -c $< -o $@
 
 $(OBJDIR) $(BINDIR):
 	mkdir -p $@
