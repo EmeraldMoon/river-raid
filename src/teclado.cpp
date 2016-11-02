@@ -1,5 +1,4 @@
-#include <cctype>    /* toupper */
-#include <cstdbool>  /* bool */
+#include <cctype>  /* toupper */
 
 #include "teclado.hpp"
 #include "nave.hpp"

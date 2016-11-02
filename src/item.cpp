@@ -1,4 +1,5 @@
 #include <cmath>  /* sqrt */
+#include <vector>
 
 #include "item.hpp"
 #include "random.hpp"
@@ -12,18 +13,11 @@
  *-------------------------*----------------------------------------*/
 
 /* Lista de itens no cenário */
-static Lista *itens;
+std::vector<Item> itens;
 
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
-
-void carregaItens()
-{
-    itens = criaLista();
-}
-
-/*------------------------------------------------------------------*/
 
 void geraItem(double z)
 {
@@ -35,15 +29,13 @@ void geraItem(double z)
     else if (86 <= sorte && sorte < 96) tipo = ESCUDO;
     else if (96 <= sorte)               tipo =   VIDA;
 
-    /* Aloca espaço para o item */
-    Item *item = (Item *) mallocSafe(sizeof *item);
+    Item item;
+    geraCorpo(&item.corpo, z);
+    item.corpo.raio   = ITEM_RAIO;
+    item.corpo.altura = 2 * item.corpo.raio;
+    item.tipo = tipo;
 
-    geraCorpo(&item->corpo, z);
-    item->corpo.raio   = ITEM_RAIO;
-    item->corpo.altura = 2 * item->corpo.raio;
-    item->tipo = tipo;
-
-    listaInsere(itens, item);
+    itens.push_back(item);
 }
 
 /*------------------------------------------------------------------*/
@@ -100,14 +92,7 @@ void desenhaItem(Item *item)
 
 /*------------------------------------------------------------------*/
 
-Lista *getListaItens()
+std::vector<Item> *getListaItens()
 {
-    return itens;
-}
-
-/*------------------------------------------------------------------*/
-
-void liberaItens()
-{
-    liberaLista(itens);
+    return &itens;
 }

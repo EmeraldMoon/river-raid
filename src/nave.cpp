@@ -121,24 +121,28 @@ static void atualizaDirecao(double *ang)
 
 void naveDispara()
 {
-    /* Cria objeto do projétil */
-    Projetil *bullet = criaProjetil();
-    bullet->amigo = true;
+    Projetil bullet;
+    bullet.amigo = true;
+    bullet.corpo.raio = BALA_RAIO;
+    bullet.dano = BALA_DANO;
 
     /* Módulo do vetor de velocidade */
     double modulo = norma(nave->vx, nave->vy, nave->vz);
 
     /* Componentes da velocidade da bala são proporcionais à nave */
     double k = BALA_VEL/modulo;
-    bullet->vx = k * nave->vx;
-    bullet->vy = k * nave->vy;
-    bullet->vz = k * nave->vz;
+    bullet.vx = k * nave->vx;
+    bullet.vy = k * nave->vy;
+    bullet.vz = k * nave->vz;
 
     /* Posição inicial será colinear ao centro da nave e ao destino */
-    double r = (nave->corpo.raio + bullet->corpo.raio)/modulo;
-    bullet->corpo.x = nave->corpo.x + (r * nave->vx);
-    bullet->corpo.y = nave->corpo.y + (r * nave->vy);
-    bullet->corpo.z = nave->corpo.z + (r * nave->vz);
+    double r = (nave->corpo.raio + bullet.corpo.raio)/modulo;
+    bullet.corpo.x = nave->corpo.x + (r * nave->vx);
+    bullet.corpo.y = nave->corpo.y + (r * nave->vy);
+    bullet.corpo.z = nave->corpo.z + (r * nave->vz);
+
+    /* Cria projétil e insere-o na lista */
+    criaProjetil(&bullet);
 
     /* Reinicia contagem até próximo tiro */
     nave->atribs.espera = nave->atribs.cooldown;

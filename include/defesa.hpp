@@ -7,10 +7,9 @@
 
 #pragma once
 
-#include <cstdbool>
+#include <vector>
 
 #include "base.hpp"
-#include "lista.hpp"
 #include "nave.hpp"
 
 /*-------------------------*
@@ -90,7 +89,7 @@ void desenhaInimigo(Inimigo *foe);
 /*
  *  Devolve ponteiro para a lista de inimigos.
  */
-Lista *getListaInimigos();
+std::vector<Inimigo> *getListaInimigos();
 
 /*
  *  Libera memória alocada para os inimigos.

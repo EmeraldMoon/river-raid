@@ -8,7 +8,6 @@
 #pragma once
 
 #include <cstdlib>   /* size_t */
-#include <cstdbool>  /* bool */
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

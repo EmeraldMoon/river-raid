@@ -1,6 +1,5 @@
 #include <cstdio>    /* puts, printf, system */
 #include <cstdlib>   /* exit */
-#include <cstdbool>  /* bool */
 #include <cmath>     /* sin */
 #include <GL/freeglut.h>
 
@@ -37,8 +36,6 @@ void carregaCenario(bool godMode, bool _debug)
     /* Carrega listas e modelos */
     carregaNave(godMode);
     carregaInimigos();
-    carregaProjeteis();
-    carregaItens();
 
     /* Texturas do cenário */
     carregaTextura("water.ppm", true, &modeloRio);
@@ -106,36 +103,39 @@ void atualizaCenario()
     if (nave->invencibilidade > 0) nave->invencibilidade--;
 
     /* Loop para tratar de inimigos */
-    Celula *p = getListaInimigos();
-    while (p->prox != NULL) {
-        Inimigo *foe = (Inimigo *) p->prox->item;
+    std::vector<Inimigo> *inimigos = getListaInimigos();
+    for (size_t i = 0; i < inimigos->size();) {
+        Inimigo *foe = &(*inimigos)[i];
         if (ocorreuColisao(&nave->corpo, &foe->corpo)) {
             danificaNave(foe->danoColisao);
         }
         if (--foe->atribs.espera == 0) inimigoDispara(foe, nave);
-        if (corpoSaiu(&foe->corpo, nave->corpo.z)) listaRemoveProx(p);
-        else p = p->prox;
+        if (corpoSaiu(&foe->corpo, nave->corpo.z)) {
+            inimigos->erase(inimigos->begin() + i);
+        } else i++;
     }
     /* Loop para verificar estado dos projéteis */
-    p = getListaProjeteis();
-    while (p->prox != NULL) {
-        Projetil *bullet = (Projetil *) p->prox->item;
+    std::vector<Projetil> *projeteis = getListaProjeteis();
+    for (size_t i = 0; i < projeteis->size();) {
+        Projetil *bullet = &(*projeteis)[i];
         moveProjetil(bullet);
         if (verificaAcerto(bullet) ||
                 corpoSaiu(&bullet->corpo, nave->corpo.z)) {
-            listaRemoveProx(p);
-        } else p = p->prox;
+            projeteis->erase(projeteis->begin() + i);
+        } else i++;
     }
      /* Loop para tratar de itens */
-    p = getListaItens();
-    while (p->prox != NULL) {
-        Item *item = (Item *) p->prox->item;
+    std::vector<Item> *itens = getListaItens();
+    for (size_t i = 0; i < itens->size();) {
+        Item *item = &(*itens)[i];
         if (ocorreuColisao(&nave->corpo, &item->corpo)) {
             ativaItem(item, nave);
-            listaRemoveProx(p);
+            itens->erase(itens->begin() + i);
         }
-        else if (corpoSaiu(&item->corpo, nave->corpo.z)) listaRemoveProx(p);
-        else p = p->prox;
+        else if (corpoSaiu(&item->corpo, nave->corpo.z)) {
+            itens->erase(itens->begin() + i);
+        }
+        else i++;
     }
     /* Gera inimigo ou item se contador chegar a zero */
     if (--contFoe <= 0) {
@@ -178,23 +178,21 @@ static void imprimeElementos()
     puts("\n{Inimigos}");
     puts("    ( x, y, z)          Recarga    Precisão    Energia ");
     puts("-------------------     -------    --------   ---------");
-    for (Celula *p = getListaInimigos(); p->prox != NULL; p = p->prox) {
-        Inimigo *foe = (Inimigo *) p->prox->item;
+    for (Inimigo foe : *getListaInimigos()) {
         printf(" (%4.0f, %3.0f, %4.0f)       "
                "%2d/%3d       %3.0f%%       %2d/%2d\n",
-               foe->corpo.x, foe->corpo.y, foe->corpo.z,
-               foe->atribs.espera, foe->atribs.cooldown, 100 * foe->precisao,
-               foe->atribs.hp, FOE_HPMAX);
+               foe.corpo.x, foe.corpo.y, foe.corpo.z,
+               foe.atribs.espera, foe.atribs.cooldown, 100 * foe.precisao,
+               foe.atribs.hp, FOE_HPMAX);
     }
     puts("\n{Projéteis}");
     puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
     puts("-------------------    --------------------     --------");
-    for (Celula *p = getListaProjeteis(); p->prox != NULL; p = p->prox) {
-        Projetil *bullet = (Projetil *) p->prox->item;
+    for (Projetil bullet : *getListaProjeteis()) {
         printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
-               bullet->corpo.x, bullet->corpo.y, bullet->corpo.z,
-               bullet->vx, bullet->vy, bullet->vz,
-               bullet->amigo ? "sim" : "não");
+               bullet.corpo.x, bullet.corpo.y, bullet.corpo.z,
+               bullet.vx, bullet.vy, bullet.vz,
+               bullet.amigo ? "sim" : "não");
     }
 }
 
@@ -218,17 +216,14 @@ void desenhaCenario()
     desenhaFundo();
     
     /* Desenha elementos dinâmicos do jogo */
-    for (Celula *p = getListaItens()->prox; p != NULL; p = p->prox) {
-        Item *item = (Item *) p->item;
-        desenhaItem(item);
+    for (Inimigo foe : *getListaInimigos()) {
+        desenhaInimigo(&foe);
     }
-    for (Celula *p = getListaInimigos()->prox; p != NULL; p = p->prox) {
-        Inimigo *foe = (Inimigo *) p->item;
-        desenhaInimigo(foe);
+    for (Projetil bullet : *getListaProjeteis()) {
+        desenhaProjetil(&bullet);
     }
-    for (Celula *p = getListaProjeteis()->prox; p != NULL; p = p->prox) {
-        Projetil *bullet = (Projetil *) p->item;
-        desenhaProjetil(bullet);
+    for (Item item : *getListaItens()) {
+        desenhaItem(&item);
     }
     desenhaNave();
 
@@ -337,8 +332,6 @@ void encerraJogo()
     /* Libera elementos do jogo */
     liberaNave();
     liberaInimigos();
-    liberaProjeteis();
-    liberaItens();
 
     /* Libera texturas do cenário */
     liberaTextura(&modeloRio);

@@ -6,10 +6,7 @@
 
 #pragma once
 
-#include <cstdbool>
-
 #include "base.hpp"
-#include "lista.hpp"
 #include "nave.hpp"
 
 /*-------------------------*
@@ -55,11 +52,6 @@ struct item
  *-------------------------*----------------------------------------*/
 
 /*
- *  Inicializa lista de itens (vazia).
- */
-void carregaItens();
-
-/*
  *  Gera um item na distância z, de posição horizontal e
  *  tipo aleatórios. Cada tipo de item possui uma
  *  probabilidade diferente de aparecer.
@@ -77,11 +69,6 @@ void ativaItem(Item *item, Nave *nave);
 void desenhaItem(Item *item);
 
 /*
- *  Devolve ponteiro para lista de getListaItens().
+ *  Devolve ponteiro para lista de itens.
  */
-Lista *getListaItens();
-
-/*
- *  Libera memória alocada para os itens.
- */
-void liberaItens();
+std::vector<Item> *getListaItens();

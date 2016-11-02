@@ -2,7 +2,6 @@
 
 #include "tiro.hpp"
 #include "base.hpp"
-#include "lista.hpp"
 #include "random.hpp"
 #include "defesa.hpp"
 #include "cenario.hpp"
@@ -14,32 +13,17 @@
  *-------------------------*----------------------------------------*/
 
 /* Lista de projéteis no campo de jogo */
-static Lista *projeteis;
+std::vector<Projetil> projeteis;
 
 /*-------------------*
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-void carregaProjeteis()
+void criaProjetil(Projetil *bullet)
 {
-    projeteis = criaLista();
-}
-
-/*------------------------------------------------------------------*/
-
-Projetil *criaProjetil()
-{
-    /* Aloca espaço para projétil */
-    Projetil *bullet = (    Projetil *) mallocSafe(sizeof *bullet);
-
-    /* Atributos fixos do projétil */
-    bullet->dano         = BALA_DANO;
-    bullet->corpo.raio   = BALA_RAIO;
     bullet->corpo.altura = 2 * bullet->corpo.raio;
 
-    listaInsere(projeteis, bullet);
-
-    return bullet;
+    projeteis.push_back(*bullet);
 }
 
 /*------------------------------------------------------------------*/
@@ -100,14 +84,15 @@ bool verificaAcerto(Projetil *bullet)
         return true;
     }
     /* Verificação de colisão com algum inimigo */
-    for (Celula *p = getListaInimigos(); p->prox != NULL; p = p->prox) {
-        Inimigo *foe = (Inimigo *) p->prox->item;
+    std::vector<Inimigo> *inimigos = getListaInimigos();
+    for (size_t i = 0; i < inimigos->size(); i++) {
+        Inimigo *foe = &(*inimigos)[i];
         if (!ocorreuColisao(&bullet->corpo, &foe->corpo)) continue;
         if (bullet->amigo) {
             foe->atribs.hp -= bullet->dano;
             nave->score += foe->pontosAcerto;
             if (foe->atribs.hp <= 0) {
-                listaRemoveProx(p);
+                inimigos->erase(inimigos->begin() + i);
                 nave->score += foe->pontosDestruicao;
             } else {
                 foe->tempoDano = FOE_TEMPO_DANO;
@@ -139,14 +124,8 @@ void desenhaProjetil(Projetil *bullet)
 
 /*------------------------------------------------------------------*/
 
-Lista *getListaProjeteis()
+std::vector<Projetil> *getListaProjeteis()
 {
-    return projeteis;
+    return &projeteis;
 }
 
-/*------------------------------------------------------------------*/
-
-void liberaProjeteis()
-{
-    liberaLista(projeteis);
-}

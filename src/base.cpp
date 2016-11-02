@@ -1,6 +1,5 @@
 #include <cstdio>    /* perror */
 #include <cstdlib>   /* malloc, exit */
-#include <cstdbool>  /* bool */
 #include <cmath>     /* hypot */
 
 #include "base.hpp"
@@ -58,7 +57,7 @@ bool corpoSaiu(Corpo *corpo, double naveZ)
 
 void *mallocSafe(size_t nbytes)
 {
-    void *ptr = malloc(nbytes);
+    void *ptr = (    void *) malloc(nbytes);
     if (ptr == NULL) {
         perror("mallocSafe()");
         exit(EXIT_FAILURE);

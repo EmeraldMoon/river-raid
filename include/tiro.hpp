@@ -9,10 +9,9 @@
 
 #pragma once
 
-#include <cstdbool>
+#include <vector>
 
 #include "base.hpp"
-#include "lista.hpp"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -51,15 +50,10 @@ struct projetil
  *-------------------------*----------------------------------------*/
 
 /*
- *  Inicializa lista de projéteis (vazia).
+ *  Recebe um ponteiro para um projétil com alguns atributos 
+ *  pré-determinados. Completa-o e insere-o na respectiva lista.
  */
-void carregaProjeteis();
-
-/*
- *  Insere um projétil na respectiva lista.
- *  Devolve um ponteiro para o mesmo.
- */
-Projetil *criaProjetil();
+void criaProjetil(Projetil *bullet);
 
 /*  
  *  Aplica no respectivo projétil dois desvios em graus, um horizontal
@@ -90,9 +84,4 @@ void desenhaProjetil(Projetil *bullet);
 /*
  *  Devolve ponteiro para lista de projéteis.
  */
-Lista *getListaProjeteis();
-
-/*
- *  Libera memória alocada para os projéteis.
- */
-void liberaProjeteis();
+std::vector<Projetil> *getListaProjeteis();
