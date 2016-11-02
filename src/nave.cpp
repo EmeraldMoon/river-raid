@@ -14,7 +14,7 @@
  *-------------------------*----------------------------------------*/
 
 /* Ponteiro para estrutura da nave */
-static Nave *nave;
+static Nave nave;
 
 /* Modelo da nave */
 static Modelo modelo;
@@ -32,14 +32,11 @@ void carregaNave(bool _godMode)
     leVertices("Nave.vert", &modelo);
     carregaTextura("silver.ppm", false, &modelo);
 
-    /* Aloca memória para a nave */
-    nave = (Nave *) mallocSafe(sizeof *nave);
-
-    nave->corpo.raio      = NAVE_RAIO;
-    nave->corpo.altura    = NAVE_ALTURA;
-    nave->vz              = NAVE_VEL;
-    nave->atribs.cooldown = NAVE_COOL;
-    nave->score = 0;
+    nave.corpo.raio      = NAVE_RAIO;
+    nave.corpo.altura    = NAVE_ALTURA;
+    nave.vz              = NAVE_VEL;
+    nave.atribs.cooldown = NAVE_COOL;
+    nave.score = 0;
 
     /* Define variável do módulo */
     godMode = _godMode;
@@ -51,19 +48,19 @@ void carregaNave(bool _godMode)
 void recriaNave(int z, int nVidas)
 {
     /* Coordenadas iniciais */
-    nave->corpo.x = 0.0;
-    nave->corpo.y = Y_MAX/2;
-    nave->corpo.z = z;
+    nave.corpo.x = 0.0;
+    nave.corpo.y = Y_MAX/2;
+    nave.corpo.z = z;
 
     /* Aponta para o centro */
-    nave->angHoriz = 0.0;
-    nave->angVert  = 0.0;
+    nave.angHoriz = 0.0;
+    nave.angVert  = 0.0;
 
-    nave->vidas           = nVidas;
-    nave->atribs.hp       = NAVE_HPMAX;
-    nave->atribs.espera   = 0;
-    nave->invencibilidade = INVENCIVEL_VIDA;
-    nave->escudo          = 0;
+    nave.vidas           = nVidas;
+    nave.atribs.hp       = NAVE_HPMAX;
+    nave.atribs.espera   = 0;
+    nave.invencibilidade = INVENCIVEL_VIDA;
+    nave.escudo          = 0;
 }
 
 /*------------------------------------------------------------------*/
@@ -72,30 +69,30 @@ static void atualizaDirecao(double *ang);
 
 void moveNave()
 {
-    double *naveX = &nave->corpo.x;
-    double *naveY = &nave->corpo.y;
-    double *naveZ = &nave->corpo.z;
+    double *naveX = &nave.corpo.x;
+    double *naveY = &nave.corpo.y;
+    double *naveZ = &nave.corpo.z;
 
     /* Obtém vetores componentes */
-    nave->vx = nave->vz * tan(nave->angHoriz);
-    nave->vy = nave->vz * tan(nave->angVert);
+    nave.vx = nave.vz * tan(nave.angHoriz);
+    nave.vy = nave.vz * tan(nave.angVert);
 
     /* Atualiza posição por vetores */
-    *naveX += nave->vx;
-    *naveY += nave->vy;
-    *naveZ += nave->vz;
+    *naveX += nave.vx;
+    *naveY += nave.vy;
+    *naveZ += nave.vz;
 
     /* Impede que nave ultrapasse os limites do cenário */
-    double raio   = nave->corpo.raio;
-    double altura = nave->corpo.altura;
+    double raio   = nave.corpo.raio;
+    double altura = nave.corpo.altura;
     if      (*naveX >  X_MAX -   raio) *naveX =  X_MAX - raio;
     else if (*naveX < -X_MAX +   raio) *naveX = -X_MAX + raio;
     if      (*naveY >  Y_MAX - altura) *naveY =  Y_MAX - altura;
     else if (*naveY <      0 + altura) *naveY =      0 + altura;
 
     /* Direção tende a voltar ao centro */
-    atualizaDirecao(&(nave->angHoriz));
-    atualizaDirecao(&(nave->angVert));
+    atualizaDirecao(&(nave.angHoriz));
+    atualizaDirecao(&(nave.angVert));
 }
 
 /*
@@ -127,25 +124,25 @@ void naveDispara()
     bullet.dano = BALA_DANO;
 
     /* Módulo do vetor de velocidade */
-    double modulo = norma(nave->vx, nave->vy, nave->vz);
+    double modulo = norma(nave.vx, nave.vy, nave.vz);
 
     /* Componentes da velocidade da bala são proporcionais à nave */
     double k = BALA_VEL/modulo;
-    bullet.vx = k * nave->vx;
-    bullet.vy = k * nave->vy;
-    bullet.vz = k * nave->vz;
+    bullet.vx = k * nave.vx;
+    bullet.vy = k * nave.vy;
+    bullet.vz = k * nave.vz;
 
     /* Posição inicial será colinear ao centro da nave e ao destino */
-    double r = (nave->corpo.raio + bullet.corpo.raio)/modulo;
-    bullet.corpo.x = nave->corpo.x + (r * nave->vx);
-    bullet.corpo.y = nave->corpo.y + (r * nave->vy);
-    bullet.corpo.z = nave->corpo.z + (r * nave->vz);
+    double r = (nave.corpo.raio + bullet.corpo.raio)/modulo;
+    bullet.corpo.x = nave.corpo.x + (r * nave.vx);
+    bullet.corpo.y = nave.corpo.y + (r * nave.vy);
+    bullet.corpo.z = nave.corpo.z + (r * nave.vz);
 
     /* Cria projétil e insere-o na lista */
     criaProjetil(&bullet);
 
     /* Reinicia contagem até próximo tiro */
-    nave->atribs.espera = nave->atribs.cooldown;
+    nave.atribs.espera = nave.atribs.cooldown;
 }
 
 /*------------------------------------------------------------------*/
@@ -153,22 +150,22 @@ void naveDispara()
 void danificaNave(int dano)
 {
     /* Se invencível neste instante, não toma dano */
-    if (nave->invencibilidade > 0 || godMode) return;
+    if (nave.invencibilidade > 0 || godMode) return;
 
-    if (nave->escudo > 0) {
-        nave->atribs.hp -=     dano/3;
-        nave->escudo    -= 2 * dano/3;
+    if (nave.escudo > 0) {
+        nave.atribs.hp -=     dano/3;
+        nave.escudo    -= 2 * dano/3;
     }
     else {
-        nave->atribs.hp -= dano;
+        nave.atribs.hp -= dano;
     }
     /* Nave fica invencível por um tempo pós-dano */
-    nave->invencibilidade = INVENCIVEL_DANO;
+    nave.invencibilidade = INVENCIVEL_DANO;
 
     /* Verifica se nave perdeu vida */
-    if (nave->atribs.hp <= 0) {
-        nave->atribs.hp = 0;
-        if (--nave->vidas >= 0) recriaNave(nave->corpo.z, nave->vidas);
+    if (nave.atribs.hp <= 0) {
+        nave.atribs.hp = 0;
+        if (--nave.vidas >= 0) recriaNave(nave.corpo.z, nave.vidas);
     }
 }
 
@@ -176,28 +173,28 @@ void danificaNave(int dano)
  
 void desenhaNave()
 {
-    GLdouble naveCor = 255 - 190.0/INVENCIVEL_VIDA * nave->invencibilidade;
+    GLdouble naveCor = 255 - 190.0/INVENCIVEL_VIDA * nave.invencibilidade;
 
     glDisable(GL_TEXTURE_2D);
 
     /* Se ativo, desenha escudo ao redor da nave */
-    if (nave->escudo > 0) {
+    if (nave.escudo > 0) {
         static double rotacao = 0;
         rotacao += PI/6;
         naveCor = 255;
         glPushMatrix();
-        glTranslated(nave->corpo.x, nave->corpo.y, nave->corpo.z);
+        glTranslated(nave.corpo.x, nave.corpo.y, nave.corpo.z);
         glRotated(rotacao, 1.0, 1.0, 0.0);
-        setColorAlpha(DARK_BLUE, 255 * nave->escudo/(2.0 * NAVE_HPMAX));
+        setColorAlpha(DARK_BLUE, 255 * nave.escudo/(2.0 * NAVE_HPMAX));
         glutWireSphere(1.75 * NAVE_RAIO, SLICES, STACKS);
         glPopMatrix();
     }
     glPushMatrix();
 
     /* Posiciona nave rotacionada de acordo com ângulos de inclinação */
-    glTranslated(nave->corpo.x, nave->corpo.y, nave->corpo.z);
-    glRotated(nave->angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
-    glRotated(-nave->angVert * 180.0/PI, 1.0, 0.0, 0.0);
+    glTranslated(nave.corpo.x, nave.corpo.y, nave.corpo.z);
+    glRotated( nave.angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
+    glRotated(-nave.angVert  * 180.0/PI, 1.0, 0.0, 0.0);
 
     setColorAlpha(3 * naveCor, 3 * naveCor, 0, 3 * naveCor);
     if (estaEmPrimeiraPessoa()) {
@@ -207,8 +204,8 @@ void desenhaNave()
     else {
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, modelo.texturaId);
-        glScaled(2 * nave->corpo.raio, nave->corpo.altura,
-                 2 * nave->corpo.raio);
+        glScaled(2 * nave.corpo.raio, nave.corpo.altura,
+                 2 * nave.corpo.raio);
 
         /* Desenha os vértices do arquivo */
         glVertexPointer(3, GL_DOUBLE, 0, modelo.coords);
@@ -221,7 +218,7 @@ void desenhaNave()
 
 Nave *getNave()
 {
-    return nave;
+    return &nave;
 }
 
 /*------------------------------------------------------------------*/
@@ -230,5 +227,4 @@ void liberaNave()
 {
     liberaTextura(&modelo);
     liberaVertices(&modelo);
-    free(nave);
 }

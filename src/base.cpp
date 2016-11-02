@@ -52,15 +52,3 @@ bool corpoSaiu(Corpo *corpo, double naveZ)
         || (corpo->y < 0)
         || (corpo->z < naveZ - DIST_CAMERA || corpo->z > naveZ + Z_DIST);
 }
-
-/*------------------------------------------------------------------*/
-
-void *mallocSafe(size_t nbytes)
-{
-    void *ptr = (    void *) malloc(nbytes);
-    if (ptr == NULL) {
-        perror("mallocSafe()");
-        exit(EXIT_FAILURE);
-    }
-    return ptr;
-}

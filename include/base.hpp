@@ -74,9 +74,3 @@ bool ocorreuColisao(Corpo *a, Corpo *b);
  *  naveZ refere-se à posição z da nave neste instante.
  */
 bool corpoSaiu(Corpo *corpo, double naveZ);
-
-/*
- *  Versão segura de malloc(). Caso não haja memória disponível,
- *  exibe uma mensagem de erro e encerra o programa.
- */
-void *mallocSafe(size_t nbytes);

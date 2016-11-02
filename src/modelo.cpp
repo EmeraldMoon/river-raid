@@ -1,6 +1,7 @@
-#include <cstdio>   /* perror */
-#include <cstdlib>  /* free */
-#include <cstring>  /* strcmp */
+#include <cstdio>     /* perror */
+#include <string>
+#include <fstream>    /* ifstream */
+#include <algorithm>  /* count */
 #include <GL/freeglut.h>
 
 #include "modelo.hpp"
@@ -11,76 +12,68 @@
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-void leVertices(const char nomeArq[], Modelo *modelo)
+void leVertices(std::string nomeArq, Modelo *modelo)
 {
     /* Caminho do arquivo de modelo */
-    char *caminho =
-        (char *) mallocSafe(strlen(MODEL_DIR) + strlen(nomeArq) + 1);
-    sprintf(caminho, "%s/%s", MODEL_DIR, nomeArq);
+    std::string caminho =
+        std::string(MODEL_DIR) + std::string("/") + nomeArq;
 
     /* Abre o arquivo */
-    FILE *arq = fopen(caminho, "rb");
-    if (arq == NULL) {
-        perror("leVetores()");
+    std::ifstream arq(caminho);
+    if (arq.fail()) {
+        perror("leVertices()");
         encerraJogo();
     }
     /* Obtém número de linhas do arquivo */
-    GLsizei n = 0;
-    while (fscanf(arq, " %*[^\n]") != EOF) n++;
-    rewind(arq);
+    GLsizei n = std::count(std::istreambuf_iterator<char>(arq),
+                           std::istreambuf_iterator<char>(), '\n');
+    arq.seekg(0);
 
     /* Lê todas as coordenadas */
-    GLdouble *coords = (    GLdouble *) mallocSafe(3 * n * (sizeof coords[0]));
+    modelo->coords = new GLdouble[3 * n];
     for (GLsizei i = 0; i < 3 * n; i++) {
-        fscanf(arq, "%lf", &coords[i]);
+        arq >> modelo->coords[i];
     }
-    fclose(arq);
-
-    /* Atualiza valores do modelo */
-    modelo->coords = coords;
     modelo->numVertices = n;
-
-    free(caminho);
 }
 
 /*------------------------------------------------------------------*/
 
-static void ignoraComentario(FILE *arq);
-static void erro(FILE *arq, const char *nomeArq);
+static void ignoraComentario(std::ifstream *arq);
+static void erro(std::ifstream *arq, std::string nomeArq);
 
-void carregaTextura(const char nomeArq[], GLboolean mipmap, Modelo *modelo)
+void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo *modelo)
 {
     /* Caminho do arquivo de textura */
-    char *caminho =
-        (char *) mallocSafe(strlen(TEXTURE_DIR) + strlen(nomeArq) + 1);
-    sprintf(caminho, "%s/%s", TEXTURE_DIR, nomeArq);
+    std::string caminho =
+        std::string(TEXTURE_DIR) + std::string("/") + nomeArq;
 
     /* Abre o arquivo */
-    FILE *arq = fopen(caminho, "rb");
-    if (arq == NULL) {
+    std::ifstream arq(caminho);
+    if (arq.fail()) {
         perror("carregaTextura()");
         encerraJogo();
     }
     /* Faz verificação da chave mágica */
-    char aux[4];
-    fscanf(arq, "%2s", aux);
-    if (strcmp(aux, "P6") != 0) erro(arq, caminho);
+    std::string aux;
+    std::getline(arq, aux);
+    if (aux != "P6") erro(&arq, caminho);
 
     /* Obtém largura e altura (ignore maxval) */
     GLsizei altura, largura;
-    ignoraComentario(arq);
-    if (fscanf(arq, "%d %d %*d ", &altura, &largura) != 2) erro(arq, caminho);
+    ignoraComentario(&arq);
+    arq >> altura >> largura;
+    arq.ignore();
 
     /* Obtém nº de bytes no restante do arquivo */
-    long pos = ftell(arq);
-    fseek(arq, 0, SEEK_END);
-    GLsizei n = ftell(arq) - pos + 1;
-    fseek(arq, pos, SEEK_SET);
+    long pos = arq.tellg();
+    arq.seekg(0, std::ios_base::end);
+    GLsizei n = arq.tellg() - pos;
+    arq.seekg(pos + 1, std::ios_base::beg);
 
     /* Lê dados para uma string */
-    GLubyte *dados = (    GLubyte *) mallocSafe(n * (sizeof *dados));
-    fread(dados, sizeof *dados, n, arq);
-    fclose(arq);
+    GLubyte *dados = new GLubyte[n];
+    arq.read((char *) dados, n);
 
     /* Gera e guarda identificador de textura */
     glGenTextures(1, &modelo->texturaId);
@@ -88,7 +81,8 @@ void carregaTextura(const char nomeArq[], GLboolean mipmap, Modelo *modelo)
 
     /* Carrega os dados (pixels) da textura */
     if (mipmap) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                        GL_LINEAR_MIPMAP_LINEAR);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, largura, altura,
                           GL_RGB, GL_UNSIGNED_BYTE, dados);
     } else {
@@ -96,32 +90,32 @@ void carregaTextura(const char nomeArq[], GLboolean mipmap, Modelo *modelo)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, largura, altura,
                      0, GL_RGB, GL_UNSIGNED_BYTE, dados);
     }
-    free(dados);
-    free(caminho);
+    delete[] dados;
 }
 
 /*
  *  Pula comentários (iniciados com '#') na leitura do arquivo PPM.
  */
-static void ignoraComentario(FILE *arq)
+static void ignoraComentario(std::ifstream *arq)
 {
     char c;
     for (;;) {
-        fscanf(arq, " %c", &c);
+        *arq >> std::skipws;
+        arq->get(c);
         if (c != '#') break;
-        fscanf(arq, "%*[^\n]");
+        std::string nothing;
+        std::getline(*arq, nothing);
     }
-    ungetc(c, arq);
+    arq->unget();
 }
 
 /*
  *  Fecha o programa quando a textura não é um arquivo PPM.
  */
-static void erro(FILE *arq, const char *caminho)
+static void erro(std::ifstream *arq, std::string caminho)
 {
     fprintf(stderr, "carregaTextura(): "
-            "%s arquivo com formato inválido.\n", caminho);
-    fclose(arq);
+            "%s arquivo com formato inválido.\n", caminho.c_str());
     encerraJogo();
 }
 
@@ -129,7 +123,7 @@ static void erro(FILE *arq, const char *caminho)
 
 void liberaVertices(Modelo *modelo)
 {
-    free(modelo->coords);
+    delete[] modelo->coords;
 }
 
 void liberaTextura(Modelo *modelo)

@@ -3,7 +3,6 @@
 #include <cmath>    /* ceil */
 
 #include "grafico.hpp"
-#include "lista.hpp"
 #include "nave.hpp"
 #include "cenario.hpp"
 #include "teclado.hpp"
