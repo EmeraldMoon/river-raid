@@ -28,7 +28,7 @@ void carregaItens()
 void geraItem(double z)
 {
     /* Escolhe o tipo aleatoriamente */
-    int tipo;
+    TipoItem tipo;
     int sorte = uniforme(0, 100);
     if      (sorte  < 60)               return;
     else if (60 <= sorte && sorte < 85) tipo =     HP;
@@ -36,7 +36,7 @@ void geraItem(double z)
     else if (96 <= sorte)               tipo =   VIDA;
 
     /* Aloca espaço para o item */
-    Item *item = mallocSafe(sizeof *item);
+    Item *item = (Item *) mallocSafe(sizeof *item);
 
     geraCorpo(&item->corpo, z);
     item->corpo.raio   = ITEM_RAIO;

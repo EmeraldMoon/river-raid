@@ -50,7 +50,7 @@ void carregaCenario(bool godMode, bool _debug)
 
 /*------------------------------------------------------------------*/
 
-void controlaTempo()
+void controlaTempo(int unused)
 {
     static const int INTERVALO = 1000/FPS;
     static int t0 = 0, tExtra = 0;
@@ -108,7 +108,7 @@ void atualizaCenario()
     /* Loop para tratar de inimigos */
     Celula *p = getListaInimigos();
     while (p->prox != NULL) {
-        Inimigo *foe = p->prox->item;
+        Inimigo *foe = (Inimigo *) p->prox->item;
         if (ocorreuColisao(&nave->corpo, &foe->corpo)) {
             danificaNave(foe->danoColisao);
         }
@@ -119,7 +119,7 @@ void atualizaCenario()
     /* Loop para verificar estado dos projéteis */
     p = getListaProjeteis();
     while (p->prox != NULL) {
-        Projetil *bullet = p->prox->item;
+        Projetil *bullet = (Projetil *) p->prox->item;
         moveProjetil(bullet);
         if (verificaAcerto(bullet) ||
                 corpoSaiu(&bullet->corpo, nave->corpo.z)) {
@@ -129,7 +129,7 @@ void atualizaCenario()
      /* Loop para tratar de itens */
     p = getListaItens();
     while (p->prox != NULL) {
-        Item *item = p->prox->item;
+        Item *item = (Item *) p->prox->item;
         if (ocorreuColisao(&nave->corpo, &item->corpo)) {
             ativaItem(item, nave);
             listaRemoveProx(p);
@@ -165,7 +165,7 @@ static void imprimeElementos()
         system("cls");
     #endif    
 
-    Nave *nave = getNave();
+    Nave *nave = (Nave *) getNave();
     puts("{Nave}");
     printf("PONTUAÇÂO: %d\n", nave->score);
     printf("VIDAS: %d\n", nave->vidas);
@@ -179,7 +179,7 @@ static void imprimeElementos()
     puts("    ( x, y, z)          Recarga    Precisão    Energia ");
     puts("-------------------     -------    --------   ---------");
     for (Celula *p = getListaInimigos(); p->prox != NULL; p = p->prox) {
-        Inimigo *foe = p->prox->item;
+        Inimigo *foe = (Inimigo *) p->prox->item;
         printf(" (%4.0f, %3.0f, %4.0f)       "
                "%2d/%3d       %3.0f%%       %2d/%2d\n",
                foe->corpo.x, foe->corpo.y, foe->corpo.z,
@@ -190,7 +190,7 @@ static void imprimeElementos()
     puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
     puts("-------------------    --------------------     --------");
     for (Celula *p = getListaProjeteis(); p->prox != NULL; p = p->prox) {
-        Projetil *bullet = p->prox->item;
+        Projetil *bullet = (Projetil *) p->prox->item;
         printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
                bullet->corpo.x, bullet->corpo.y, bullet->corpo.z,
                bullet->vx, bullet->vy, bullet->vz,
@@ -219,15 +219,15 @@ void desenhaCenario()
     
     /* Desenha elementos dinâmicos do jogo */
     for (Celula *p = getListaItens()->prox; p != NULL; p = p->prox) {
-        Item *item = p->item;
+        Item *item = (Item *) p->item;
         desenhaItem(item);
     }
     for (Celula *p = getListaInimigos()->prox; p != NULL; p = p->prox) {
-        Inimigo *foe = p->item;
+        Inimigo *foe = (Inimigo *) p->item;
         desenhaInimigo(foe);
     }
     for (Celula *p = getListaProjeteis()->prox; p != NULL; p = p->prox) {
-        Projetil *bullet = p->item;
+        Projetil *bullet = (Projetil *) p->item;
         desenhaProjetil(bullet);
     }
     desenhaNave();

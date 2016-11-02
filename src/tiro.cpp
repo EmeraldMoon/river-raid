@@ -30,7 +30,7 @@ void carregaProjeteis()
 Projetil *criaProjetil()
 {
     /* Aloca espaço para projétil */
-    Projetil *bullet = mallocSafe(sizeof *bullet);
+    Projetil *bullet = (    Projetil *) mallocSafe(sizeof *bullet);
 
     /* Atributos fixos do projétil */
     bullet->dano         = BALA_DANO;
@@ -101,7 +101,7 @@ bool verificaAcerto(Projetil *bullet)
     }
     /* Verificação de colisão com algum inimigo */
     for (Celula *p = getListaInimigos(); p->prox != NULL; p = p->prox) {
-        Inimigo *foe = p->prox->item;
+        Inimigo *foe = (Inimigo *) p->prox->item;
         if (!ocorreuColisao(&bullet->corpo, &foe->corpo)) continue;
         if (bullet->amigo) {
             foe->atribs.hp -= bullet->dano;

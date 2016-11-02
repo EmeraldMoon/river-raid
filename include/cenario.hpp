@@ -40,8 +40,10 @@ void carregaCenario(bool godMode, bool debug);
  *
  *  É usada a técnica de interpolação: o tempo de jogo é constante,
  *  mesmo que a taxa de desenho na tela passe por variações.
+ *
+ *  O parâmetro da função não é utilizado.
  */
-void controlaTempo();
+void controlaTempo(int unused);
 
 /*
  *  Devolve tempo entre penúltima e última atualizações.

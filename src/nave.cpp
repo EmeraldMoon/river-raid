@@ -33,7 +33,7 @@ void carregaNave(bool _godMode)
     carregaTextura("silver.ppm", false, &modelo);
 
     /* Aloca memória para a nave */
-    nave = mallocSafe(sizeof *nave);
+    nave = (Nave *) mallocSafe(sizeof *nave);
 
     nave->corpo.raio      = NAVE_RAIO;
     nave->corpo.altura    = NAVE_ALTURA;

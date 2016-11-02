@@ -131,7 +131,7 @@ static void desenha()
     glutSwapBuffers();
 
     /* Passa para o proceesamento não gráfico */
-    controlaTempo();
+    controlaTempo(0);
 }
 
 /*------------------------------------------------------------------*/

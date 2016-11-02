@@ -9,7 +9,7 @@
 
 Lista *criaLista()
 {
-    Celula *ini = mallocSafe(sizeof *ini);
+    Celula *ini = (    Celula *) mallocSafe(sizeof *ini);
     ini->prox = NULL;
     return ini;
 }
@@ -18,7 +18,7 @@ Lista *criaLista()
 
 void listaInsere(Celula *ini, void *item)
 {
-    Celula *nova = mallocSafe(sizeof *nova);
+    Celula *nova = (    Celula *) mallocSafe(sizeof *nova);
     nova->item = item;
     nova->prox = ini->prox;
     ini->prox = nova;   

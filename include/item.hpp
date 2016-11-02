@@ -25,6 +25,15 @@
 /*------------------------------------------------------------------*/
 
 /*
+ *  Enumerador para tipos de item.
+ */
+enum tipoItem
+{
+    HP, VIDA, ESCUDO
+};
+typedef enum tipoItem TipoItem;
+
+/*
  *  Representa um item coletável.
  */
 typedef struct item Item;
@@ -38,7 +47,7 @@ struct item
        - VIDA aumenta número de vidas
        - ESCUDO gera escudo provisória que toma parte do dano.
     */
-    enum {HP, VIDA, ESCUDO} tipo;
+    TipoItem tipo;
 };
 
 /*-------------------------*

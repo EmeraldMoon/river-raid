@@ -14,7 +14,8 @@
 void leVertices(const char nomeArq[], Modelo *modelo)
 {
     /* Caminho do arquivo de modelo */
-    char caminho[strlen(MODEL_DIR) + strlen(nomeArq) + 1];
+    char *caminho =
+        (char *) mallocSafe(strlen(MODEL_DIR) + strlen(nomeArq) + 1);
     sprintf(caminho, "%s/%s", MODEL_DIR, nomeArq);
 
     /* Abre o arquivo */
@@ -29,7 +30,7 @@ void leVertices(const char nomeArq[], Modelo *modelo)
     rewind(arq);
 
     /* Lê todas as coordenadas */
-    GLdouble *coords = mallocSafe(3 * n * (sizeof coords[0]));
+    GLdouble *coords = (    GLdouble *) mallocSafe(3 * n * (sizeof coords[0]));
     for (GLsizei i = 0; i < 3 * n; i++) {
         fscanf(arq, "%lf", &coords[i]);
     }
@@ -38,6 +39,8 @@ void leVertices(const char nomeArq[], Modelo *modelo)
     /* Atualiza valores do modelo */
     modelo->coords = coords;
     modelo->numVertices = n;
+
+    free(caminho);
 }
 
 /*------------------------------------------------------------------*/
@@ -48,7 +51,8 @@ static void erro(FILE *arq, const char *nomeArq);
 void carregaTextura(const char nomeArq[], GLboolean mipmap, Modelo *modelo)
 {
     /* Caminho do arquivo de textura */
-    char caminho[strlen(TEXTURE_DIR) + strlen(nomeArq) + 1];
+    char *caminho =
+        (char *) mallocSafe(strlen(TEXTURE_DIR) + strlen(nomeArq) + 1);
     sprintf(caminho, "%s/%s", TEXTURE_DIR, nomeArq);
 
     /* Abre o arquivo */
@@ -74,7 +78,7 @@ void carregaTextura(const char nomeArq[], GLboolean mipmap, Modelo *modelo)
     fseek(arq, pos, SEEK_SET);
 
     /* Lê dados para uma string */
-    GLubyte *dados = mallocSafe(n * (sizeof *dados));
+    GLubyte *dados = (    GLubyte *) mallocSafe(n * (sizeof *dados));
     fread(dados, sizeof *dados, n, arq);
     fclose(arq);
 
@@ -93,6 +97,7 @@ void carregaTextura(const char nomeArq[], GLboolean mipmap, Modelo *modelo)
                      0, GL_RGB, GL_UNSIGNED_BYTE, dados);
     }
     free(dados);
+    free(caminho);
 }
 
 /*

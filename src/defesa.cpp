@@ -36,7 +36,7 @@ void carregaInimigos()
 void geraInimigo(double z)
 {
     /* Aloca memória */
-    Inimigo *foe = mallocSafe(sizeof *foe);
+    Inimigo *foe = (    Inimigo *) mallocSafe(sizeof *foe);
 
     /* Posicionamento do corpo */
     geraCorpo(&foe->corpo, z);
