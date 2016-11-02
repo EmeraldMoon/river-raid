@@ -13,7 +13,6 @@
 #include <stdlib.h>  /* srand */
 #include <time.h>    /* time */
 
-#include "Cenario.h"
 #include "Grafico.h"
 
 /*----------------*

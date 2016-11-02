@@ -1,4 +1,5 @@
 #include <stdio.h>   /* perror */
+#include <stdlib.h>  /* free */
 #include <string.h>  /* strcmp */
 #include <GL/freeglut.h>
 
@@ -69,7 +70,7 @@ void carregaTextura(const char nomeArq[], GLboolean mipmap, Modelo *modelo)
     /* Obtém nº de bytes no restante do arquivo */
     long pos = ftell(arq);
     fseek(arq, 0, SEEK_END);
-    GLsizei n = ftell(arq) - pos;
+    GLsizei n = ftell(arq) - pos + 1;
     fseek(arq, pos, SEEK_SET);
 
     /* Lê dados para uma string */
@@ -77,24 +78,19 @@ void carregaTextura(const char nomeArq[], GLboolean mipmap, Modelo *modelo)
     fread(dados, sizeof *dados, n, arq);
     fclose(arq);
 
-    /* DOOM: Hell begins here */
+    /* Gera e guarda identificador de textura */
     glGenTextures(1, &modelo->texturaId);
     glBindTexture(GL_TEXTURE_2D, modelo->texturaId);
 
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+    /* Carrega os dados (pixels) da textura */
     if (mipmap) {
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        gluBuild2DMipmaps(GL_TEXTURE_2D, 3, largura, altura,
-                        GL_RGB, GL_UNSIGNED_BYTE, dados);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, largura, altura,
+                          GL_RGB, GL_UNSIGNED_BYTE, dados);
     } else {
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, largura, altura,
-                    0, GL_RGB, GL_UNSIGNED_BYTE, dados);
+                     0, GL_RGB, GL_UNSIGNED_BYTE, dados);
     }
     free(dados);
 }
@@ -122,4 +118,16 @@ static void erro(FILE *arq, const char *caminho)
             "%s arquivo com formato inválido.\n", caminho);
     fclose(arq);
     encerraJogo();
+}
+
+/*------------------------------------------------------------------*/
+
+void liberaVertices(Modelo *modelo)
+{
+    free(modelo->coords);
+}
+
+void liberaTextura(Modelo *modelo)
+{
+    glDeleteTextures(1, &modelo->texturaId);
 }

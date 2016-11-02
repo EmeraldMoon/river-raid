@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -Wall -Wextra -pedantic -Wno-unused-result -std=c11 -g
+CFLAGS = -Wall -pedantic -Wno-unused-result -std=c11 -O3
 LIBS   = -lm -lGL -lGLU -lglut
 BINDIR = bin
 SRCDIR = src

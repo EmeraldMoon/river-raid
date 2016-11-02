@@ -24,7 +24,7 @@ void listaInsere(Celula *ini, void *item)
     ini->prox = nova;   
 }
 
-void listaRemove(Celula *cel)
+void listaRemoveProx(Celula *cel)
 {
     Celula *morta = cel->prox;
     cel->prox = morta->prox;

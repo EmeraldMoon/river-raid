@@ -46,3 +46,13 @@ void leVertices(const char nomeArq[], Modelo *modelo);
  *  mipmap indica se será usado o recurso de mipmapping.
  */
 void carregaTextura(const char nomeArq[], GLboolean mipmap, Modelo *modelo);
+
+/*
+ *  Libera memória alocada para os vértices do modelo.
+ */
+void liberaVertices(Modelo *modelo);
+
+/*
+ *  Libera textura atrelada ao OpenGL.
+ */
+void liberaTextura(Modelo *modelo);

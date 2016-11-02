@@ -113,18 +113,7 @@ void atualizaCenario()
             danificaNave(foe->danoColisao);
         }
         if (--foe->atribs.espera == 0) inimigoDispara(foe, nave);
-        if (corpoSaiu(&foe->corpo, nave->corpo.z)) listaRemove(p);
-        else p = p->prox;
-    }
-    /* Loop para tratar de itens */
-    p = getListaItens();
-    while (p->prox != NULL) {
-        Item *item = p->prox->item;
-        if (ocorreuColisao(&nave->corpo, &item->corpo)) {
-            ativaItem(item, nave);
-            listaRemove(p);
-        }
-        else if (corpoSaiu(&item->corpo, nave->corpo.z)) listaRemove(p);
+        if (corpoSaiu(&foe->corpo, nave->corpo.z)) listaRemoveProx(p);
         else p = p->prox;
     }
     /* Loop para verificar estado dos projéteis */
@@ -134,11 +123,21 @@ void atualizaCenario()
         moveProjetil(bullet);
         if (verificaAcerto(bullet) ||
                 corpoSaiu(&bullet->corpo, nave->corpo.z)) {
-            listaRemove(p);
+            listaRemoveProx(p);
         } else p = p->prox;
     }
-    if (nave->vidas <= 0) encerraJogo();
-
+     /* Loop para tratar de itens */
+    p = getListaItens();
+    while (p->prox != NULL) {
+        Item *item = p->prox->item;
+        if (ocorreuColisao(&nave->corpo, &item->corpo)) {
+            ativaItem(item, nave);
+            listaRemoveProx(p);
+        }
+        else if (corpoSaiu(&item->corpo, nave->corpo.z)) listaRemoveProx(p);
+        else p = p->prox;
+    }
+    /* Gera inimigo ou item se contador chegar a zero */
     if (--contFoe <= 0) {
         geraInimigo(nave->corpo.z + Z_DIST);
         contFoe = TEMPO_INIMIGOS;
@@ -148,6 +147,9 @@ void atualizaCenario()
         contItem = TEMPO_ITEM;
     }
     if (debug) imprimeElementos();
+
+    /* Se acabaram vidas, encerra o jogo */
+    if (nave->vidas <= 0) encerraJogo();
 }
 
 /*
@@ -173,8 +175,6 @@ static void imprimeElementos()
     printf("Ângulos: (%.0f°, %.0f°)\n",
            180/PI * nave->angHoriz, 180/PI * nave->angVert);
     
-    /* Para efeitos de clareza, todas as componentes z dos
-       inimigos e projéteis são relativas à nave (e não absolutas). */
     puts("\n{Inimigos}");
     puts("    ( x, y, z)          Recarga    Precisão    Energia ");
     puts("-------------------     -------    --------   ---------");
@@ -332,10 +332,20 @@ static void desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
 
 void encerraJogo()
 {
-    liberaLista(getListaInimigos());
-    liberaLista(getListaProjeteis());
-    liberaLista(getListaItens());
+    int score = getNave()->score;
 
-    printf("Score final: %d\n", getNave()->score);
+    /* Libera elementos do jogo */
+    liberaNave();
+    liberaInimigos();
+    liberaProjeteis();
+    liberaItens();
+
+    /* Libera texturas do cenário */
+    liberaTextura(&modeloRio);
+    liberaTextura(&modeloParede);
+    liberaTextura(&modeloFundo);
+
+    /* Mostra score e dá adeus */
+    printf("Score final: %d\n", score);
     exit(EXIT_SUCCESS);
 }

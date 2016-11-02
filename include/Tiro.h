@@ -91,3 +91,8 @@ void desenhaProjetil(Projetil *bullet);
  *  Devolve ponteiro para lista de projéteis.
  */
 Lista *getListaProjeteis();
+
+/*
+ *  Libera memória alocada para os projéteis.
+ */
+void liberaProjeteis();

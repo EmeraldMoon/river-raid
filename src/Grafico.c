@@ -66,7 +66,7 @@ void inicializaJogo(int argc, char *argv[])
 
     /* Nevoeiro sobre o cenário
        (só aceita valores float, infelizmente). */
-    const GLfloat cor[3] = {0.0f, 0.0f, 0.0f};
+    const GLfloat cor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     glEnable(GL_FOG);
     glFogf(GL_FOG_DENSITY, 0.0008f);
     glFogfv(GL_FOG_COLOR, cor);
@@ -104,9 +104,9 @@ static void desenha()
 
     /* Configura a luz ambiente.
        No modo 1º pessoa, tela fica vermelha após dano. */
-    double k = estaEmPrimeiraPessoa() *
-               (1.5 * nave->invencibilidade/INVENCIVEL_VIDA);
-    GLfloat luzTela[3] = { 1.0, 1.0 - k, 1.0 - k };
+    GLfloat k = estaEmPrimeiraPessoa() *
+                (1.5 * nave->invencibilidade/INVENCIVEL_VIDA);
+    GLfloat luzTela[4] = {1.0f, 1.0f - k, 1.0f - k, 1.0f};
     glLightfv(LUZ_AMBIENTE, GL_AMBIENT, luzTela);
 
     /* Configura a posição da câmera.
@@ -163,6 +163,9 @@ static void remodela(int width, int height)
 
 /*------------------------------------------------------------------*/
 
+/* Constante de mudança de câmera (não pergunte como isso funciona) */
+#define constCamera 1/(-Y_MAX/(31/16.0 * altura) + 1)
+
 static void projecaoInicio();
 static void projecaoFim();
 
@@ -173,10 +176,9 @@ static void projecaoFim();
 static void exibeHud()
 {
     GLdouble raio = largura/75.0;
-    GLdouble k = -Y_MAX/(62/32.0 * altura) + 1; /* Constante de mudança de câmera */
     GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave->corpo.x);
-    GLdouble y = (estaEmPrimeiraPessoa() ? nave->corpo.y + k*31*altura/32.0
-                                               : 31*altura/32.0);
+    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->corpo.y
+                                        : 0.85 * altura * constCamera;
     GLdouble z = nave->corpo.z - (!estaEmPrimeiraPessoa() * DIST_CAMERA);
 
     projecaoInicio();
@@ -196,7 +198,6 @@ static void exibeHud()
         glVertex3d(x + i * 3*raio, y + raio, z);
         glEnd();
     }
-
     /* Caixa da lifebar */
     GLdouble vertexLifebox[4][3] = {
         {               x - 1, y - 2*raio - 3, z },
@@ -248,8 +249,12 @@ static void exibeHud()
  */
 static void exibeFps()
 {
-    static int fps;
-    static int cont = 20;
+    static int fps, cont = 20;
+
+    GLdouble x = 0.88 * largura + (estaEmPrimeiraPessoa() * nave->corpo.x);
+    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->corpo.y
+                                        : 0.85 * altura * constCamera;
+    GLdouble z = nave->corpo.z - (!estaEmPrimeiraPessoa() * DIST_CAMERA);
 
     /* FPS só é alterado na tela a cada tantos timesteps */
     cont += getDelayTempo() * FPS/1000.0;
@@ -257,23 +262,14 @@ static void exibeFps()
         fps = 1000.0/(getDelayTempo() - 1);
         cont = cont % 20;
     }
-    const GLdouble K = -Y_MAX/(62/32.0 * altura) + 1; /* Constante de mudança de câmera */
-    const GLdouble x = (estaEmPrimeiraPessoa() ? nave->corpo.x + 0.88 * largura
-                                               : 0.88 * largura);
-    const GLdouble y = (estaEmPrimeiraPessoa() ? nave->corpo.y + K*31*altura/32.0
-                                               : 31*altura/32.0);
-    const GLdouble z = (estaEmPrimeiraPessoa() ? nave->corpo.z
-                                               : nave->corpo.z - DIST_CAMERA);
-
     projecaoInicio();
 
     /* Posiciona projeção */
     glRasterPos3d(x, y, z);
 
-    /* String que guarda fps */
+    /* Imprime fps na tela */
     unsigned char mostrador[16];
     sprintf((char *) mostrador, "%2d fps", (fps > 60) ? 60 : fps);
-
     setColor(YELLOW);
     glutBitmapString(GLUT_BITMAP_HELVETICA_18, mostrador);
 
