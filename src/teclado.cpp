@@ -59,7 +59,7 @@ void keySpecialUp(int key, int x, int y)
 void keyOperations()
 {
     if ((keyStates[TECLA_TIRO] || keyStates[TECLA_TIRO2])
-            && --getNave()->atribs.espera <= 0) {
+            && --getNave()->espera <= 0) {
         naveDispara();
     }
 }

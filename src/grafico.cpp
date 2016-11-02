@@ -111,12 +111,12 @@ static void desenha()
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */
     if (estaEmPrimeiraPessoa()) {
-        gluLookAt(nave->corpo.x, nave->corpo.y, nave->corpo.z,
-                  nave->corpo.x, nave->corpo.y, nave->corpo.z + Z_DIST,
+        gluLookAt(nave->x, nave->y, nave->z,
+                  nave->x, nave->y, nave->z + Z_DIST,
                   0.0, 1.0, 0.0);
     } else {
-        gluLookAt(0.0, Y_MAX/2.0, nave->corpo.z - DIST_CAMERA,
-                  0.0, Y_MAX/2.0, nave->corpo.z + Z_DIST,
+        gluLookAt(0.0, Y_MAX/2.0, nave->z - DIST_CAMERA,
+                  0.0, Y_MAX/2.0, nave->z + Z_DIST,
                   0.0, 1.0, 0.0);
     }
     /* Desenha cenário e elementos de jogo */
@@ -175,10 +175,10 @@ static void projecaoFim();
 static void exibeHud()
 {
     GLdouble raio = largura/75.0;
-    GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave->corpo.x);
-    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->corpo.y
+    GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave->x);
+    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->y
                                         : 0.85 * altura * constCamera;
-    GLdouble z = nave->corpo.z - (!estaEmPrimeiraPessoa() * DIST_CAMERA);
+    GLdouble z = nave->z - (!estaEmPrimeiraPessoa() * DIST_CAMERA);
 
     projecaoInicio();
 
@@ -213,7 +213,7 @@ static void exibeHud()
     glEnd();
 
     /* A lifebar em si */
-    int hp = nave->atribs.hp;
+    int hp = nave->hp;
     GLdouble vertexLifebar[4][3] = {
         {                               x, y - 2*raio - 2, z },
         {                               x, y - 2*raio + 1, z },
@@ -250,10 +250,10 @@ static void exibeFps()
 {
     static int fps, cont = 20;
 
-    GLdouble x = 0.88 * largura + (estaEmPrimeiraPessoa() * nave->corpo.x);
-    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->corpo.y
+    GLdouble x = 0.88 * largura + (estaEmPrimeiraPessoa() * nave->x);
+    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->y
                                         : 0.85 * altura * constCamera;
-    GLdouble z = nave->corpo.z - (!estaEmPrimeiraPessoa() * DIST_CAMERA);
+    GLdouble z = nave->z - (!estaEmPrimeiraPessoa() * DIST_CAMERA);
 
     /* FPS só é alterado na tela a cada tantos timesteps */
     cont += getDelayTempo() * FPS/1000.0;

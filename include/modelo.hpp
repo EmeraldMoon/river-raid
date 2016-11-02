@@ -20,8 +20,7 @@
 /*
  *  Modelo de um objeto desenhável do jogo.
  */
-typedef struct modelo Modelo;
-struct modelo
+struct Modelo
 {
     /* Vetor de coordenadas de vértices e número deles */
     GLdouble *coords;

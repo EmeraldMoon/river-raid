@@ -33,13 +33,9 @@ typedef enum tipoItem TipoItem;
 /*
  *  Representa um item coletável.
  */
-typedef struct item Item;
-struct item
+struct Item : public Corpo
 {
-    /* Corpo esférico */
-	Corpo corpo;
-
-	/* Indica tipo do item
+    /* Indica tipo do item
        - HP aumenta barra de energia da nave
        - VIDA aumenta número de vidas
        - ESCUDO gera escudo provisória que toma parte do dano.

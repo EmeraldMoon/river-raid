@@ -32,12 +32,8 @@
 /*
  *  Representa a nave do jogador.
  */
-typedef struct nave Nave;
-struct nave
+struct Nave : public Unidade
 {
-    /* Corpo cilíndrico da nave */
-    Corpo corpo;
-
     /* Componentes de velocidade da nave */
     double vx, vy, vz;
 
@@ -46,9 +42,6 @@ struct nave
 
     /* Número de chances do jogador. Se 0, "game over". */
     int vidas;
-
-    /* HP e cooldown */
-    Atributos atribs;
 
     /* Enquanto > 0, nave é imune a tiros e colisões */
     int invencibilidade;

@@ -21,7 +21,7 @@ std::vector<Projetil> projeteis;
 
 void criaProjetil(Projetil *bullet)
 {
-    bullet->corpo.altura = 2 * bullet->corpo.raio;
+    bullet->altura = 2 * bullet->raio;
 
     projeteis.push_back(*bullet);
 }
@@ -63,9 +63,9 @@ void moveProjetil(Projetil *bullet)
     /* Efeito da gravidade */
     bullet->vy -= ACEL_GRAVIDADE;
 
-    bullet->corpo.x += bullet->vx;
-    bullet->corpo.y += bullet->vy;
-    bullet->corpo.z += bullet->vz;
+    bullet->x += bullet->vx;
+    bullet->y += bullet->vy;
+    bullet->z += bullet->vz;
 }
 
 /*------------------------------------------------------------------*/
@@ -79,7 +79,7 @@ bool verificaAcerto(Projetil *bullet)
     Nave *nave = getNave();
 
     /* Verificação de colisão com a nave */
-    if (ocorreuColisao(&bullet->corpo, &nave->corpo)) {
+    if (ocorreuColisao(bullet, nave)) {
         danificaNave(bullet->dano);
         return true;
     }
@@ -87,11 +87,11 @@ bool verificaAcerto(Projetil *bullet)
     std::vector<Inimigo> *inimigos = getListaInimigos();
     for (size_t i = 0; i < inimigos->size(); i++) {
         Inimigo *foe = &(*inimigos)[i];
-        if (!ocorreuColisao(&bullet->corpo, &foe->corpo)) continue;
+        if (!ocorreuColisao(bullet, foe)) continue;
         if (bullet->amigo) {
-            foe->atribs.hp -= bullet->dano;
+            foe->hp -= bullet->dano;
             nave->score += foe->pontosAcerto;
-            if (foe->atribs.hp <= 0) {
+            if (foe->hp <= 0) {
                 inimigos->erase(inimigos->begin() + i);
                 nave->score += foe->pontosDestruicao;
             } else {
@@ -115,8 +115,8 @@ void desenhaProjetil(Projetil *bullet)
     else               setColor(YELLOW);
   
     /* Desenha esfera na posição (x, y, z) */
-    glTranslated(bullet->corpo.x, bullet->corpo.y, bullet->corpo.z);
-    glutSolidSphere(bullet->corpo.raio, SLICES, STACKS);
+    glTranslated(bullet->x, bullet->y, bullet->z);
+    glutSolidSphere(bullet->raio, SLICES, STACKS);
 
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();

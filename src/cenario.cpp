@@ -106,11 +106,11 @@ void atualizaCenario()
     std::vector<Inimigo> *inimigos = getListaInimigos();
     for (size_t i = 0; i < inimigos->size();) {
         Inimigo *foe = &(*inimigos)[i];
-        if (ocorreuColisao(&nave->corpo, &foe->corpo)) {
+        if (ocorreuColisao(nave, foe)) {
             danificaNave(foe->danoColisao);
         }
-        if (--foe->atribs.espera == 0) inimigoDispara(foe, nave);
-        if (corpoSaiu(&foe->corpo, nave->corpo.z)) {
+        if (--foe->espera == 0) inimigoDispara(foe, nave);
+        if (corpoSaiu(foe, nave->z)) {
             inimigos->erase(inimigos->begin() + i);
         } else i++;
     }
@@ -120,7 +120,7 @@ void atualizaCenario()
         Projetil *bullet = &(*projeteis)[i];
         moveProjetil(bullet);
         if (verificaAcerto(bullet) ||
-                corpoSaiu(&bullet->corpo, nave->corpo.z)) {
+                corpoSaiu(bullet, nave->z)) {
             projeteis->erase(projeteis->begin() + i);
         } else i++;
     }
@@ -128,22 +128,22 @@ void atualizaCenario()
     std::vector<Item> *itens = getListaItens();
     for (size_t i = 0; i < itens->size();) {
         Item *item = &(*itens)[i];
-        if (ocorreuColisao(&nave->corpo, &item->corpo)) {
+        if (ocorreuColisao(nave, item)) {
             ativaItem(item, nave);
             itens->erase(itens->begin() + i);
         }
-        else if (corpoSaiu(&item->corpo, nave->corpo.z)) {
+        else if (corpoSaiu(item, nave->z)) {
             itens->erase(itens->begin() + i);
         }
         else i++;
     }
     /* Gera inimigo ou item se contador chegar a zero */
     if (--contFoe <= 0) {
-        geraInimigo(nave->corpo.z + Z_DIST);
+        geraInimigo(nave->z + Z_DIST);
         contFoe = TEMPO_INIMIGOS;
     }
     if (--contItem <= 0) {
-        geraItem(nave->corpo.z + Z_DIST);
+        geraItem(nave->z + Z_DIST);
         contItem = TEMPO_ITEM;
     }
     if (debug) imprimeElementos();
@@ -169,9 +169,9 @@ static void imprimeElementos()
     puts("{Nave}");
     printf("PONTUAÇÂO: %d\n", nave->score);
     printf("VIDAS: %d\n", nave->vidas);
-    printf("Energia: %-3d/%d\n", nave->atribs.hp, NAVE_HPMAX);
+    printf("Energia: %-3d/%d\n", nave->hp, NAVE_HPMAX);
     printf("Posição: (%.0f, %.0f, %.0f)\n", 
-           nave->corpo.x, nave->corpo.y, nave->corpo.z);
+           nave->x, nave->y, nave->z);
     printf("Ângulos: (%.0f°, %.0f°)\n",
            180/PI * nave->angHoriz, 180/PI * nave->angVert);
     
@@ -181,16 +181,16 @@ static void imprimeElementos()
     for (Inimigo foe : *getListaInimigos()) {
         printf(" (%4.0f, %3.0f, %4.0f)       "
                "%2d/%3d       %3.0f%%       %2d/%2d\n",
-               foe.corpo.x, foe.corpo.y, foe.corpo.z,
-               foe.atribs.espera, foe.atribs.cooldown, 100 * foe.precisao,
-               foe.atribs.hp, FOE_HPMAX);
+               foe.x, foe.y, foe.z,
+               foe.espera, foe.cooldown, 100 * foe.precisao,
+               foe.hp, FOE_HPMAX);
     }
     puts("\n{Projéteis}");
     puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
     puts("-------------------    --------------------     --------");
     for (Projetil bullet : *getListaProjeteis()) {
         printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
-               bullet.corpo.x, bullet.corpo.y, bullet.corpo.z,
+               bullet.x,  bullet.y,  bullet.z,
                bullet.vx, bullet.vy, bullet.vz,
                bullet.amigo ? "sim" : "não");
     }
@@ -238,7 +238,7 @@ void desenhaCenario()
  */
 static void desenhaRio()
 {
-    GLdouble z = getNave()->corpo.z/768.0;  /* 512 + 256 */
+    GLdouble z = getNave()->z/768.0;  /* 512 + 256 */
 
     GLdouble coords[4][2] = {
         { 0.0, 4.0 + z }, { 4.0, 4.0 + z },
@@ -259,7 +259,7 @@ static void desenhaRio()
  */
 static void desenhaParede()
 {
-    GLdouble z = getNave()->corpo.z/192.0;  /* 128 + 64 */
+    GLdouble z = getNave()->z/192.0;  /* 128 + 64 */
 
     GLdouble coords[4][2] = {
         {        z, 1.0 },
@@ -310,7 +310,7 @@ static void desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
                               GLdouble vertices[4][3])
 {
     glPushMatrix();
-    glTranslated(0.0, 0.0, getNave()->corpo.z - DIST_CAMERA);
+    glTranslated(0.0, 0.0, getNave()->z - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, texturaId);
 
     glBegin(GL_QUADS); 

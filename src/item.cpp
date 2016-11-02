@@ -30,9 +30,9 @@ void geraItem(double z)
     else if (96 <= sorte)               tipo =   VIDA;
 
     Item item;
-    geraCorpo(&item.corpo, z);
-    item.corpo.raio   = ITEM_RAIO;
-    item.corpo.altura = 2 * item.corpo.raio;
+    geraCorpo(&item, z);
+    item.raio   = ITEM_RAIO;
+    item.altura = 2 * item.raio;
     item.tipo = tipo;
 
     itens.push_back(item);
@@ -44,16 +44,16 @@ void ativaItem(Item *item, Nave *nave)
 {
     switch (item->tipo) {
         case HP:
-            nave->atribs.hp += nave->atribs.hp / 6;
-            if (nave->atribs.hp > NAVE_HPMAX) {
-                nave->atribs.hp = NAVE_HPMAX;
+            nave->hp += nave->hp / 6;
+            if (nave->hp > NAVE_HPMAX) {
+                nave->hp = NAVE_HPMAX;
             }
             break;
         case VIDA:
             ++nave->vidas;
             break;
         case ESCUDO:
-            nave->escudo = 2 * nave->atribs.hp;
+            nave->escudo = 2 * nave->hp;
             break;
     }
 }
@@ -69,7 +69,7 @@ void desenhaItem(Item *item)
     glDisable(GL_TEXTURE_2D);
 
     /* Posiciona e rotaciona item */
-    glTranslated(item->corpo.x, item->corpo.y, item->corpo.z);
+    glTranslated(item->x, item->y, item->z);
     glRotated(rotacao, 1.0, 1.0, 1.0);
 
     switch(item->tipo) {

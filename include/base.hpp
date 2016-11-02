@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <cstdlib>   /* size_t */
-
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |
  *-------------------------*----------------------------------------*/
@@ -22,28 +20,26 @@
 /*------------------------------------------------------------------*/
 
 /*
- *  Estrutura básica de um elemento físico do jogo.
- *  A ser usada comumente entre todas as structs.
+ *  Superclasse básica de um elemento físico do jogo.
+ *  A ser usada comumente entre todos os objetos.
  */
-typedef struct corpo Corpo;
-struct corpo
+struct Corpo
 {
-    /* Posição do corpo no cenário */
+    /* Posição do no cenário */
     double x;  /* posição horizontal (centro == 0) */
     double y;  /* altura em relação ao solo */
     double z;  /* distância desde o início do cenário */
 
-    /* Dimensões do corpo.
+    /* Dimensões do.
        No caso de esféricos, altura == 2 * raio. */
     double raio, altura;
 };
 
 /*
- *  Estrutura contendo alguns atributos comuns
- *  entre nave e inimigos.
+ *  Unidade de batalha do jogo, com hp e tiros recarregáveis.
+ *  Nave e inimigos são subclasses desta.
  */
-typedef struct atributos Atributos;
-struct atributos
+struct Unidade : public Corpo
 {
     /* Se (hp <= 0), elemento é destruído */
     int hp;
@@ -58,19 +54,19 @@ struct atributos
  *-------------------------*----------------------------------------*/
 
 /*
- *  Posiciona um corpo de forma randômica com posições
+ *  Posiciona um de forma randômica com posições
  *  aleatórias x e y e coordenada fixa z.
  */
 void geraCorpo(Corpo *corpo, double z);
 
 /*
- *  Verifica se ocorreu colisão entre dois corpos.
- *  Os dois corpos são considerados cilíndricos, para facilitar.
+ *  Verifica se ocorreu colisão entre doiss.
+ *  Os doiss são considerados cilíndricos, para facilitar.
  */
 bool ocorreuColisao(Corpo *a, Corpo *b);
 
 /*
- *  Verifica se o corpo saiu por um dos limites da tela.
+ *  Verifica se o saiu por um dos limites da tela.
  *  naveZ refere-se à posição z da nave neste instante.
  */
 bool corpoSaiu(Corpo *corpo, double naveZ);

@@ -36,15 +36,8 @@
 /*
  *  Representa um inimigo (elemento de defesa).
  */
-typedef struct inimigo Inimigo;
-struct inimigo
+struct Inimigo : public Unidade
 {
-    /* Corpo cilíndrico do inimigo */
-    Corpo corpo;
-
-    /* HP e cooldown */
-    Atributos atribs;
-
     /* Chance (esperada) de um projétil disparado acertar a nave */
     double precisao;
 

@@ -36,13 +36,13 @@ void geraInimigo(double z)
     Inimigo foe;
 
     /* Posicionamento do corpo */
-    geraCorpo(&foe.corpo, z);
-    foe.corpo.raio       = FOE_RAIO;
-    foe.corpo.altura     = 2 * foe.corpo.y;
+    geraCorpo(&foe, z);
+    foe.raio   = FOE_RAIO;
+    foe.altura = 2 * foe.y;
 
     /* Atributos restantes */
-    foe.atribs.hp        = FOE_HPMAX;
-    foe.atribs.cooldown  = foe.atribs.espera = uniforme(80, 105);
+    foe.hp               = FOE_HPMAX;
+    foe.cooldown         = foe.espera = uniforme(80, 105);
     foe.precisao         = uniforme(0.8, 1.0);
     foe.danoColisao      = DANO_COLISAO;
     foe.pontosAcerto     = PONTOS_ACERTO;
@@ -58,14 +58,14 @@ void inimigoDispara(Inimigo *foe, Nave *nave)
 {
     Projetil bullet;
     bullet.amigo = false;
-    bullet.corpo.raio = BALA_RAIO;
+    bullet.raio = BALA_RAIO;
     bullet.dano = BALA_DANO;
 
     /* Calcula distância entre coordenadas de inimigo e nave.
        No caso do eixo z, considera-se a posição um pouco à frente. */
-    double dx = nave->corpo.x - foe->corpo.x;
-    double dy = nave->corpo.y - foe->corpo.y;
-    double dz = (nave->corpo.z + nave->corpo.raio) - foe->corpo.z;
+    double dx = nave->x - foe->x;
+    double dy = nave->y - foe->y;
+    double dz = (nave->z + nave->raio) - foe->z;
     double d = norma(dx, dy, dz);
 
     /* Gera vetor velocidade na referida direção */
@@ -75,10 +75,10 @@ void inimigoDispara(Inimigo *foe, Nave *nave)
     bullet.vz = k * dz;
 
     /* Posição inicial de projétil segue direção da nave */
-    double r = (foe->corpo.raio + bullet.corpo.raio)/d;
-    bullet.corpo.x = foe->corpo.x + (r * dx);
-    bullet.corpo.y = foe->corpo.y + (r * dy);
-    bullet.corpo.z = foe->corpo.z + (r * dz);
+    double r = (foe->raio + bullet.raio)/d;
+    bullet.x = foe->x + (r * dx);
+    bullet.y = foe->y + (r * dy);
+    bullet.z = foe->z + (r * dz);
 
     /* Aplica desvio de precisão */    
     aplicaPrecisao(&bullet, foe->precisao);
@@ -87,7 +87,7 @@ void inimigoDispara(Inimigo *foe, Nave *nave)
     criaProjetil(&bullet);
 
     /* Reinicia contagem até próximo tiro */
-    foe->atribs.espera = foe->atribs.cooldown;
+    foe->espera = foe->cooldown;
 }
 
 /*------------------------------------------------------------------*/
@@ -106,8 +106,8 @@ void desenhaInimigo(Inimigo *foe)
                   (foe->tempoDano == 0) ? modelo.texturaId : 0);
 
     /* Posiciona e dimensiona inimigo */
-    glTranslated(foe->corpo.x, 0.0, foe->corpo.z);
-    glScaled(16 * foe->corpo.raio, foe->corpo.altura, 16 * foe->corpo.raio);
+    glTranslated(foe->x, 0.0, foe->z);
+    glScaled(16 * foe->raio, foe->altura, 16 * foe->raio);
 
     /* Desenha modelo baseado em vértices e normais */
     glVertexPointer(3, GL_DOUBLE, 0, modelo.coords);

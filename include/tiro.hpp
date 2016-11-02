@@ -29,12 +29,8 @@
 /*
  *  Representa um projétil causador de dano.
  */
-typedef struct projetil Projetil;
-struct projetil
+struct Projetil : public Corpo
 {
-    /* Corpo esférico */
-    Corpo corpo;
-
     /* Componentes de velocidade do tiro */
     double vx, vy, vz;
 
