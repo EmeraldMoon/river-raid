@@ -1,12 +1,12 @@
-#include <math.h>  /* sqrt */
+#include <cmath>  /* sqrt */
 
-#include "Defesa.h"
-#include "Random.h"
-#include "Tiro.h"
-#include "Cenario.h"
-#include "Grafico.h"
-#include "Modelo.h"
-#include "Cores.h"
+#include "defesa.hpp"
+#include "random.hpp"
+#include "tiro.hpp"
+#include "cenario.hpp"
+#include "grafico.hpp"
+#include "modelo.hpp"
+#include "cores.hpp"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

@@ -10,10 +10,10 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#include <stdlib.h>  /* srand */
-#include <time.h>    /* time */
+#include <cstdlib>  /* srand */
+#include <ctime>    /* time */
 
-#include "Grafico.h"
+#include "grafico.hpp"
 
 /*----------------*
  |   M  A  I  N   |

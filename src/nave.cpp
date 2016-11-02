@@ -1,13 +1,13 @@
-#include <math.h>  /* tan, abs */
+#include <cmath>  /* tan, abs */
 #include <GL/freeglut.h>
 
-#include "Nave.h"
-#include "Tiro.h"
-#include "Cenario.h"
-#include "Teclado.h"
-#include "Modelo.h"
-#include "Grafico.h"
-#include "Cores.h"
+#include "nave.hpp"
+#include "tiro.hpp"
+#include "cenario.hpp"
+#include "teclado.hpp"
+#include "modelo.hpp"
+#include "grafico.hpp"
+#include "cores.hpp"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

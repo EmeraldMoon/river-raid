@@ -1,14 +1,14 @@
-#include <stdio.h>   /* sprintf */
-#include <string.h>  /* strcmp */
-#include <math.h>    /* ceil */
+#include <cstdio>   /* sprintf */
+#include <cstring>  /* strcmp */
+#include <cmath>    /* ceil */
 
-#include "Grafico.h"
-#include "Lista.h"
-#include "Nave.h"
-#include "Cenario.h"
-#include "Teclado.h"
-#include "Modelo.h"
-#include "Cores.h"
+#include "grafico.hpp"
+#include "lista.hpp"
+#include "nave.hpp"
+#include "cenario.hpp"
+#include "teclado.hpp"
+#include "modelo.hpp"
+#include "cores.hpp"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

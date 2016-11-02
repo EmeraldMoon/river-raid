@@ -1,13 +1,13 @@
-#include <math.h>  /* abs, sin, cos, atan2 */
+#include <cmath>  /* abs, sin, cos, atan2 */
 
-#include "Tiro.h"
-#include "Base.h"
-#include "Lista.h"
-#include "Random.h"
-#include "Defesa.h"
-#include "Cenario.h"
-#include "Grafico.h"
-#include "Cores.h"
+#include "tiro.hpp"
+#include "base.hpp"
+#include "lista.hpp"
+#include "random.hpp"
+#include "defesa.hpp"
+#include "cenario.hpp"
+#include "grafico.hpp"
+#include "cores.hpp"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

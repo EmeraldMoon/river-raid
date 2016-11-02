@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <stdlib.h>   /* size_t */
-#include <stdbool.h>  /* bool */
+#include <cstdlib>   /* size_t */
+#include <cstdbool>  /* bool */
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

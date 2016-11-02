@@ -1,11 +1,11 @@
-#include <stdio.h>   /* perror */
-#include <stdlib.h>  /* free */
-#include <string.h>  /* strcmp */
+#include <cstdio>   /* perror */
+#include <cstdlib>  /* free */
+#include <cstring>  /* strcmp */
 #include <GL/freeglut.h>
 
-#include "Modelo.h"
-#include "Base.h"
-#include "Cenario.h"
+#include "modelo.hpp"
+#include "base.hpp"
+#include "cenario.hpp"
 
 /*-------------------*
  |   F U N Ç Õ E S   |

@@ -1,9 +1,9 @@
-#include <ctype.h>    /* toupper */
-#include <stdbool.h>  /* bool */
+#include <cctype>    /* toupper */
+#include <cstdbool>  /* bool */
 
-#include "Teclado.h"
-#include "Nave.h"
-#include "Cenario.h"
+#include "teclado.hpp"
+#include "nave.hpp"
+#include "cenario.hpp"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

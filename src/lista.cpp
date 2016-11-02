@@ -1,7 +1,7 @@
-#include <stdlib.h>  /* free */
+#include <cstdlib>  /* free */
 
-#include "Lista.h"
-#include "Base.h"
+#include "lista.hpp"
+#include "base.hpp"
 
 /*-------------------*
  |   F U N Ç Õ E S   |

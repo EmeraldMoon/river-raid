@@ -167,7 +167,7 @@ sub handleArguments() {
 	# (optional) derive output filename from input filename
 	unless($errorInOptions || defined($outFilename)) {
 		my ($file, $dir, $ext) = fileparse($inFilename, qr/\.[^.]*/);
-		$outFilename = $dir . $file . ".h";
+		$outFilename = $dir . $file . ".hpp";
 	}
 	
 	# (optional) define object name from output filename

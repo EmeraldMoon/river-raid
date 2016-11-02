@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <stdbool.h>
+#include <cstdbool>
 
-#include "Base.h"
+#include "base.hpp"
 
 /*-------------------------*----------------------------------------*
  |   D E F I N I Ç Õ E S   |

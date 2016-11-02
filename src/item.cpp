@@ -1,11 +1,11 @@
-#include <math.h>  /* sqrt */
+#include <cmath>  /* sqrt */
 
-#include "Item.h"
-#include "Random.h"
-#include "Nave.h"
-#include "Cenario.h"
-#include "Grafico.h"
-#include "Cores.h"
+#include "item.hpp"
+#include "random.hpp"
+#include "nave.hpp"
+#include "cenario.hpp"
+#include "grafico.hpp"
+#include "cores.hpp"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

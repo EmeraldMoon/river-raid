@@ -1,5 +1,5 @@
-#include <stdlib.h>  /* rand */
-#include <math.h>    /* sqrt, log */
+#include <cstdlib>  /* rand */
+#include <cmath>    /* sqrt, log */
 
 /*-------------------*
  |   F U N Ç Õ E S   |

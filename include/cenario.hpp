@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <stdbool.h>
+#include <cstdbool>
 #include <GL/freeglut.h>
 
 /*-------------------------*

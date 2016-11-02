@@ -1,17 +1,17 @@
-#include <stdio.h>    /* puts, printf, system */
-#include <stdlib.h>   /* exit */
-#include <stdbool.h>  /* bool */
-#include <math.h>     /* sin */
+#include <cstdio>    /* puts, printf, system */
+#include <cstdlib>   /* exit */
+#include <cstdbool>  /* bool */
+#include <cmath>     /* sin */
 #include <GL/freeglut.h>
 
-#include "Cenario.h"
-#include "Nave.h"
-#include "Defesa.h"
-#include "Tiro.h"
-#include "Item.h"
-#include "Teclado.h"
-#include "Modelo.h"
-#include "Grafico.h"
+#include "cenario.hpp"
+#include "nave.hpp"
+#include "defesa.hpp"
+#include "tiro.hpp"
+#include "item.hpp"
+#include "teclado.hpp"
+#include "modelo.hpp"
+#include "grafico.hpp"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

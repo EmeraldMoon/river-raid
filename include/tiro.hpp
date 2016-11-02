@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include <stdbool.h>
+#include <cstdbool>
 
-#include "Base.h"
-#include "Lista.h"
+#include "base.hpp"
+#include "lista.hpp"
 
 /*-------------------------*
  |   D E F I N I Ç Õ E S   |

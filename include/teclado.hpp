@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <stdbool.h>  /* bool */
+#include <cstdbool>  /* bool */
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |

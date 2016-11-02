@@ -1,12 +1,12 @@
-#include <stdio.h>    /* perror */
-#include <stdlib.h>   /* malloc, exit */
-#include <stdbool.h>  /* bool */
-#include <math.h>     /* hypot */
+#include <cstdio>    /* perror */
+#include <cstdlib>   /* malloc, exit */
+#include <cstdbool>  /* bool */
+#include <cmath>     /* hypot */
 
-#include "Base.h"
-#include "Random.h"
-#include "Cenario.h"
-#include "Grafico.h"
+#include "base.hpp"
+#include "random.hpp"
+#include "cenario.hpp"
+#include "grafico.hpp"
 
 /*-------------------*
  |   F U N Ç Õ E S   |
