@@ -23,50 +23,49 @@
  *  Superclasse básica de um elemento físico do jogo.
  *  A ser usada comumente entre todos os objetos.
  */
-struct Corpo
+class Corpo
 {
-    /* Posição do no cenário */
+public:
+    /* Posição do corpo no cenário */
     double x;  /* posição horizontal (centro == 0) */
     double y;  /* altura em relação ao solo */
-    double z;  /* distância desde o início do cenário */
+    double z;  /* distância desde o ponto inicial do jogo */
 
-    /* Dimensões do.
+    /* Dimensões do corpo.
        No caso de esféricos, altura == 2 * raio. */
     double raio, altura;
+
+    /*
+     *  Gera um corpo de forma randômica com posições
+     *  aleatórias x e y e coordenada fixa z.
+     */
+    Corpo(double z);
+
+    /*
+     *  Verifica se ocorreu colisão entre dois corpos.
+     *  Os corpos são considerados cilíndricos, para facilitar.
+     */
+    bool colidiuCom(Corpo *corpo);
+
+    /*
+     *  Verifica se o corpo saiu por um dos limites da tela.
+     */
+    bool saiu();
 };
 
 /*
  *  Unidade de batalha do jogo, com hp e tiros recarregáveis.
  *  Nave e inimigos são subclasses desta.
  */
-struct Unidade : public Corpo
+class Unidade : public Corpo
 {
+public:
     /* Se (hp <= 0), elemento é destruído */
     int hp;
 
     /* Timesteps de espera entre um tiro e outro.
        cooldown é fixo, espera é decrementada de cooldown até 0. */
     int cooldown, espera;
+
+    Unidade(double z);
 };
-
-/*-------------------------*
- |   P R O T Ó T I P O S   |
- *-------------------------*----------------------------------------*/
-
-/*
- *  Posiciona um de forma randômica com posições
- *  aleatórias x e y e coordenada fixa z.
- */
-void geraCorpo(Corpo *corpo, double z);
-
-/*
- *  Verifica se ocorreu colisão entre doiss.
- *  Os doiss são considerados cilíndricos, para facilitar.
- */
-bool ocorreuColisao(Corpo *a, Corpo *b);
-
-/*
- *  Verifica se o saiu por um dos limites da tela.
- *  naveZ refere-se à posição z da nave neste instante.
- */
-bool corpoSaiu(Corpo *corpo, double naveZ);

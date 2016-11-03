@@ -33,36 +33,38 @@ typedef enum tipoItem TipoItem;
 /*
  *  Representa um item coletável.
  */
-struct Item : public Corpo
+class Item : public Corpo
 {
+private:
     /* Indica tipo do item
        - HP aumenta barra de energia da nave
        - VIDA aumenta número de vidas
        - ESCUDO gera escudo provisória que toma parte do dano.
     */
     TipoItem tipo;
+
+public:
+    /*
+     *  Gera um item na distância z, de posição horizontal e
+     *  tipo aleatórios. Cada tipo de item possui uma
+     *  probabilidade diferente de aparecer.
+     */
+    Item(double z);
+
+    /*
+     *  Ativa o efeito do item na nave.
+     */
+    void ativa();
+
+    /*
+     *  Recebe um item e o desenha na tela.
+     */
+    void desenha();
 };
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*----------------------------------------*/
-
-/*
- *  Gera um item na distância z, de posição horizontal e
- *  tipo aleatórios. Cada tipo de item possui uma
- *  probabilidade diferente de aparecer.
- */
-void geraItem(double z);
-
-/*
- *  Ativa o efeito do item na nave.
- */
-void ativaItem(Item *item, Nave *nave);
-
-/*
- *  Recebe um item e o desenha na tela.
- */
-void desenhaItem(Item *item);
 
 /*
  *  Devolve ponteiro para lista de itens.

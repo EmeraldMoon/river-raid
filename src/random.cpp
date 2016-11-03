@@ -24,7 +24,7 @@ double normal(double media, double desvpadr)
         x = uniforme(-1.0, 1.0);
         y = uniforme(-1.0, 1.0);
         r = x*x + y*y;
-    } while (r >= 1 || r == 0);
+    } while (r >= 1 or r == 0);
     
     /* Valor gerado por uma Normal(0, 1) */
     r = x * sqrt((-2) * log(r)/r);

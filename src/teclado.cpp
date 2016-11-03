@@ -33,9 +33,9 @@ void keyPressed(unsigned char key, int x, int y)
 {
     keyStates[toupper(key)] = true;
 
-    if (keyStates[TECLA_CAMERA]) primeiraPessoa = !primeiraPessoa;
-    if (keyStates[TECLA_FPS])          exibeFPS = !exibeFPS;
-    if (keyStates[TECLA_PAUSA])         pausado = !pausado;
+    if (keyStates[TECLA_CAMERA]) primeiraPessoa = not primeiraPessoa;
+    if (keyStates[TECLA_FPS])          exibeFPS = not exibeFPS;
+    if (keyStates[TECLA_PAUSA])         pausado = not pausado;
     if (keyStates[TECLA_SAIDA]) encerraJogo();
 }
  
@@ -58,9 +58,9 @@ void keySpecialUp(int key, int x, int y)
 
 void keyOperations()
 {
-    if ((keyStates[TECLA_TIRO] || keyStates[TECLA_TIRO2])
-            && --getNave()->espera <= 0) {
-        naveDispara();
+    if ((keyStates[TECLA_TIRO] or keyStates[TECLA_TIRO2])
+            and --getNave()->espera <= 0) {
+        getNave()->dispara();
     }
 }
 

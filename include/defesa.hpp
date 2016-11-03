@@ -36,8 +36,9 @@
 /*
  *  Representa um inimigo (elemento de defesa).
  */
-struct Inimigo : public Unidade
+class Inimigo : public Unidade
 {
+public:
     /* Chance (esperada) de um projétil disparado acertar a nave */
     double precisao;
 
@@ -50,6 +51,23 @@ struct Inimigo : public Unidade
 
     /* Para fins visuais */
     int tempoDano;
+
+    /*
+     *  Gera uma torre na distância z, com altura, posição
+     *  horizontal e outros atributos aleatórios.
+     */
+    Inimigo(double z);
+
+    /*
+     *  Dispara um projétil em direção à nave e
+     *  reinicia o tempo de recarga do inimigo.
+     */
+    void dispara(Nave *nave);
+
+    /*
+     *  Recebe um inimigo e o desenha na tela.
+     */
+    void desenha();
 };
 
 /*-------------------------*
@@ -61,23 +79,6 @@ struct Inimigo : public Unidade
  *  Cria lista de inimigos.
  */
 void carregaInimigos();
-
-/*
- *  Gera uma torre na distância z, com altura, posição
- *  horizontal e outros atributos aleatórios.
- */
-void geraInimigo(double z);
-
-/*
- *  Dispara um projétil em direção à nave e
- *  reinicia o tempo de recarga do inimigo.
- */
-void inimigoDispara(Inimigo *foe, Nave *nave);
-
-/*
- *  Recebe um inimigo e o desenha na tela.
- */
-void desenhaInimigo(Inimigo *foe);
 
 /*
  *  Devolve ponteiro para a lista de inimigos.

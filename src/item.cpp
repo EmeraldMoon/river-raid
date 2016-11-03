@@ -19,48 +19,46 @@ std::vector<Item> itens;
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-void geraItem(double z)
+Item::Item(double z) : Corpo(z)
 {
     /* Escolhe o tipo aleatoriamente */
     TipoItem tipo;
     int sorte = uniforme(0, 100);
-    if      (sorte  < 60)               return;
-    else if (60 <= sorte && sorte < 85) tipo =     HP;
-    else if (86 <= sorte && sorte < 96) tipo = ESCUDO;
-    else if (96 <= sorte)               tipo =   VIDA;
+    if      (sorte  < 60)                       return;
+    else if (60 <= sorte and sorte < 85) tipo =     HP;
+    else if (86 <= sorte and sorte < 96) tipo = ESCUDO;
+    else if (96 <= sorte)                tipo =   VIDA;
 
-    Item item;
-    geraCorpo(&item, z);
-    item.raio   = ITEM_RAIO;
-    item.altura = 2 * item.raio;
-    item.tipo = tipo;
+    this->raio   = ITEM_RAIO;
+    this->altura = 2 * this->raio;
+    this->tipo = tipo;
 
-    itens.push_back(item);
+    itens.push_back(*this);
 }
 
 /*------------------------------------------------------------------*/
 
-void ativaItem(Item *item, Nave *nave)
+void Item::ativa()
 {
-    switch (item->tipo) {
+    switch (this->tipo) {
         case HP:
-            nave->hp += nave->hp / 6;
-            if (nave->hp > NAVE_HPMAX) {
-                nave->hp = NAVE_HPMAX;
+            getNave()->hp += getNave()->hp / 6;
+            if (getNave()->hp > NAVE_HPMAX) {
+                getNave()->hp = NAVE_HPMAX;
             }
             break;
         case VIDA:
-            ++nave->vidas;
+            ++getNave()->vidas;
             break;
         case ESCUDO:
-            nave->escudo = 2 * nave->hp;
+            getNave()->escudo = 2 * getNave()->hp;
             break;
     }
 }
 
 /*------------------------------------------------------------------*/
 
-void desenhaItem(Item *item)
+void Item::desenha()
 {
     static double rotacao = 0;
     rotacao += PI/6;
@@ -69,10 +67,10 @@ void desenhaItem(Item *item)
     glDisable(GL_TEXTURE_2D);
 
     /* Posiciona e rotaciona item */
-    glTranslated(item->x, item->y, item->z);
+    glTranslated(this->x, this->y, this->z);
     glRotated(rotacao, 1.0, 1.0, 1.0);
 
-    switch(item->tipo) {
+    switch(this->tipo) {
         case HP:
             setColorAlpha(LIGHT_GREEN, 230);
             glutSolidCube(ITEM_RAIO);

@@ -34,7 +34,7 @@ static bool debug = false;
 void carregaCenario(bool godMode, bool _debug)
 {
     /* Carrega listas e modelos */
-    carregaNave(godMode);
+    new Nave(godMode);
     carregaInimigos();
 
     /* Texturas do cenário */
@@ -68,7 +68,7 @@ void controlaTempo(int unused)
     /* Caso tempo acumulado chegue a um ou mais frames inteiros, 
        faz a interpolação deles entre o anterior e o próximo desenho. */
     for (;;) {
-        if (!estaPausado()) atualizaCenario();
+        if (not estaPausado()) atualizaCenario();
         if (tExtra < INTERVALO) break;
         tExtra -= INTERVALO;
     }
@@ -99,18 +99,18 @@ void atualizaCenario()
 
     /* Ações relacionadas à nave */
     Nave *nave = getNave();
-    moveNave();
+    nave->move();
     if (nave->invencibilidade > 0) nave->invencibilidade--;
 
     /* Loop para tratar de inimigos */
     std::vector<Inimigo> *inimigos = getListaInimigos();
     for (size_t i = 0; i < inimigos->size();) {
         Inimigo *foe = &(*inimigos)[i];
-        if (ocorreuColisao(nave, foe)) {
-            danificaNave(foe->danoColisao);
+        if (nave->colidiuCom(foe)) {
+            nave->danifica(foe->danoColisao);
         }
-        if (--foe->espera == 0) inimigoDispara(foe, nave);
-        if (corpoSaiu(foe, nave->z)) {
+        if (--foe->espera == 0) foe->dispara(nave);
+        if (foe->saiu()) {
             inimigos->erase(inimigos->begin() + i);
         } else i++;
     }
@@ -118,9 +118,8 @@ void atualizaCenario()
     std::vector<Projetil> *projeteis = getListaProjeteis();
     for (size_t i = 0; i < projeteis->size();) {
         Projetil *bullet = &(*projeteis)[i];
-        moveProjetil(bullet);
-        if (verificaAcerto(bullet) ||
-                corpoSaiu(bullet, nave->z)) {
+        bullet->move();
+        if (bullet->verificaAcerto() or bullet->saiu()) {
             projeteis->erase(projeteis->begin() + i);
         } else i++;
     }
@@ -128,22 +127,22 @@ void atualizaCenario()
     std::vector<Item> *itens = getListaItens();
     for (size_t i = 0; i < itens->size();) {
         Item *item = &(*itens)[i];
-        if (ocorreuColisao(nave, item)) {
-            ativaItem(item, nave);
+        if (nave->colidiuCom(item)) {
+            item->ativa();
             itens->erase(itens->begin() + i);
         }
-        else if (corpoSaiu(item, nave->z)) {
+        else if (item->saiu()) {
             itens->erase(itens->begin() + i);
         }
         else i++;
     }
     /* Gera inimigo ou item se contador chegar a zero */
     if (--contFoe <= 0) {
-        geraInimigo(nave->z + Z_DIST);
+        new Inimigo(nave->z + Z_DIST);
         contFoe = TEMPO_INIMIGOS;
     }
     if (--contItem <= 0) {
-        geraItem(nave->z + Z_DIST);
+        new Item(nave->z + Z_DIST);
         contItem = TEMPO_ITEM;
     }
     if (debug) imprimeElementos();
@@ -217,15 +216,15 @@ void desenhaCenario()
     
     /* Desenha elementos dinâmicos do jogo */
     for (Inimigo foe : *getListaInimigos()) {
-        desenhaInimigo(&foe);
+        foe.desenha();
     }
     for (Projetil bullet : *getListaProjeteis()) {
-        desenhaProjetil(&bullet);
+        bullet.desenha();
     }
     for (Item item : *getListaItens()) {
-        desenhaItem(&item);
+        item.desenha();
     }
-    desenhaNave();
+    getNave()->desenha();
 
     /* Desativa opções para não prejudicar desenho de hud e etc */
     glDisable(GL_TEXTURE_2D);

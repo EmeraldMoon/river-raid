@@ -4,6 +4,7 @@
 
 #include "base.hpp"
 #include "random.hpp"
+#include "nave.hpp"
 #include "cenario.hpp"
 #include "grafico.hpp"
 
@@ -11,11 +12,11 @@
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-void geraCorpo(Corpo *corpo, double z)
+Corpo::Corpo(double z)
 {
-    corpo->x = X_MAX * uniforme(-0.88, 0.88);
-    corpo->y = uniforme(Y_MAX/8, Y_MAX/2);
-    corpo->z = z;
+    this->x = X_MAX * uniforme(-0.88, 0.88);
+    this->y = uniforme(Y_MAX/8, Y_MAX/2);
+    this->z = z;
 }
 
 /*------------------------------------------------------------------*/
@@ -26,29 +27,35 @@ void geraCorpo(Corpo *corpo, double z)
  *  cálculos chatos (como verificar se esfera está contida
  *  em extremos do cilindro). Então, simplificamos.
  */
-bool ocorreuColisao(Corpo *a, Corpo *b)
+bool Corpo::colidiuCom(Corpo *that)
 {
-    int dx = a->x - b->x;
-    int dy = a->y - b->y;
-    int dz = a->z - b->z;
-    int somaRaios = a->raio + b->raio;
+    int dx = this->x - that->x;
+    int dy = this->y - that->y;
+    int dz = this->z - that->z;
+    int somaRaios = this->raio + that->raio;
 
     /* Evita cálculos desnecessários */
-    if (dx >= somaRaios || dz >= somaRaios) return false;
+    if (dx >= somaRaios or dz >= somaRaios) return false;
 
     /* Distância vertical deve ser menor que soma das semi-alutras.
        Circunferências horizontais devem ser secantes. */
-    return (abs(dy) < (a->altura + b->altura)/2
-                && hypot(dx, dz) < somaRaios);
+    return (abs(dy) < (this->altura + that->altura)/2
+                and hypot(dx, dz) < somaRaios);
 }
 
 /*------------------------------------------------------------------*/
 
-bool corpoSaiu(Corpo *corpo, double naveZ)
+bool Corpo::saiu()
 {
+    double naveZ = getNave()->z;
+
     /* O corpo saiu por um dos limites da tela (x, y ou z)?
        Caso a respostas seja sim, então o corpo saiu do jogo. */
-    return (abs(corpo->x) > X_MAX)
-        || (corpo->y < 0)
-        || (corpo->z < naveZ - DIST_CAMERA || corpo->z > naveZ + Z_DIST);
+    return (abs(this->x) > X_MAX)
+        or (this->y < 0)
+        or (this->z < naveZ - DIST_CAMERA or this->z > naveZ + Z_DIST);
 }
+
+/*------------------------------------------------------------------*/
+
+Unidade::Unidade(double z) : Corpo(z) { }

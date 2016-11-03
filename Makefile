@@ -1,5 +1,5 @@
 CPPC   = g++
-CFLAGS = -Wall -pedantic -Wno-unused-result -std=c++14 -g
+CFLAGS = -Wall -Wextra -pedantic -Wno-unused-result -Wno-unused-parameter -std=c++14 -g
 LIBS   = -lm -lGL -lGLU -lglut
 BINDIR = bin
 SRCDIR = src

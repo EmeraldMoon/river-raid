@@ -32,8 +32,12 @@
 /*
  *  Representa a nave do jogador.
  */
-struct Nave : public Unidade
+class Nave : public Unidade
 {
+private:
+    void atualizaDirecao(double *ang);
+
+public:
     /* Componentes de velocidade da nave */
     double vx, vy, vz;
 
@@ -51,48 +55,48 @@ struct Nave : public Unidade
 
     /* Pontuação do jogador */
     int score;
+
+    /*
+     *  Cria uma nave, alocando memória e carregando modelo do OpenGL.
+     *  Se godMode, então ela será eternamente invencível.
+     */
+    Nave(bool godMode);
+
+    /*
+     *  Recebe a posição no eixo Oz da nave e um número de vidas.
+     *  Reinicializa os atributos variáveis da nave.
+     */
+    void recria(int z, int nVidas);
+
+    /*
+     *  Atualiza a posição da nave em relação ao timestep anterior.
+     *  As componentes horizontal e vertical são proporcionais
+     *  à velocidade escalar da nave ao longo do eixo Oz.
+     */
+    void move();
+
+    /*
+     *  Dispara um projétil na direção em que a nave estiver
+     *  apontando e atualiza o tempo de recarga.
+     */
+    void dispara();
+
+    /*
+     *  Recebe uma quantidade de dano, remove a energia em questão
+     *  da nave e ativa o período de invencibilidade.
+     *  Caso hp <= 0, jogador perde uma vida.
+     */
+    void danifica(int dano);
+
+    /*
+     *  Desenha a representação visual da nave na tela.
+     */
+    void desenha();
 };
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*----------------------------------------*/
-
-/*
- *  Cria uma nave, alocando memória e carregando modelo do OpenGL.
- *  Se godMode, então ela será eternamente invencível.
- */
-void carregaNave(bool godMode);
-
-/*
- *  Recebe a posição no eixo Oz da nave e um número de vidas.
- *  Reinicializa os atributos variáveis da nave.
- */
-void recriaNave(int z, int nVidas);
-
-/*
- *  Atualiza a posição da nave em relação ao timestep anterior.
- *  As componentes horizontal e vertical são proporcionais
- *  à velocidade escalar da nave ao longo do eixo Oz.
- */
-void moveNave();
-
-/*
- *  Dispara um projétil na direção em que a nave estiver
- *  apontando e atualiza o tempo de recarga.
- */
-void naveDispara();
-
-/*
- *  Recebe uma quantidade de dano, remove a energia em questão
- *  da nave e ativa o período de invencibilidade.
- *  Caso hp <= 0, jogador perde uma vida.
- */
-void danificaNave(int dano);
-
-/*
- *  Desenha a representação visual da nave na tela.
- */
-void desenhaNave();
 
 /*
  *  Devolve um ponteiro para a nave.

@@ -178,7 +178,7 @@ static void exibeHud()
     GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave->x);
     GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->y
                                         : 0.85 * altura * constCamera;
-    GLdouble z = nave->z - (!estaEmPrimeiraPessoa() * DIST_CAMERA);
+    GLdouble z = nave->z - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
 
     projecaoInicio();
 
@@ -253,7 +253,7 @@ static void exibeFps()
     GLdouble x = 0.88 * largura + (estaEmPrimeiraPessoa() * nave->x);
     GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->y
                                         : 0.85 * altura * constCamera;
-    GLdouble z = nave->z - (!estaEmPrimeiraPessoa() * DIST_CAMERA);
+    GLdouble z = nave->z - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
 
     /* FPS só é alterado na tela a cada tantos timesteps */
     cont += getDelayTempo() * FPS/1000.0;

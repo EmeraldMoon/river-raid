@@ -134,7 +134,7 @@ Segunda parte
 ###### 23/05:
   - ***Nave.c***: Dois conceitos fundamentais.
     - *Invencibilidade*: Nave torna-se imune a danos por um certo período de tempo após levar um tiro, e por um período ainda maior caso perca uma vida. A representação se dá por uma variável que decresce a cada timestep, similar ao conceito de cooldown. Quando chega a zero, invencibilidade acaba.
-    - *Colisão com inimigos*: Implementação similar à da detecção dos projéteis, porém levando em conta doiss cilíndricos. 
+    - *Colisão com inimigos*: Implementação similar à da detecção dos projéteis, porém levando em conta dois corpos cilíndricos. 
   - ***Main.c***: Módulo de testes da segunda parte está pronto. Ao receber comandos do usuário, programa simula o pressionamento de tais teclas e passa as ações à nave. Ao fim do intervalo, usuário pode inserir novos comandos. O jogo segue como usual, até a nave morrer. Dessa vez aparecem novidades na tela, como pontuação, vidas, movimento, inclinação, tiros da nave, etc - englobando tudo o que foi feito nesta segunda parte.
 
 ###### 22/05:
@@ -157,7 +157,7 @@ Segunda parte
 ###### 14/05:
   - ***Base.h***: Novo módulo com definições comuns que não se enquadram em nenhum outro lugar do projeto. Em especial, foi criada uma estrutura *Corpo*, com atributos básicos (posição, energia, recarga, formato) a serem usados comumente entre nave e inimigos.
   - ***Tiro.c***: Adicionada ação da gravidade sobre os projéteis.
-  - ***Nave.h, Defesa.h***: Detecção de colisão passa a levar em conta nave e inimigos comos cilíndricos.
+  - ***Nave.h, Defesa.h***: Detecção de colisão passa a levar em conta nave e inimigos como corpos cilíndricos.
   - ***Nave.c***: Implementada alteração de direção da nave. Por meio de 4 teclas, o usuário pode alterar a inclinação da mesma, sob uma certa taxa, até um determinado limite. A nave tende naturalmente a voltar à posição orientada ao centro, sob uma taxa diferente.
   - ***Main.c***: Pequena função que recebe uma tecla (na verdade, uma letra), interpretando e executando o comando do usuário.
 
@@ -217,7 +217,7 @@ Primeira parte
   - ***Defesa.c, Tiro.c***: Adicionadas funções de manipulação de lista.
   - ***Nave.c***: Inicialização dos atributos da nave.
   - ***Tiro.c***: Funções para verificar se um determinado tiro saiu da tela ou acertou a nave.
-  - A princípio, com propósito de testes, definimos tanto tiro quanto nave comos esféricos. Nas versões futuras isso provavelmente será removido; o OpenGL deve lidar com a verificação de colisões de formatos variados.
+  - A princípio, com propósito de testes, definimos tanto tiro quanto nave como corpos esféricos. Nas versões futuras isso provavelmente será removido; o OpenGL deve lidar com a verificação de colisões de formatos variados.
 
 ### Versão 0.1
 

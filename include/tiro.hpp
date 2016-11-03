@@ -29,8 +29,9 @@
 /*
  *  Representa um projétil causador de dano.
  */
-struct Projetil : public Corpo
+class Projetil : public Corpo
 {
+public:
     /* Componentes de velocidade do tiro */
     double vx, vy, vz;
 
@@ -39,43 +40,43 @@ struct Projetil : public Corpo
 
     /* Se 'true', tiro foi disparado pela nave */
     bool amigo;
+
+    /*
+     *  Constroi um projétil com alguns atributos já inicializados.
+     *  A inserção em lista deve ser feita posteriormente, em separado.
+     */
+    Projetil(double z);
+
+    /*  
+     *  Aplica no respectivo projétil dois desvios em graus, um horizontal
+     *  e outro vertical, ambos inversamente proporcionais à precisão.
+     */
+    void aplicaPrecisao(double precisao);
+
+    /*
+     *  Atualiza a posição do projétil em relação ao frame anterior.
+     */
+    void move();
+
+    /*
+     *  Recebe um projétil. Se colisão for verificada com algum elemento,
+     *  remove energia deste e, caso seja um inimigo, verifica também
+     *  se o mesmo foi destruído. Caso tiro tenho sido dado pela nave,
+     *  são dados pontos ao jogador por acerto e por destruição.
+     *
+     *  A função devolve true caso haja um acerto qualquer, ou false caso contrário.
+     */
+    bool verificaAcerto();
+
+    /*
+     *  Recebe um projétil e o desenha na tela.
+     */
+    void desenha();
 };
 
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*----------------------------------------*/
-
-/*
- *  Recebe um ponteiro para um projétil com alguns atributos 
- *  pré-determinados. Completa-o e insere-o na respectiva lista.
- */
-void criaProjetil(Projetil *bullet);
-
-/*  
- *  Aplica no respectivo projétil dois desvios em graus, um horizontal
- *  e outro vertical, ambos inversamente proporcionais à precisão.
- */
-void aplicaPrecisao(Projetil *bullet, double precisao);
-
-/*
- *  Atualiza a posição do projétil em relação ao frame anterior.
- */
-void moveProjetil(Projetil *bullet);
-
-/*
- *  Recebe um projétil. Se colisão for verificada com algum elemento,
- *  remove energia deste e, caso seja um inimigo, verifica também
- *  se o mesmo foi destruído. Caso tiro tenho sido dado pela nave,
- *  são dados pontos ao jogador por acerto e por destruição.
- *
- *  A função devolve true caso haja um acerto qualquer, ou false caso contrário.
- */
-bool verificaAcerto(Projetil *bullet);
-
-/*
- *  Recebe um projétil e o desenha na tela.
- */
-void desenhaProjetil(Projetil *bullet);
 
 /*
  *  Devolve ponteiro para lista de projéteis.
