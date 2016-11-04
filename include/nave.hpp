@@ -107,7 +107,6 @@ public:
     int getScore();
 
     /* Setters */
-    void criaEscudo();
     void aumentaScore(int aumento);
 };
 

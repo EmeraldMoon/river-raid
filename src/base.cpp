@@ -16,9 +16,9 @@ Corpo::Corpo() { }
 
 Corpo::Corpo(double z)
 {
-    this->x = X_MAX * uniforme(-0.88, 0.88);
-    this->y = uniforme(Y_MAX/8, Y_MAX/2);
-    this->z = z;
+    x = X_MAX * uniforme(-0.88, 0.88);
+    y = uniforme(Y_MAX/8, Y_MAX/2);
+    z = z;
 }
 
 /*------------------------------------------------------------------*/
@@ -31,17 +31,17 @@ Corpo::Corpo(double z)
  */
 bool Corpo::colidiuCom(Corpo *that)
 {
-    double dx = this->x - that->getX();
-    double dy = this->y - that->getY();
-    double dz = this->z - that->getZ();
-    double somaRaios = this->raio + that->raio;
+    double dx = x - that->getX();
+    double dy = y - that->getY();
+    double dz = z - that->getZ();
+    double somaRaios = raio + that->raio;
 
     /* Evita cálculos desnecessários */
     if (dx >= somaRaios or dz >= somaRaios) return false;
 
     /* Distância vertical deve ser menor que soma das semi-alutras.
        Circunferências horizontais devem ser secantes. */
-    return (abs(dy) < (this->altura + that->altura)/2
+    return (abs(dy) < (altura + that->altura)/2
                 and hypot(dx, dz) < somaRaios);
 }
 
@@ -53,18 +53,18 @@ bool Corpo::saiu()
 
     /* O corpo saiu por um dos limites da tela (x, y ou z)?
        Caso a respostas seja sim, então o corpo saiu do jogo. */
-    return (abs(this->x) > X_MAX)
-        or (this->y < 0)
-        or (this->z < naveZ - DIST_CAMERA or this->z > naveZ + Z_DIST);
+    return (abs(x) > X_MAX)
+        or (y < 0)
+        or (z < naveZ - DIST_CAMERA or z > naveZ + Z_DIST);
 }
 
 /*------------------------------------------------------------------*/
 
-double Corpo::getX()      { return this->x;      }
-double Corpo::getY()      { return this->y;      }
-double Corpo::getZ()      { return this->z;      }
-double Corpo::getRaio()   { return this->raio;   }
-double Corpo::getAltura() { return this->altura; }
+double Corpo::getX()      { return x;      }
+double Corpo::getY()      { return y;      }
+double Corpo::getZ()      { return z;      }
+double Corpo::getRaio()   { return raio;   }
+double Corpo::getAltura() { return altura; }
 
 /*------------------*
  |   U N I D A D E  |
@@ -72,8 +72,8 @@ double Corpo::getAltura() { return this->altura; }
 
 Unidade::Unidade(double z) : Corpo(z) { }
 
-int Unidade::getHP()       { return this->hp;       }
-int Unidade::getCooldown() { return this->cooldown; }
-int Unidade::getEspera()   { return this->espera;   }
+int Unidade::getHP()       { return hp;       }
+int Unidade::getCooldown() { return cooldown; }
+int Unidade::getEspera()   { return espera;   }
 
-int Unidade::reduzEspera() { return --this->espera; }
+int Unidade::reduzEspera() { return --espera; }

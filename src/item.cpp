@@ -28,9 +28,9 @@ Item::Item(double z) : Corpo(z)
     else if (86 <= sorte and sorte < 96) tipo = ESCUDO;
     else if (96 <= sorte)                tipo =   VIDA;
 
-    this->raio   = ITEM_RAIO;
-    this->altura = 2 * this->raio;
-    this->tipo   = tipo;
+    raio   = ITEM_RAIO;
+    altura = 2 * raio;
+    tipo   = tipo;
 }
 
 /*------------------------------------------------------------------*/
@@ -44,10 +44,10 @@ void Item::desenha()
     glDisable(GL_TEXTURE_2D);
 
     /* Posiciona e rotaciona item */
-    glTranslated(this->x, this->y, this->z);
+    glTranslated(x, y, z);
     glRotated(rotacao, 1.0, 1.0, 1.0);
 
-    switch(this->tipo) {
+    switch(tipo) {
     case HP:
         setColorAlpha(LIGHT_GREEN, 230);
         glutSolidCube(ITEM_RAIO);
@@ -67,7 +67,7 @@ void Item::desenha()
 
 /*------------------------------------------------------------------*/
 
-TipoItem Item::getTipo() { return this->tipo; }
+TipoItem Item::getTipo() { return tipo; }
 
 /*------------------------------------------------------------------*/
 

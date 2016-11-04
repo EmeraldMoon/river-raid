@@ -22,10 +22,10 @@ std::vector<Projetil> projeteis;
 Projetil::Projetil(Unidade *uni, double vx, double vy, double vz,
                    bool amigo)
 {
-    this->raio   = BALA_RAIO;
-    this->altura = 2 * this->raio;
-    this->dano   = BALA_DANO;
-    this->amigo  = amigo;
+    raio   = BALA_RAIO;
+    altura = 2 * raio;
+    dano   = BALA_DANO;
+    amigo  = amigo;
 
     this->vx = vx;
     this->vy = vy;
@@ -33,10 +33,10 @@ Projetil::Projetil(Unidade *uni, double vx, double vy, double vz,
 
     /* Posição inicial de projétil é exterior à unidade */
     double modulo = norma(vx, vy, vz);
-    double k = (uni->getRaio() + this->raio)/modulo;
-    this->x = uni->getX() + (k * vx);
-    this->y = uni->getY() + (k * vy);
-    this->z = uni->getZ() + (k * vz);
+    double k = (uni->getRaio() + raio)/modulo;
+    x = uni->getX() + (k * vx);
+    y = uni->getY() + (k * vy);
+    z = uni->getZ() + (k * vz);
 }
 
 /*------------------------------------------------------------------*/
@@ -44,11 +44,11 @@ Projetil::Projetil(Unidade *uni, double vx, double vy, double vz,
 void Projetil::move()
 {
     /* Efeito da gravidade */
-    this->vy -= ACEL_GRAVIDADE;
+    vy -= ACEL_GRAVIDADE;
 
-    this->x += this->vx;
-    this->y += this->vy;
-    this->z += this->vz;
+    x += vx;
+    y += vy;
+    z += vz;
 }
 
 /*------------------------------------------------------------------*/
@@ -62,17 +62,17 @@ bool Projetil::verificaAcerto()
     Nave *nave = getNave();
 
     /* Verificação de colisão com a nave */
-    if (this->colidiuCom(nave)) {
-        nave->danifica(this->dano);
+    if (colidiuCom(nave)) {
+        nave->danifica(dano);
         return true;
     }
     /* Verificação de colisão com algum inimigo */
     std::vector<Inimigo> *inimigos = getListaInimigos();
     for (size_t i = 0; i < inimigos->size(); i++) {
         Inimigo *foe = &(*inimigos)[i];
-        if (not this->colidiuCom(foe)) continue;
-        if (this->amigo) {
-            foe->danifica(this->dano);
+        if (not colidiuCom(foe)) continue;
+        if (amigo) {
+            foe->danifica(dano);
             nave->aumentaScore(foe->getPontosAcerto());
             if (foe->getHP() <= 0) {
                 inimigos->erase(inimigos->begin() + i);
@@ -86,10 +86,10 @@ bool Projetil::verificaAcerto()
 
 /*------------------------------------------------------------------*/
 
-double Projetil::getVx()    { return this->vx;    }
-double Projetil::getVy()    { return this->vy;    }
-double Projetil::getVz()    { return this->vz;    }
-bool   Projetil::isAmigo()  { return this->amigo; }
+double Projetil::getVx()    { return vx;    }
+double Projetil::getVy()    { return vy;    }
+double Projetil::getVz()    { return vz;    }
+bool   Projetil::isAmigo()  { return amigo; }
 
 /*------------------------------------------------------------------*/
 
@@ -99,12 +99,12 @@ void Projetil::desenha()
     glDisable(GL_TEXTURE_2D);
 
     /* Cores diferentes para tiros diferentes */
-    if (this->amigo) setColor(LIGHT_GRAY);
+    if (amigo) setColor(LIGHT_GRAY);
     else             setColor(YELLOW);
   
     /* Desenha esfera na posição (x, y, z) */
-    glTranslated(this->x, this->y, this->z);
-    glutSolidSphere(this->raio, SLICES, STACKS);
+    glTranslated(x, y, z);
+    glutSolidSphere(raio, SLICES, STACKS);
 
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();

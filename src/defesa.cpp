@@ -34,17 +34,17 @@ void carregaInimigos()
 Inimigo::Inimigo(double z) : Unidade(z)
 {
     /* Posicionamento do corpo */
-    this->raio   = FOE_RAIO;
-    this->altura = 2 * this->y;
+    raio   = FOE_RAIO;
+    altura = 2 * y;
 
     /* Atributos restantes */
-    this->hp               = FOE_HPMAX;
-    this->cooldown         = this->espera = uniforme(80, 105);
-    this->precisao         = uniforme(0.8, 1.0);
-    this->danoColisao      = DANO_COLISAO;
-    this->pontosAcerto     = PONTOS_ACERTO;
-    this->pontosDestruicao = PONTOS_DESTRUICAO;
-    this->tempoDano        = 0;
+    hp               = FOE_HPMAX;
+    cooldown         = espera = uniforme(80, 105);
+    precisao         = uniforme(0.8, 1.0);
+    danoColisao      = DANO_COLISAO;
+    pontosAcerto     = PONTOS_ACERTO;
+    pontosDestruicao = PONTOS_DESTRUICAO;
+    tempoDano        = 0;
 }
 
 /*------------------------------------------------------------------*/
@@ -55,9 +55,9 @@ void Inimigo::dispara(Nave *nave)
 
     /* Calcula distância entre coordenadas de inimigo e nave.
        No caso do eixo z, considera-se a posição um pouco à frente. */
-    double dx =  nave->getX() - this->x;
-    double dy =  nave->getY() - this->y;
-    double dz = (nave->getZ() + nave->getRaio()) - this->z;
+    double dx =  nave->getX() - x;
+    double dy =  nave->getY() - y;
+    double dz = (nave->getZ() + nave->getRaio()) - z;
     double d = norma(dx, dy, dz);
 
     /* Gera vetor velocidade na referida direção */
@@ -67,14 +67,14 @@ void Inimigo::dispara(Nave *nave)
     double vz = k * dz;
 
     /* Aplica desvio de precisão */
-    this->aplicaPrecisao(&vx, &vy, &vz);
+    aplicaPrecisao(&vx, &vy, &vz);
 
     /* Cria projétil e o insere na lista */
     Projetil bullet(this, vx, vy, vz, amigo);
     getListaProjeteis()->push_back(bullet);
 
     /* Reinicia contagem até próximo tiro */
-    this->espera = this->cooldown;
+    espera = cooldown;
 }
 
 static void calculaAngulo(double *a, double *b, double desvio);
@@ -89,7 +89,7 @@ static void calculaAngulo(double *a, double *b, double desvio);
  */
 void Inimigo::aplicaPrecisao(double *dx, double *dy, double *dz)
 {
-    double desvio = (1 - this->precisao) * DESVIO_MAX;
+    double desvio = (1 - precisao) * DESVIO_MAX;
 
     calculaAngulo(dx, dz, desvio);  /* desvio horizontal */
     calculaAngulo(dy, dz, desvio);  /* desvio vertical   */
@@ -112,15 +112,15 @@ static void calculaAngulo(double *d1, double *d2, double desvio)
 
 void Inimigo::danifica(int dano)
 {
-    this->hp -= dano;
-    this->tempoDano = FOE_TEMPO_DANO;
+    hp -= dano;
+    tempoDano = FOE_TEMPO_DANO;
 }
 
 /*------------------------------------------------------------------*/
 
 void Inimigo::desenha()
 {
-    if (this->tempoDano > 0) this->tempoDano--;
+    if (tempoDano > 0) tempoDano--;
 
     glPushMatrix();
     glEnable(GL_TEXTURE_GEN_S);
@@ -129,11 +129,11 @@ void Inimigo::desenha()
     /* Aplica cor e textura */
     setColor(WHITE);
     glBindTexture(GL_TEXTURE_2D,
-                  (this->tempoDano == 0) ? modelo.texturaId : 0);
+                  (tempoDano == 0) ? modelo.texturaId : 0);
 
     /* Posiciona e dimensiona inimigo */
-    glTranslated(this->x, 0.0, this->z);
-    glScaled(16 * this->raio, this->altura, 16 * this->raio);
+    glTranslated(x, 0.0, z);
+    glScaled(16 * raio, altura, 16 * raio);
 
     /* Desenha modelo baseado em vértices e normais */
     glVertexPointer(3, GL_DOUBLE, 0, modelo.coords);
@@ -146,10 +146,10 @@ void Inimigo::desenha()
 
 /*------------------------------------------------------------------*/
 
-double Inimigo::getPrecisao()         { return this->precisao;         }
-int    Inimigo::getDanoColisao()      { return this->danoColisao;      }
-int    Inimigo::getPontosAcerto()     { return this->pontosAcerto;     }
-int    Inimigo::getPontosDestruicao() { return this->pontosDestruicao; }
+double Inimigo::getPrecisao()         { return precisao;         }
+int    Inimigo::getDanoColisao()      { return danoColisao;      }
+int    Inimigo::getPontosAcerto()     { return pontosAcerto;     }
+int    Inimigo::getPontosDestruicao() { return pontosDestruicao; }
 
 /*------------------------------------------------------------------*/
 

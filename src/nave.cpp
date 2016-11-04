@@ -33,17 +33,17 @@ Nave::Nave(bool _godMode) : Unidade(0.0)
     leVertices("nave.vert", &modelo);
     carregaTextura("silver.ppm", false, &modelo);
 
-    this->raio     = NAVE_RAIO;
-    this->altura   = NAVE_ALTURA;
-    this->vz       = NAVE_VEL;
-    this->cooldown = NAVE_COOL;
-    this->score    = 0;
+    raio     = NAVE_RAIO;
+    altura   = NAVE_ALTURA;
+    vz       = NAVE_VEL;
+    cooldown = NAVE_COOL;
+    score    = 0;
 
     /* Define variável do módulo */
     godMode = _godMode;
 
     /* Começa em z == 0.0 */
-    this->recria(0.0, NAVE_VIDAS);
+    recria(0.0, NAVE_VIDAS);
 
     nave = this;
 }
@@ -55,19 +55,19 @@ Nave::Nave(bool _godMode) : Unidade(0.0)
 void Nave::recria(int z, int nVidas)
 {
     /* Coordenadas iniciais */
-    this->x = 0.0;
-    this->y = Y_MAX/2;
-    this->z = z;
+    x = 0.0;
+    y = Y_MAX/2;
+    z = z;
 
     /* Aponta para o centro */
-    this->angHoriz = 0.0;
-    this->angVert  = 0.0;
+    angHoriz = 0.0;
+    angVert  = 0.0;
 
-    this->vidas           = nVidas;
-    this->hp              = NAVE_HPMAX;
-    this->espera          = 0;
-    this->invencibilidade = INVENCIVEL_VIDA;
-    this->escudo          = 0;
+    vidas           = nVidas;
+    hp              = NAVE_HPMAX;
+    espera          = 0;
+    invencibilidade = INVENCIVEL_VIDA;
+    escudo          = 0;
 }
 
 /*------------------------------------------------------------------*/
@@ -75,28 +75,28 @@ void Nave::recria(int z, int nVidas)
 void Nave::move()
 {
     /* Obtém vetores componentes */
-    this->vx = this->vz * tan(this->angHoriz);
-    this->vy = this->vz * tan(this->angVert);
+    vx = vz * tan(angHoriz);
+    vy = vz * tan(angVert);
 
     /* Atualiza posição por vetores */
-    this->x += this->vx;
-    this->y += this->vy;
-    this->z += this->vz;
+    x += vx;
+    y += vy;
+    z += vz;
 
     /* Impede que nave ultrapasse os limites do cenário */
-    if      (this->x >  X_MAX - this->raio  ) this->x =  X_MAX - this->raio;
-    else if (this->x < -X_MAX + this->raio  ) this->x = -X_MAX + this->raio;
-    if      (this->y >  Y_MAX - this->altura) this->y =  Y_MAX - this->altura;
-    else if (this->y <      0 + this->altura) this->y =      0 + this->altura;
+    if      (x >  X_MAX - raio  ) x =  X_MAX - raio;
+    else if (x < -X_MAX + raio  ) x = -X_MAX + raio;
+    if      (y >  Y_MAX - altura) y =  Y_MAX - altura;
+    else if (y <      0 + altura) y =      0 + altura;
 
     /* Direção tende a voltar ao centro */
-    this->atualizaDirecao(&(this->angHoriz));
-    this->atualizaDirecao(&(this->angVert));
+    atualizaDirecao(&(angHoriz));
+    atualizaDirecao(&(angVert));
 }
 
 void Nave::atualizaInvencibilidade()
 {
-    if (this->invencibilidade > 0) this->invencibilidade--;
+    if (invencibilidade > 0) invencibilidade--;
 }
 
 /*------------------------------------------------------------------*/
@@ -127,7 +127,7 @@ void Nave::dispara()
     bool amigo = true;
 
     /* Módulo do vetor de velocidade */
-    double modulo = norma(this->vx, this->vy, this->vz);
+    double modulo = norma(vx, vy, vz);
 
     /* Componentes da velocidade da bala são proporcionais à nave */
     double k = BALA_VEL/modulo;
@@ -140,7 +140,7 @@ void Nave::dispara()
     getListaProjeteis()->push_back(bullet);
 
     /* Reinicia contagem até próximo tiro */
-    this->espera = this->cooldown;
+    espera = cooldown;
 }
 
 /*------------------------------------------------------------------*/
@@ -148,22 +148,22 @@ void Nave::dispara()
 void Nave::danifica(int dano)
 {
     /* Se invencível neste instante, não toma dano */
-    if (this->invencibilidade > 0 or godMode) return;
+    if (invencibilidade > 0 or godMode) return;
 
-    if (this->escudo > 0) {
-        this->hp     -=     dano/3;
-        this->escudo -= 2 * dano/3;
+    if (escudo > 0) {
+        hp     -=     dano/3;
+        escudo -= 2 * dano/3;
     }
     else {
-        this->hp -= dano;
+        hp -= dano;
     }
     /* Nave fica invencível por um tempo pós-dano */
-    this->invencibilidade = INVENCIVEL_DANO;
+    invencibilidade = INVENCIVEL_DANO;
 
     /* Verifica se nave perdeu vida */
-    if (this->hp <= 0) {
-        this->hp = 0;
-        if (--this->vidas >= 0) this->recria(this->z, this->vidas);
+    if (hp <= 0) {
+        hp = 0;
+        if (--vidas >= 0) recria(z, vidas);
     }
 }
 
@@ -173,14 +173,14 @@ void Nave::ativaItem(Item *item)
 {
     switch (item->getTipo()) {
     case HP:
-        this->hp += NAVE_HPMAX/6;
-        if (this->hp > NAVE_HPMAX) this->hp = NAVE_HPMAX;
+        hp += NAVE_HPMAX/6;
+        if (hp > NAVE_HPMAX) hp = NAVE_HPMAX;
         break;
     case VIDA:
-        this->vidas++;
+        vidas++;
         break;
     case ESCUDO:
-        this->escudo = 2 * NAVE_HPMAX;
+        escudo = 2 * NAVE_HPMAX;
         break;
     }
 }
@@ -189,28 +189,28 @@ void Nave::ativaItem(Item *item)
  
 void Nave::desenha()
 {
-    GLdouble naveCor = 255 - 190.0/INVENCIVEL_VIDA * this->invencibilidade;
+    GLdouble naveCor = 255 - 190.0/INVENCIVEL_VIDA * invencibilidade;
 
     glDisable(GL_TEXTURE_2D);
 
     /* Se ativo, desenha escudo ao redor da nave */
-    if (this->escudo > 0) {
+    if (escudo > 0) {
         static double rotacao = 0;
         rotacao += PI/6;
         naveCor = 255;
         glPushMatrix();
-        glTranslated(this->x, this->y, this->z);
+        glTranslated(x, y, z);
         glRotated(rotacao, 1.0, 1.0, 0.0);
-        setColorAlpha(DARK_BLUE, 255 * this->escudo/(2.0 * NAVE_HPMAX));
+        setColorAlpha(DARK_BLUE, 255 * escudo/(2.0 * NAVE_HPMAX));
         glutWireSphere(1.75 * NAVE_RAIO, SLICES, STACKS);
         glPopMatrix();
     }
     glPushMatrix();
 
     /* Posiciona nave rotacionada de acordo com ângulos de inclinação */
-    glTranslated(this->x, this->y, this->z);
-    glRotated( this->angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
-    glRotated(-this->angVert  * 180.0/PI, 1.0, 0.0, 0.0);
+    glTranslated(x, y, z);
+    glRotated( angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
+    glRotated(-angVert  * 180.0/PI, 1.0, 0.0, 0.0);
 
     setColorAlpha(3 * naveCor, 3 * naveCor, 0, 3 * naveCor);
     if (estaEmPrimeiraPessoa()) {
@@ -220,8 +220,8 @@ void Nave::desenha()
     else {
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, modelo.texturaId);
-        glScaled(2 * this->raio, this->altura,
-                 2 * this->raio);
+        glScaled(2 * raio, altura,
+                 2 * raio);
 
         /* Desenha os vértices do arquivo */
         glVertexPointer(3, GL_DOUBLE, 0, modelo.coords);
@@ -232,11 +232,11 @@ void Nave::desenha()
 
 /*------------------------------------------------------------------*/
 
-int Nave::getVidas()           { return this->vidas;           }
-int Nave::getInvencibilidade() { return this->invencibilidade; }
-int Nave::getScore()           { return this->score;           }
+int Nave::getVidas()           { return vidas;           }
+int Nave::getInvencibilidade() { return invencibilidade; }
+int Nave::getScore()           { return score;           }
 
-void Nave::aumentaScore(int aumento) { this->score += aumento; }
+void Nave::aumentaScore(int aumento) { score += aumento; }
 
 /*------------------------------------------------------------------*/
 
