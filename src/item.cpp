@@ -3,7 +3,6 @@
 
 #include "item.hpp"
 #include "random.hpp"
-#include "nave.hpp"
 #include "cenario.hpp"
 #include "grafico.hpp"
 #include "cores.hpp"
@@ -15,9 +14,9 @@
 /* Lista de itens no cenário */
 std::vector<Item> itens;
 
-/*-------------------*
- |   F U N Ç Õ E S   |
- *-------------------*----------------------------------------------*/
+/*-------------*
+ |   I T E M   |
+ *-------------*----------------------------------------------------*/
 
 Item::Item(double z) : Corpo(z)
 {
@@ -31,29 +30,7 @@ Item::Item(double z) : Corpo(z)
 
     this->raio   = ITEM_RAIO;
     this->altura = 2 * this->raio;
-    this->tipo = tipo;
-
-    itens.push_back(*this);
-}
-
-/*------------------------------------------------------------------*/
-
-void Item::ativa()
-{
-    switch (this->tipo) {
-        case HP:
-            getNave()->hp += getNave()->hp / 6;
-            if (getNave()->hp > NAVE_HPMAX) {
-                getNave()->hp = NAVE_HPMAX;
-            }
-            break;
-        case VIDA:
-            ++getNave()->vidas;
-            break;
-        case ESCUDO:
-            getNave()->escudo = 2 * getNave()->hp;
-            break;
-    }
+    this->tipo   = tipo;
 }
 
 /*------------------------------------------------------------------*/
@@ -71,22 +48,26 @@ void Item::desenha()
     glRotated(rotacao, 1.0, 1.0, 1.0);
 
     switch(this->tipo) {
-        case HP:
-            setColorAlpha(LIGHT_GREEN, 230);
-            glutSolidCube(ITEM_RAIO);
-            break;
-        case VIDA:
-            setColorAlpha(GOLD, 130);
-            glutSolidCube(ITEM_RAIO);
-            break;
-        case ESCUDO:
-            setColorAlpha(DARK_BLUE, 130);
-            glutWireSphere(ITEM_RAIO, SLICES, STACKS);
-            break;
+    case HP:
+        setColorAlpha(LIGHT_GREEN, 230);
+        glutSolidCube(ITEM_RAIO);
+        break;
+    case VIDA:
+        setColorAlpha(GOLD, 130);
+        glutSolidCube(ITEM_RAIO);
+        break;
+    case ESCUDO:
+        setColorAlpha(DARK_BLUE, 130);
+        glutWireSphere(ITEM_RAIO, SLICES, STACKS);
+        break;
     }
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();
 }
+
+/*------------------------------------------------------------------*/
+
+TipoItem Item::getTipo() { return this->tipo; }
 
 /*------------------------------------------------------------------*/
 

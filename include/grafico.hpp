@@ -13,6 +13,9 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*----------------------------------------*/
 
+/* Tipo de luz a ser usada */
+#define LUZ_AMBIENTE GL_LIGHT0
+
 /* Dimensões da janela (widescreen por padrão) */
 #define JANELA_LARGURA 3 * X_MAX
 #define JANELA_ALTURA  JANELA_LARGURA/16.0 * 9

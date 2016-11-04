@@ -7,6 +7,7 @@
 #pragma once
 
 #include "base.hpp"
+#include "item.hpp"
 
 /*-------------------------*----------------------------------------*
  |   D E F I N I Ç Õ E S   |
@@ -35,14 +36,8 @@
 class Nave : public Unidade
 {
 private:
-    void atualizaDirecao(double *ang);
-
-public:
     /* Componentes de velocidade da nave */
     double vx, vy, vz;
-
-    /* Inclinações em relação ao eixo Oz */
-    double angHoriz, angVert;
 
     /* Número de chances do jogador. Se 0, "game over". */
     int vidas;
@@ -56,6 +51,14 @@ public:
     /* Pontuação do jogador */
     int score;
 
+    void recria(int z, int nVidas);
+
+    void atualizaDirecao(double *ang);
+
+public:
+    /* Inclinações em relação ao eixo Oz */
+    double angHoriz, angVert;
+
     /*
      *  Cria uma nave, alocando memória e carregando modelo do OpenGL.
      *  Se godMode, então ela será eternamente invencível.
@@ -63,17 +66,17 @@ public:
     Nave(bool godMode);
 
     /*
-     *  Recebe a posição no eixo Oz da nave e um número de vidas.
-     *  Reinicializa os atributos variáveis da nave.
-     */
-    void recria(int z, int nVidas);
-
-    /*
      *  Atualiza a posição da nave em relação ao timestep anterior.
      *  As componentes horizontal e vertical são proporcionais
      *  à velocidade escalar da nave ao longo do eixo Oz.
+     *  Também reduz tempo de invencibilidade.
      */
     void move();
+
+    /*
+     *  Decrementa invencibilidade até um mínimo de zero.
+     */
+    void atualizaInvencibilidade();
 
     /*
      *  Dispara um projétil na direção em que a nave estiver
@@ -89,9 +92,23 @@ public:
     void danifica(int dano);
 
     /*
+     *  Ativa o efeito de determinado item na nave.
+     */
+    void ativaItem(Item *item);
+
+    /*
      *  Desenha a representação visual da nave na tela.
      */
     void desenha();
+
+    /* Getters */
+    int getVidas();
+    int getInvencibilidade();
+    int getScore();
+
+    /* Setters */
+    void criaEscudo();
+    void aumentaScore(int aumento);
 };
 
 /*-------------------------*

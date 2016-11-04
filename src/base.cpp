@@ -8,9 +8,11 @@
 #include "cenario.hpp"
 #include "grafico.hpp"
 
-/*-------------------*
- |   F U N Ç Õ E S   |
- *-------------------*----------------------------------------------*/
+/*---------------*
+ |   C O R P O   |
+ *---------------*--------------------------------------------------*/
+
+Corpo::Corpo() { }
 
 Corpo::Corpo(double z)
 {
@@ -29,10 +31,10 @@ Corpo::Corpo(double z)
  */
 bool Corpo::colidiuCom(Corpo *that)
 {
-    int dx = this->x - that->x;
-    int dy = this->y - that->y;
-    int dz = this->z - that->z;
-    int somaRaios = this->raio + that->raio;
+    double dx = this->x - that->getX();
+    double dy = this->y - that->getY();
+    double dz = this->z - that->getZ();
+    double somaRaios = this->raio + that->raio;
 
     /* Evita cálculos desnecessários */
     if (dx >= somaRaios or dz >= somaRaios) return false;
@@ -47,7 +49,7 @@ bool Corpo::colidiuCom(Corpo *that)
 
 bool Corpo::saiu()
 {
-    double naveZ = getNave()->z;
+    double naveZ = getNave()->getZ();
 
     /* O corpo saiu por um dos limites da tela (x, y ou z)?
        Caso a respostas seja sim, então o corpo saiu do jogo. */
@@ -58,4 +60,20 @@ bool Corpo::saiu()
 
 /*------------------------------------------------------------------*/
 
+double Corpo::getX()      { return this->x;      }
+double Corpo::getY()      { return this->y;      }
+double Corpo::getZ()      { return this->z;      }
+double Corpo::getRaio()   { return this->raio;   }
+double Corpo::getAltura() { return this->altura; }
+
+/*------------------*
+ |   U N I D A D E  |
+ *------------------*-----------------------------------------------*/
+
 Unidade::Unidade(double z) : Corpo(z) { }
+
+int Unidade::getHP()       { return this->hp;       }
+int Unidade::getCooldown() { return this->cooldown; }
+int Unidade::getEspera()   { return this->espera;   }
+
+int Unidade::reduzEspera() { return --this->espera; }

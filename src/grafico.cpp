@@ -13,9 +13,6 @@
  |   D E F I N I Ç Õ E S   |
  *-------------------------*----------------------------------------*/
 
-/* Tipo de luz a ser usada */
-#define LUZ_AMBIENTE GL_LIGHT0
-
 /* Tamanho da tela */
 static int largura, altura;
 
@@ -104,19 +101,19 @@ static void desenha()
     /* Configura a luz ambiente.
        No modo 1º pessoa, tela fica vermelha após dano. */
     GLfloat k = estaEmPrimeiraPessoa() *
-                (1.5 * nave->invencibilidade/INVENCIVEL_VIDA);
+                (1.5 * nave->getInvencibilidade()/INVENCIVEL_VIDA);
     GLfloat luzTela[4] = {1.0f, 1.0f - k, 1.0f - k, 1.0f};
     glLightfv(LUZ_AMBIENTE, GL_AMBIENT, luzTela);
 
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */
     if (estaEmPrimeiraPessoa()) {
-        gluLookAt(nave->x, nave->y, nave->z,
-                  nave->x, nave->y, nave->z + Z_DIST,
+        gluLookAt(nave->getX(), nave->getY(), nave->getZ(),
+                  nave->getX(), nave->getY(), nave->getZ() + Z_DIST,
                   0.0, 1.0, 0.0);
     } else {
-        gluLookAt(0.0, Y_MAX/2.0, nave->z - DIST_CAMERA,
-                  0.0, Y_MAX/2.0, nave->z + Z_DIST,
+        gluLookAt(0.0, Y_MAX/2.0, nave->getZ() - DIST_CAMERA,
+                  0.0, Y_MAX/2.0, nave->getZ() + Z_DIST,
                   0.0, 1.0, 0.0);
     }
     /* Desenha cenário e elementos de jogo */
@@ -175,15 +172,15 @@ static void projecaoFim();
 static void exibeHud()
 {
     GLdouble raio = largura/75.0;
-    GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave->x);
-    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->y
+    GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave->getX());
+    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->getY()
                                         : 0.85 * altura * constCamera;
-    GLdouble z = nave->z - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
+    GLdouble z = nave->getZ() - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
 
     projecaoInicio();
 
     /* Desenha vidas extras da nave */
-    for (int i = 0; i < nave->vidas; i++) {
+    for (int i = 0; i < nave->getVidas(); i++) {
         glBegin(GL_TRIANGLE_FAN);
         setColor(CYAN);
         glVertex3d(x + i * 3*raio,        y, z);
@@ -213,15 +210,14 @@ static void exibeHud()
     glEnd();
 
     /* A lifebar em si */
-    int hp = nave->hp;
+    double r = (double) nave->getHP()/NAVE_HPMAX;
     GLdouble vertexLifebar[4][3] = {
         {                               x, y - 2*raio - 2, z },
         {                               x, y - 2*raio + 1, z },
-        { x + 0.2*largura * hp/NAVE_HPMAX, y - 2*raio + 1, z },
-        { x + 0.2*largura * hp/NAVE_HPMAX, y - 2*raio - 2, z }
+        { x + 0.2*largura * r, y - 2*raio + 1, z },
+        { x + 0.2*largura * r, y - 2*raio - 2, z }
     };
     /* Cor varia dependendo da energia da nave */
-    double r = (double) hp/NAVE_HPMAX;
     glColor3d(1 - r, r, 0.0);
 
     /* Desenha a lifebar */
@@ -233,7 +229,7 @@ static void exibeHud()
 
     /* Imprime pontuação (e, se for o caso, mensagem de pausa) */
     unsigned char str[32];
-    sprintf((char *) str, "Score: %d %s", nave->score,
+    sprintf((char *) str, "Score: %d %s", nave->getScore(),
                                           estaPausado() ? "(pausa)" : "");
     setColor(WHITE);
     glRasterPos3d(x, y - 2*raio - 25, z);
@@ -250,10 +246,10 @@ static void exibeFps()
 {
     static int fps, cont = 20;
 
-    GLdouble x = 0.88 * largura + (estaEmPrimeiraPessoa() * nave->x);
-    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->y
+    GLdouble x = 0.88 * largura + (estaEmPrimeiraPessoa() * nave->getX());
+    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->getY()
                                         : 0.85 * altura * constCamera;
-    GLdouble z = nave->z - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
+    GLdouble z = nave->getZ() - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
 
     /* FPS só é alterado na tela a cada tantos timesteps */
     cont += getDelayTempo() * FPS/1000.0;

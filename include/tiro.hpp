@@ -13,9 +13,7 @@
 
 #include "base.hpp"
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
+/*------------------------------------------------------------------*/
 
 #define BALA_VEL   9  /* módulo da velocidade */
 #define BALA_DANO 15
@@ -31,27 +29,24 @@
  */
 class Projetil : public Corpo
 {
-public:
+private:
     /* Componentes de velocidade do tiro */
     double vx, vy, vz;
 
     /* Energia removida do elemento em caso de acerto */
     int dano;
 
-    /* Se 'true', tiro foi disparado pela nave */
+    /* Indica se tiro foi disparado pela nave */
     bool amigo;
 
+public:
     /*
-     *  Constroi um projétil com alguns atributos já inicializados.
-     *  A inserção em lista deve ser feita posteriormente, em separado.
+     *  Constrói um projétil tomando como base uma unidade, um vetor
+     *  velocidade (vx, vy, vz) e um booleano amigo indicando se foi
+     *  disparado por nave ou inimigo. Posiciona-o externamente à unidade.
      */
-    Projetil(double z);
-
-    /*  
-     *  Aplica no respectivo projétil dois desvios em graus, um horizontal
-     *  e outro vertical, ambos inversamente proporcionais à precisão.
-     */
-    void aplicaPrecisao(double precisao);
+    Projetil(Unidade *uni, double vx, double vy, double vz,
+             bool amigo);
 
     /*
      *  Atualiza a posição do projétil em relação ao frame anterior.
@@ -64,7 +59,7 @@ public:
      *  se o mesmo foi destruído. Caso tiro tenho sido dado pela nave,
      *  são dados pontos ao jogador por acerto e por destruição.
      *
-     *  A função devolve true caso haja um acerto qualquer, ou false caso contrário.
+     *  A função devolve um booleano indicando se houve acerto.
      */
     bool verificaAcerto();
 
@@ -72,11 +67,15 @@ public:
      *  Recebe um projétil e o desenha na tela.
      */
     void desenha();
+
+    /* Getters */
+    double getVx();
+    double getVy();
+    double getVz();
+    bool   isAmigo();
 };
 
-/*-------------------------*
- |   P R O T Ó T I P O S   |
- *-------------------------*----------------------------------------*/
+/*------------------------------------------------------------------*/
 
 /*
  *  Devolve ponteiro para lista de projéteis.

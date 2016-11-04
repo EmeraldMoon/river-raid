@@ -12,9 +12,7 @@
 #include "base.hpp"
 #include "nave.hpp"
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
+/*------------------------------------------------------------------*/
 
 /* Tempo de espera até criar um inimigo */
 #define TEMPO_INIMIGOS 120
@@ -38,7 +36,9 @@
  */
 class Inimigo : public Unidade
 {
-public:
+private:
+    void aplicaPrecisao(double *vx, double *vy, double *vz);
+
     /* Chance (esperada) de um projétil disparado acertar a nave */
     double precisao;
 
@@ -52,9 +52,9 @@ public:
     /* Para fins visuais */
     int tempoDano;
 
+public:
     /*
-     *  Gera uma torre na distância z, com altura, posição
-     *  horizontal e outros atributos aleatórios.
+     *  Cria um novo inimigo na pósição z do cenário.
      */
     Inimigo(double z);
 
@@ -65,14 +65,23 @@ public:
     void dispara(Nave *nave);
 
     /*
-     *  Recebe um inimigo e o desenha na tela.
+     *  Danifica o inimigo.
+     */
+    void danifica(int dano);
+
+    /*
+     *  Desenha o inimigo na tela.
      */
     void desenha();
+
+    /* Getters */
+    double getPrecisao();
+    int    getDanoColisao();
+    int    getPontosAcerto();
+    int    getPontosDestruicao();
 };
 
-/*-------------------------*
- |   P R O T Ó T I P O S   |
- *-------------------------*----------------------------------------*/
+/*------------------------------------------------------------------*/
 
 /*
  *  Carrega informações de inimigos para a memória.

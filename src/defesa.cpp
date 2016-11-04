@@ -19,7 +19,7 @@ static std::vector<Inimigo> inimigos;
 static Modelo modelo;
 
 /*-------------------*
- |   F U N Ç Õ E S   |
+ |   I N I M I G O   |
  *-------------------*----------------------------------------------*/
 
 void carregaInimigos()
@@ -45,44 +45,75 @@ Inimigo::Inimigo(double z) : Unidade(z)
     this->pontosAcerto     = PONTOS_ACERTO;
     this->pontosDestruicao = PONTOS_DESTRUICAO;
     this->tempoDano        = 0;
-    
-    inimigos.push_back(*this);
 }
 
 /*------------------------------------------------------------------*/
 
 void Inimigo::dispara(Nave *nave)
 {
-    Projetil bullet(nave->z);
-    bullet.amigo  = false;
+    bool amigo = false;
 
     /* Calcula distância entre coordenadas de inimigo e nave.
        No caso do eixo z, considera-se a posição um pouco à frente. */
-    double dx = nave->x - this->x;
-    double dy = nave->y - this->y;
-    double dz = (nave->z + nave->raio) - this->z;
+    double dx =  nave->getX() - this->x;
+    double dy =  nave->getY() - this->y;
+    double dz = (nave->getZ() + nave->getRaio()) - this->z;
     double d = norma(dx, dy, dz);
 
     /* Gera vetor velocidade na referida direção */
-    double k = bullet.dano/d;
-    bullet.vx = k * dx;
-    bullet.vy = k * dy;
-    bullet.vz = k * dz;
-
-    /* Posição inicial de projétil segue direção da nave */
-    double r = (this->raio + bullet.raio)/d;
-    bullet.x = this->x + (r * dx);
-    bullet.y = this->y + (r * dy);
-    bullet.z = this->z + (r * dz);
+    double k = BALA_VEL/d;
+    double vx = k * dx;
+    double vy = k * dy;
+    double vz = k * dz;
 
     /* Aplica desvio de precisão */
-    bullet.aplicaPrecisao(this->precisao);
+    this->aplicaPrecisao(&vx, &vy, &vz);
 
-    /* Insere projétil na lista */
+    /* Cria projétil e o insere na lista */
+    Projetil bullet(this, vx, vy, vz, amigo);
     getListaProjeteis()->push_back(bullet);
 
     /* Reinicia contagem até próximo tiro */
     this->espera = this->cooldown;
+}
+
+static void calculaAngulo(double *a, double *b, double desvio);
+
+/*
+ *  Aplica no vetor direção dois desvios em graus, um horizontal
+ *  e outro vertical, ambos inversamente proporcionais à precisão.
+ *
+ *  Os desvios são calculados segundo uma distribuição Normal.
+ *  Enquanto a trajetória é alterada, o módulo da velocidade
+ *  permanece constante.
+ */
+void Inimigo::aplicaPrecisao(double *dx, double *dy, double *dz)
+{
+    double desvio = (1 - this->precisao) * DESVIO_MAX;
+
+    calculaAngulo(dx, dz, desvio);  /* desvio horizontal */
+    calculaAngulo(dy, dz, desvio);  /* desvio vertical   */
+}
+
+/*
+ *  Recebe duas componentes, encontra seu ângulo em coordenadas 
+ *  polares, modifica-o por meio de uma Normal e atualiza os valores.
+ */
+static void calculaAngulo(double *d1, double *d2, double desvio)
+{
+    double   d = hypot(*d1, *d2);
+    double ang = atan2(*d2, *d1);
+    ang = normal(ang, desvio);
+    *d1 = d * cos(ang);
+    *d2 = d * sin(ang); 
+}
+
+/*------------------------------------------------------------------*/
+
+void Inimigo::danifica(int dano)
+{
+    this->hp -= dano;
+    this->tempoDano = FOE_TEMPO_DANO;
 }
 
 /*------------------------------------------------------------------*/
@@ -112,6 +143,13 @@ void Inimigo::desenha()
     glDisable(GL_TEXTURE_GEN_T);
     glPopMatrix();
 }
+
+/*------------------------------------------------------------------*/
+
+double Inimigo::getPrecisao()         { return this->precisao;         }
+int    Inimigo::getDanoColisao()      { return this->danoColisao;      }
+int    Inimigo::getPontosAcerto()     { return this->pontosAcerto;     }
+int    Inimigo::getPontosDestruicao() { return this->pontosDestruicao; }
 
 /*------------------------------------------------------------------*/
 

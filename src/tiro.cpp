@@ -2,7 +2,7 @@
 
 #include "tiro.hpp"
 #include "base.hpp"
-#include "random.hpp"
+#include "nave.hpp"
 #include "defesa.hpp"
 #include "cenario.hpp"
 #include "grafico.hpp"
@@ -15,45 +15,28 @@
 /* Lista de projéteis no campo de jogo */
 std::vector<Projetil> projeteis;
 
-/*-------------------*
- |   F U N Ç Õ E S   |
- *-------------------*----------------------------------------------*/
+/*---------------------*
+ |   P R O J E T I L   |
+ *---------------------*--------------------------------------------*/
 
-Projetil::Projetil(double z) : Corpo(z)
+Projetil::Projetil(Unidade *uni, double vx, double vy, double vz,
+                   bool amigo)
 {
     this->raio   = BALA_RAIO;
     this->altura = 2 * this->raio;
     this->dano   = BALA_DANO;
-}
+    this->amigo  = amigo;
 
-/*------------------------------------------------------------------*/
+    this->vx = vx;
+    this->vy = vy;
+    this->vz = vz;
 
-static void calculaAngulo(double *a, double *b, double desvio);
-
-/*
- *  Os desvios são calculados segundo uma distribuição Normal.
- *  Enquanto a trajetória é alterada, o módulo da velocidade
- *  permanece constante.
- */
-void Projetil::aplicaPrecisao(double precisao)
-{
-    double desvio = (1 - precisao) * DESVIO_MAX;
-
-    calculaAngulo(&this->vx, &this->vz, desvio);  /* desvio horizontal */
-    calculaAngulo(&this->vy, &this->vz, desvio);  /* desvio vertical   */
-}
-
-/*
- *  Recebe duas componentes, encontra seu ângulo em coordenadas 
- *  polares, modifica-o por meio de uma Normal e atualiza os valores.
- */
-static void calculaAngulo(double *a, double *b, double desvio)
-{
-    double   v = hypot(*a, *b);
-    double ang = atan2(*b, *a);
-    ang = normal(ang, desvio);
-    *a = v * cos(ang);
-    *b = v * sin(ang); 
+    /* Posição inicial de projétil é exterior à unidade */
+    double modulo = norma(vx, vy, vz);
+    double k = (uni->getRaio() + this->raio)/modulo;
+    this->x = uni->getX() + (k * vx);
+    this->y = uni->getY() + (k * vy);
+    this->z = uni->getZ() + (k * vz);
 }
 
 /*------------------------------------------------------------------*/
@@ -89,19 +72,24 @@ bool Projetil::verificaAcerto()
         Inimigo *foe = &(*inimigos)[i];
         if (not this->colidiuCom(foe)) continue;
         if (this->amigo) {
-            foe->hp -= this->dano;
-            nave->score += foe->pontosAcerto;
-            if (foe->hp <= 0) {
+            foe->danifica(this->dano);
+            nave->aumentaScore(foe->getPontosAcerto());
+            if (foe->getHP() <= 0) {
                 inimigos->erase(inimigos->begin() + i);
-                nave->score += foe->pontosDestruicao;
-            } else {
-                foe->tempoDano = FOE_TEMPO_DANO;
+                nave->aumentaScore(foe->getPontosDestruicao());
             }
         }
         return true;
     }
     return false;
 }
+
+/*------------------------------------------------------------------*/
+
+double Projetil::getVx()    { return this->vx;    }
+double Projetil::getVy()    { return this->vy;    }
+double Projetil::getVz()    { return this->vz;    }
+bool   Projetil::isAmigo()  { return this->amigo; }
 
 /*------------------------------------------------------------------*/
 

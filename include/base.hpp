@@ -7,14 +7,12 @@
 
 #pragma once
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
+/*------------------------------------------------------------------*/
 
 /* Pi, nossa constante querida */
 #define PI 3.14159265359
 
-/* Calcula norma de um vetor */
+/* Calcula norma de um vetor de 3 dimensões */
 #define norma(x, y, z) sqrt((x)*(x) + (y)*(y) + (z)*(z))
 
 /*------------------------------------------------------------------*/
@@ -25,7 +23,7 @@
  */
 class Corpo
 {
-public:
+protected:
     /* Posição do corpo no cenário */
     double x;  /* posição horizontal (centro == 0) */
     double y;  /* altura em relação ao solo */
@@ -35,10 +33,12 @@ public:
        No caso de esféricos, altura == 2 * raio. */
     double raio, altura;
 
+public:
     /*
      *  Gera um corpo de forma randômica com posições
      *  aleatórias x e y e coordenada fixa z.
      */
+    Corpo();
     Corpo(double z);
 
     /*
@@ -51,6 +51,13 @@ public:
      *  Verifica se o corpo saiu por um dos limites da tela.
      */
     bool saiu();
+
+    /* Getters */
+    double getX();
+    double getY();
+    double getZ();
+    double getRaio();
+    double getAltura();
 };
 
 /*
@@ -59,7 +66,7 @@ public:
  */
 class Unidade : public Corpo
 {
-public:
+protected:
     /* Se (hp <= 0), elemento é destruído */
     int hp;
 
@@ -67,5 +74,17 @@ public:
        cooldown é fixo, espera é decrementada de cooldown até 0. */
     int cooldown, espera;
 
+public:
+    /*
+     *  Apenas chama o construtor de Corpo.
+     */
     Unidade(double z);
+
+    /* Getters */
+    int getHP();
+    int getCooldown();
+    int getEspera();
+
+    /* Setters */
+    int reduzEspera();
 };

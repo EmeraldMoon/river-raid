@@ -3,6 +3,7 @@
 
 #include "nave.hpp"
 #include "tiro.hpp"
+#include "item.hpp"
 #include "cenario.hpp"
 #include "teclado.hpp"
 #include "modelo.hpp"
@@ -14,7 +15,7 @@
  *-------------------------*----------------------------------------*/
 
 /* Ponteiro para estrutura da nave */
-static Nave nave(false);  // provisório
+static Nave *nave;
 
 /* Modelo da nave */
 static Modelo modelo;
@@ -43,8 +44,14 @@ Nave::Nave(bool _godMode) : Unidade(0.0)
 
     /* Começa em z == 0.0 */
     this->recria(0.0, NAVE_VIDAS);
+
+    nave = this;
 }
 
+/*
+ *  Recebe a posição no eixo Oz da nave e um número de vidas.
+ *  Reinicializa os atributos variáveis da nave.
+ */
 void Nave::recria(int z, int nVidas)
 {
     /* Coordenadas iniciais */
@@ -87,6 +94,13 @@ void Nave::move()
     this->atualizaDirecao(&(this->angVert));
 }
 
+void Nave::atualizaInvencibilidade()
+{
+    if (this->invencibilidade > 0) this->invencibilidade--;
+}
+
+/*------------------------------------------------------------------*/
+
 /*
  *  Recebe um ponteiro para um ângulo de inclinação da nave e diminui
  *  seu valor em módulo. Caso chegue a 0°, direção é mantida.
@@ -110,25 +124,19 @@ void Nave::atualizaDirecao(double *ang)
 
 void Nave::dispara()
 {
-    Projetil bullet(z);
-    bullet.amigo  = true;
+    bool amigo = true;
 
     /* Módulo do vetor de velocidade */
     double modulo = norma(this->vx, this->vy, this->vz);
 
     /* Componentes da velocidade da bala são proporcionais à nave */
     double k = BALA_VEL/modulo;
-    bullet.vx = k * this->vx;
-    bullet.vy = k * this->vy;
-    bullet.vz = k * this->vz;
+    double vx = k * this->vx;
+    double vy = k * this->vy;
+    double vz = k * this->vz;
 
-    /* Posição inicial será colinear ao centro da nave e ao destino */
-    double r = (this->raio + bullet.raio)/modulo;
-    bullet.x = this->x + (r * this->vx);
-    bullet.y = this->y + (r * this->vy);
-    bullet.z = this->z + (r * this->vz);
-
-    /* Insere projétil na lista */
+    /* Cria projétil e o insere na lista */
+    Projetil bullet(this, vx, vy, vz, amigo);
     getListaProjeteis()->push_back(bullet);
 
     /* Reinicia contagem até próximo tiro */
@@ -156,6 +164,24 @@ void Nave::danifica(int dano)
     if (this->hp <= 0) {
         this->hp = 0;
         if (--this->vidas >= 0) this->recria(this->z, this->vidas);
+    }
+}
+
+/*------------------------------------------------------------------*/
+
+void Nave::ativaItem(Item *item)
+{
+    switch (item->getTipo()) {
+    case HP:
+        this->hp += NAVE_HPMAX/6;
+        if (this->hp > NAVE_HPMAX) this->hp = NAVE_HPMAX;
+        break;
+    case VIDA:
+        this->vidas++;
+        break;
+    case ESCUDO:
+        this->escudo = 2 * NAVE_HPMAX;
+        break;
     }
 }
 
@@ -206,9 +232,17 @@ void Nave::desenha()
 
 /*------------------------------------------------------------------*/
 
+int Nave::getVidas()           { return this->vidas;           }
+int Nave::getInvencibilidade() { return this->invencibilidade; }
+int Nave::getScore()           { return this->score;           }
+
+void Nave::aumentaScore(int aumento) { this->score += aumento; }
+
+/*------------------------------------------------------------------*/
+
 Nave *getNave()
 {
-    return &nave;
+    return nave;
 }
 
 /*------------------------------------------------------------------*/
