@@ -80,7 +80,7 @@ void inicializaJogo(int argc, char *argv[])
     /* Carrega modelos e listas */
     carregaCenario(godMode, debug);
 
-    nave = getNave();
+    nave = Nave::getNave();
 
     /* Passa controle do resto do jogo ao OpenGL */
     glutMainLoop();

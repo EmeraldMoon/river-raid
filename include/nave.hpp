@@ -9,9 +9,7 @@
 #include "base.hpp"
 #include "item.hpp"
 
-/*-------------------------*----------------------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*/
+/*------------------------------------------------------------------*/
 
 /* Atributos iniciais e/ou fixos */
 #define NAVE_VIDAS    3
@@ -22,7 +20,7 @@
 #define NAVE_ALTURA  40
 
 /* Ângulo de inclinação máxima da nave */
-#define ANG_MAX PI/6
+#define ANG_MAX (M_PI/6)
 
 /* Nº de timesteps de invencibilidade */
 #define INVENCIVEL_DANO 30  /* ao ser atingida */
@@ -56,8 +54,17 @@ private:
     void atualizaDirecao(double *ang);
 
 public:
+    /* Guarda a única nave do jogo */
+    static Nave *nave;
+
     /* Inclinações em relação ao eixo Oz */
+    /* TEM QUE SER PRIVADO!!! */
     double angHoriz, angVert;
+
+    /*
+     *  Devolve a única nave do jogo.
+     */
+    static Nave *getNave();
 
     /*
      *  Cria uma nave, alocando memória e carregando modelo do OpenGL.
@@ -110,14 +117,7 @@ public:
     void aumentaScore(int aumento);
 };
 
-/*-------------------------*
- |   P R O T Ó T I P O S   |
- *-------------------------*----------------------------------------*/
-
-/*
- *  Devolve um ponteiro para a nave.
- */
-Nave *getNave();
+/*------------------------------------------------------------------*/
 
 /*
  *  Libera memória alocada para a nave.

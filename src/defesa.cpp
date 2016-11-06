@@ -8,14 +8,9 @@
 #include "modelo.hpp"
 #include "cores.hpp"
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
+/*------------------------------------------------------------------*/
 
-/* Lista de inimigos em jogo */
-static std::vector<Inimigo> inimigos;
-
-/* Modelo dos inimigos */
+/* Modelo da nave */
 static Modelo modelo;
 
 /*-------------------*
@@ -30,6 +25,8 @@ void carregaInimigos()
 }
 
 /*------------------------------------------------------------------*/
+
+Lista<Inimigo> Inimigo::lista;
 
 Inimigo::Inimigo(double z) : Unidade(z)
 {
@@ -71,7 +68,7 @@ void Inimigo::dispara(Nave *nave)
 
     /* Cria projétil e o insere na lista */
     Projetil bullet(this, vx, vy, vz, amigo);
-    getListaProjeteis()->push_back(bullet);
+    Projetil::lista.insere(bullet);
 
     /* Reinicia contagem até próximo tiro */
     espera = cooldown;
@@ -150,13 +147,6 @@ double Inimigo::getPrecisao()         { return precisao;         }
 int    Inimigo::getDanoColisao()      { return danoColisao;      }
 int    Inimigo::getPontosAcerto()     { return pontosAcerto;     }
 int    Inimigo::getPontosDestruicao() { return pontosDestruicao; }
-
-/*------------------------------------------------------------------*/
-
-std::vector<Inimigo> *getListaInimigos()
-{
-    return &inimigos;
-}
 
 /*------------------------------------------------------------------*/
 

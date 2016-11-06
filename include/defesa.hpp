@@ -53,6 +53,8 @@ private:
     int tempoDano;
 
 public:
+    static Lista<Inimigo> lista;
+
     /*
      *  Cria um novo inimigo na pósição z do cenário.
      */
@@ -88,11 +90,6 @@ public:
  *  Cria lista de inimigos.
  */
 void carregaInimigos();
-
-/*
- *  Devolve ponteiro para a lista de inimigos.
- */
-std::vector<Inimigo> *getListaInimigos();
 
 /*
  *  Libera memória alocada para os inimigos.

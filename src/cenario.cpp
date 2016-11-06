@@ -98,53 +98,44 @@ void atualizaCenario()
     keySpecialOperations();
 
     /* Ações relacionadas à nave */
-    Nave *nave = getNave();
+    Nave *nave = Nave::getNave();
     nave->move();
     nave->atualizaInvencibilidade();
 
     /* Loop para tratar de inimigos */
-    std::vector<Inimigo> *inimigos = getListaInimigos();
-    for (size_t i = 0; i < inimigos->size();) {
-        Inimigo *foe = &(*inimigos)[i];
-        if (nave->colidiuCom(foe)) {
-            nave->danifica(foe->getDanoColisao());
+    for (Inimigo &foe : Inimigo::lista) {
+        if (nave->colidiuCom(&foe)) {
+            nave->danifica(foe.getDanoColisao());
         }
-        if (foe->reduzEspera() <= 0) foe->dispara(nave);
-        if (foe->saiu()) {
-            inimigos->erase(inimigos->begin() + i);
-        } else i++;
+        if (foe.reduzEspera() <= 0) foe.dispara(nave);
+        if (foe.saiu()) Inimigo::lista.remove(foe);
     }
     /* Loop para verificar estado dos projéteis */
-    std::vector<Projetil> *projeteis = getListaProjeteis();
-    for (size_t i = 0; i < projeteis->size();) {
-        Projetil *bullet = &(*projeteis)[i];
-        bullet->move();
-        if (bullet->verificaAcerto() or bullet->saiu()) {
-            projeteis->erase(projeteis->begin() + i);
-        } else i++;
+    for (Projetil &bullet : Projetil::lista) {
+        bullet.move();
+        if (bullet.verificaAcerto() or bullet.saiu()) {
+            Projetil::lista.remove(bullet);
+        }
     }
      /* Loop para tratar de itens */
-    std::vector<Item> *itens = getListaItens();
-    for (size_t i = 0; i < itens->size();) {
-        Item *item = &(*itens)[i];
-        if (nave->colidiuCom(item)) {
-            nave->ativaItem(item);
-            itens->erase(itens->begin() + i);
+    for (Item &item : Item::lista) {
+        if (nave->colidiuCom(&item)) {
+            nave->ativaItem(&item);
+            Item::lista.remove(item);
         }
-        else if (item->saiu()) {
-            itens->erase(itens->begin() + i);
+        else if (item.saiu()) {
+            Item::lista.remove(item);
         }
-        else i++;
     }
     /* Gera inimigo ou item se contador chegar a zero */
     if (--contFoe <= 0) {
         Inimigo foe(nave->getZ() + Z_DIST);
-        getListaInimigos()->push_back(foe);
+        Inimigo::lista.insere(foe);
         contFoe = TEMPO_INIMIGOS;
     }
     if (--contItem <= 0) {
         Item item(nave->getZ() + Z_DIST);
-        getListaItens()->push_back(item);
+        Item::lista.insere(item);
         contItem = TEMPO_ITEM;
     }
     if (debug) imprimeElementos();
@@ -166,7 +157,7 @@ static void imprimeElementos()
         system("cls");
     #endif    
 
-    Nave *nave = (Nave *) getNave();
+    Nave *nave = (Nave *) Nave::getNave();
     puts("{Nave}");
     printf("PONTUAÇÂO: %d\n", nave->getScore());
     printf("VIDAS: %d\n", nave->getVidas());
@@ -174,12 +165,12 @@ static void imprimeElementos()
     printf("Posição: (%.0f, %.0f, %.0f)\n", 
            nave->getX(), nave->getY(), nave->getZ());
     printf("Ângulos: (%.0f°, %.0f°)\n",
-           180/PI * nave->angHoriz, 180/PI * nave->angVert);
+           180/M_PI * nave->angHoriz, 180/M_PI * nave->angVert);
     
     puts("\n{Inimigos}");
     puts("    ( x, y, z)          Recarga    Precisão    Energia ");
     puts("-------------------     -------    --------   ---------");
-    for (Inimigo foe : *getListaInimigos()) {
+    for (Inimigo &foe : Inimigo::lista) {
         printf(" (%4.0f, %3.0f, %4.0f)       "
                "%2d/%3d       %3.0f%%       %2d/%2d\n",
                foe.getX(), foe.getY(), foe.getZ(),
@@ -189,7 +180,7 @@ static void imprimeElementos()
     puts("\n{Projéteis}");
     puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
     puts("-------------------    --------------------     --------");
-    for (Projetil bullet : *getListaProjeteis()) {
+    for (Projetil &bullet : Projetil::lista) {
         printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
                bullet.getX(),  bullet.getY(),  bullet.getZ(),
                bullet.getVx(), bullet.getVy(), bullet.getVz(),
@@ -217,16 +208,16 @@ void desenhaCenario()
     desenhaFundo();
     
     /* Desenha elementos dinâmicos do jogo */
-    for (Inimigo foe : *getListaInimigos()) {
+    for (Inimigo &foe : Inimigo::lista) {
         foe.desenha();
     }
-    for (Projetil bullet : *getListaProjeteis()) {
+    for (Projetil &bullet : Projetil::lista) {
         bullet.desenha();
     }
-    for (Item item : *getListaItens()) {
+    for (Item &item : Item::lista) {
         item.desenha();
     }
-    getNave()->desenha();
+    Nave::getNave()->desenha();
 
     /* Desativa opções para não prejudicar desenho de hud e etc */
     glDisable(GL_TEXTURE_2D);
@@ -239,7 +230,7 @@ void desenhaCenario()
  */
 static void desenhaRio()
 {
-    GLdouble z = getNave()->getZ()/768.0;  /* 512 + 256 */
+    GLdouble z = Nave::getNave()->getZ()/768.0;  /* 512 + 256 */
 
     GLdouble coords[4][2] = {
         { 0.0, 4.0 + z }, { 4.0, 4.0 + z },
@@ -260,7 +251,7 @@ static void desenhaRio()
  */
 static void desenhaParede()
 {
-    GLdouble z = getNave()->getZ()/192.0;  /* 128 + 64 */
+    GLdouble z = Nave::getNave()->getZ()/192.0;  /* 128 + 64 */
 
     GLdouble coords[4][2] = {
         {        z, 1.0 },
@@ -311,7 +302,7 @@ static void desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
                               GLdouble vertices[4][3])
 {
     glPushMatrix();
-    glTranslated(0.0, 0.0, getNave()->getZ() - DIST_CAMERA);
+    glTranslated(0.0, 0.0, Nave::getNave()->getZ() - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, texturaId);
 
     glBegin(GL_QUADS); 
@@ -328,7 +319,7 @@ static void desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
 
 void encerraJogo()
 {
-    int score = getNave()->getScore();
+    int score = Nave::getNave()->getScore();
 
     /* Libera elementos do jogo */
     liberaNave();

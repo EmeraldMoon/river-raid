@@ -7,13 +7,44 @@
 
 #pragma once
 
+#include <vector>
+
 /*------------------------------------------------------------------*/
 
 /* Pi, nossa constante querida */
-#define PI 3.14159265359
+#define M_PI 3.14159265358979323846
 
 /* Calcula norma de um vetor de 3 dimensões */
 #define norma(x, y, z) sqrt((x)*(x) + (y)*(y) + (z)*(z))
+
+/*------------------------------------------------------------------*/
+
+/*
+ *  Representa uma lista de elementos de um dado tipo.
+ */
+template<typename T>
+class Lista {
+private:
+    /* Container que é a lista em si */
+    std::vector<T> vec;
+
+public:
+    /*
+     *  Métodos iteradores, necessários para usar ranged for.
+     */
+    typename std::vector<T>::iterator begin();
+    typename std::vector<T>::iterator end();
+
+    /*
+     *  Insere novo objeto na lista.
+     */
+    void insere(T &objeto);
+
+    /*
+     *  Remove objeto da lista.
+     */
+    void remove(T &objeto);
+};
 
 /*------------------------------------------------------------------*/
 
@@ -35,10 +66,14 @@ protected:
 
 public:
     /*
+     *  Apenas um construtor vazio.
+     */
+    Corpo();
+
+    /*
      *  Gera um corpo de forma randômica com posições
      *  aleatórias x e y e coordenada fixa z.
      */
-    Corpo();
     Corpo(double z);
 
     /*
@@ -59,6 +94,8 @@ public:
     double getRaio();
     double getAltura();
 };
+
+/*------------------------------------------------------------------*/
 
 /*
  *  Unidade de batalha do jogo, com hp e tiros recarregáveis.

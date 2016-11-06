@@ -10,12 +10,7 @@
 #include "grafico.hpp"
 #include "cores.hpp"
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
-
-/* Ponteiro para estrutura da nave */
-static Nave *nave;
+/*------------------------------------------------------------------*/
 
 /* Modelo da nave */
 static Modelo modelo;
@@ -23,9 +18,18 @@ static Modelo modelo;
 /* Booleano que define invencibilidade perpétua */
 static bool godMode;
 
-/*-------------------*
- |   F U N Ç Õ E S   |
- *-------------------*----------------------------------------------*/
+/*-------------*
+ |   N A V E   |
+ *-------------*----------------------------------------------------*/
+
+Nave *Nave::nave;
+
+Nave *Nave::getNave()
+{
+    return Nave::nave;
+}
+
+/*------------------------------------------------------------------*/
 
 Nave::Nave(bool _godMode) : Unidade(0.0)
 {
@@ -45,6 +49,7 @@ Nave::Nave(bool _godMode) : Unidade(0.0)
     /* Começa em z == 0.0 */
     recria(0.0, NAVE_VIDAS);
 
+    /* Guarda nave no ponteiro do módulo */
     nave = this;
 }
 
@@ -57,7 +62,7 @@ void Nave::recria(int z, int nVidas)
     /* Coordenadas iniciais */
     x = 0.0;
     y = Y_MAX/2;
-    z = z;
+    this->z = z;
 
     /* Aponta para o centro */
     angHoriz = 0.0;
@@ -137,7 +142,7 @@ void Nave::dispara()
 
     /* Cria projétil e o insere na lista */
     Projetil bullet(this, vx, vy, vz, amigo);
-    getListaProjeteis()->push_back(bullet);
+    Projetil::lista.insere(bullet);
 
     /* Reinicia contagem até próximo tiro */
     espera = cooldown;
@@ -196,7 +201,7 @@ void Nave::desenha()
     /* Se ativo, desenha escudo ao redor da nave */
     if (escudo > 0) {
         static double rotacao = 0;
-        rotacao += PI/6;
+        rotacao += M_PI/6;
         naveCor = 255;
         glPushMatrix();
         glTranslated(x, y, z);
@@ -209,8 +214,8 @@ void Nave::desenha()
 
     /* Posiciona nave rotacionada de acordo com ângulos de inclinação */
     glTranslated(x, y, z);
-    glRotated( angHoriz * 180.0/PI, 0.0, 1.0, 0.0);
-    glRotated(-angVert  * 180.0/PI, 1.0, 0.0, 0.0);
+    glRotated( angHoriz * 180.0/M_PI, 0.0, 1.0, 0.0);
+    glRotated(-angVert  * 180.0/M_PI, 1.0, 0.0, 0.0);
 
     setColorAlpha(3 * naveCor, 3 * naveCor, 0, 3 * naveCor);
     if (estaEmPrimeiraPessoa()) {
@@ -237,13 +242,6 @@ int Nave::getInvencibilidade() { return invencibilidade; }
 int Nave::getScore()           { return score;           }
 
 void Nave::aumentaScore(int aumento) { score += aumento; }
-
-/*------------------------------------------------------------------*/
-
-Nave *getNave()
-{
-    return nave;
-}
 
 /*------------------------------------------------------------------*/
 

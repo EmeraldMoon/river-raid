@@ -103,8 +103,8 @@ static void ignoraComentario(std::ifstream *arq)
         *arq >> std::skipws;
         arq->get(c);
         if (c != '#') break;
-        std::string nothing;
-        std::getline(*arq, nothing);
+        std::string nada;
+        std::getline(*arq, nada);
     }
     arq->unget();
 }

@@ -8,24 +8,19 @@
 #include "grafico.hpp"
 #include "cores.hpp"
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
-
-/* Lista de projéteis no campo de jogo */
-std::vector<Projetil> projeteis;
-
 /*---------------------*
  |   P R O J E T I L   |
  *---------------------*--------------------------------------------*/
 
+Lista<Projetil> Projetil::lista;
+
 Projetil::Projetil(Unidade *uni, double vx, double vy, double vz,
                    bool amigo)
 {
-    raio   = BALA_RAIO;
-    altura = 2 * raio;
-    dano   = BALA_DANO;
-    amigo  = amigo;
+    raio        = BALA_RAIO;
+    altura      = 2 * raio;
+    dano        = BALA_DANO;
+    this->amigo = amigo;
 
     this->vx = vx;
     this->vy = vy;
@@ -59,24 +54,22 @@ void Projetil::move()
  */
 bool Projetil::verificaAcerto()
 {
-    Nave *nave = getNave();
+    Nave *nave = Nave::getNave();
 
     /* Verificação de colisão com a nave */
-    if (colidiuCom(nave)) {
+    if (not amigo and colidiuCom(nave)) {
         nave->danifica(dano);
         return true;
     }
     /* Verificação de colisão com algum inimigo */
-    std::vector<Inimigo> *inimigos = getListaInimigos();
-    for (size_t i = 0; i < inimigos->size(); i++) {
-        Inimigo *foe = &(*inimigos)[i];
-        if (not colidiuCom(foe)) continue;
+    for (Inimigo &foe : Inimigo::lista) {
+        if (not colidiuCom(&foe)) continue;
         if (amigo) {
-            foe->danifica(dano);
-            nave->aumentaScore(foe->getPontosAcerto());
-            if (foe->getHP() <= 0) {
-                inimigos->erase(inimigos->begin() + i);
-                nave->aumentaScore(foe->getPontosDestruicao());
+            foe.danifica(dano);
+            nave->aumentaScore(foe.getPontosAcerto());
+            if (foe.getHP() <= 0) {
+                Inimigo::lista.remove(foe);
+                nave->aumentaScore(foe.getPontosDestruicao());
             }
         }
         return true;
@@ -86,10 +79,10 @@ bool Projetil::verificaAcerto()
 
 /*------------------------------------------------------------------*/
 
-double Projetil::getVx()    { return vx;    }
-double Projetil::getVy()    { return vy;    }
-double Projetil::getVz()    { return vz;    }
-bool   Projetil::isAmigo()  { return amigo; }
+double Projetil::getVx()   { return vx;    }
+double Projetil::getVy()   { return vy;    }
+double Projetil::getVz()   { return vz;    }
+bool   Projetil::isAmigo() { return amigo; }
 
 /*------------------------------------------------------------------*/
 
@@ -100,7 +93,7 @@ void Projetil::desenha()
 
     /* Cores diferentes para tiros diferentes */
     if (amigo) setColor(LIGHT_GRAY);
-    else             setColor(YELLOW);
+    else       setColor(YELLOW);
   
     /* Desenha esfera na posição (x, y, z) */
     glTranslated(x, y, z);
@@ -109,11 +102,3 @@ void Projetil::desenha()
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();
 }
-
-/*------------------------------------------------------------------*/
-
-std::vector<Projetil> *getListaProjeteis()
-{
-    return &projeteis;
-}
-

@@ -7,16 +7,11 @@
 #include "grafico.hpp"
 #include "cores.hpp"
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
-
-/* Lista de itens no cenário */
-std::vector<Item> itens;
-
 /*-------------*
  |   I T E M   |
  *-------------*----------------------------------------------------*/
+
+Lista<Item> Item::lista;
 
 Item::Item(double z) : Corpo(z)
 {
@@ -38,7 +33,7 @@ Item::Item(double z) : Corpo(z)
 void Item::desenha()
 {
     static double rotacao = 0;
-    rotacao += PI/6;
+    rotacao += M_PI/6;
 
     glPushMatrix();
     glDisable(GL_TEXTURE_2D);
@@ -68,10 +63,3 @@ void Item::desenha()
 /*------------------------------------------------------------------*/
 
 TipoItem Item::getTipo() { return tipo; }
-
-/*------------------------------------------------------------------*/
-
-std::vector<Item> *getListaItens()
-{
-    return &itens;
-}

@@ -59,17 +59,17 @@ void keySpecialUp(int key, int x, int y)
 void keyOperations()
 {
     if ((keyStates[TECLA_TIRO] or keyStates[TECLA_TIRO2])
-            and getNave()->reduzEspera() <= 0) {
-        getNave()->dispara();
+            and Nave::getNave()->reduzEspera() <= 0) {
+        Nave::getNave()->dispara();
     }
 }
 
 void keySpecialOperations()
 {
     /* Taxa de alteração de ângulo por comando do usuário */
-    static const double ANG_MANUAL = ANG_MAX/20;
+    static constexpr double ANG_MANUAL = ANG_MAX/20;
 
-    Nave *nave = getNave();
+    Nave *nave = Nave::getNave();
 
     if      (keySpecialStates[GLUT_KEY_UP])    nave->angVert  += ANG_MANUAL;
     else if (keySpecialStates[GLUT_KEY_DOWN])  nave->angVert  -= ANG_MANUAL;
@@ -85,17 +85,6 @@ void keySpecialOperations()
 
 /*------------------------------------------------------------------*/
 
-bool estaEmPrimeiraPessoa()
-{
-    return primeiraPessoa;
-}
-
-bool estaPausado()
-{
-    return pausado;
-}
-
-bool exibindoFPS()
-{
-    return exibeFPS;
-}
+bool estaEmPrimeiraPessoa() { return primeiraPessoa; }
+bool estaPausado()          { return pausado;        }
+bool exibindoFPS()          { return exibeFPS;       }

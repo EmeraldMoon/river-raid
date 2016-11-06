@@ -20,7 +20,7 @@
 #define BALA_RAIO  3
 
 /* Desvio-padrão de mira caso precisão == 0 */
-#define DESVIO_MAX PI/4
+#define DESVIO_MAX (M_PI/4)
 
 /*------------------------------------------------------------------*/
 
@@ -40,6 +40,8 @@ private:
     bool amigo;
 
 public:
+    static Lista<Projetil> lista;
+
     /*
      *  Constrói um projétil tomando como base uma unidade, um vetor
      *  velocidade (vx, vy, vz) e um booleano amigo indicando se foi
@@ -74,10 +76,3 @@ public:
     double getVz();
     bool   isAmigo();
 };
-
-/*------------------------------------------------------------------*/
-
-/*
- *  Devolve ponteiro para lista de projéteis.
- */
-std::vector<Projetil> *getListaProjeteis();

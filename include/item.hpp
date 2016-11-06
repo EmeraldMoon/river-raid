@@ -23,11 +23,11 @@
 /*
  *  Enumerador para tipos de item.
  */
-enum tipoItem
+/*enum class TipoItem*/
+enum TipoItem
 {
     HP, VIDA, ESCUDO
 };
-typedef enum tipoItem TipoItem;
 
 /*
  *  Representa um item coletável.
@@ -43,6 +43,8 @@ private:
     TipoItem tipo;
 
 public:
+    static Lista<Item> lista;
+
     /*
      *  Cria um item na distância z, de posição horizontal e
      *  tipo aleatórios. Cada tipo de item possui uma
@@ -58,10 +60,3 @@ public:
     /* Getters */
     TipoItem getTipo();
 };
-
-/*------------------------------------------------------------------*/
-
-/*
- *  Devolve ponteiro para lista de itens.
- */
-std::vector<Item> *getListaItens();
