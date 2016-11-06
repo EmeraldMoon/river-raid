@@ -41,7 +41,7 @@ public:
      *  velocidade (vx, vy, vz) e um booleano amigo indicando se foi
      *  disparado por nave ou inimigo. Posiciona-o externamente à unidade.
      */
-    Projetil(Unidade *uni, double vx, double vy, double vz,
+    Projetil(Unidade &uni, double vx, double vy, double vz,
              bool amigo);
 
     /*

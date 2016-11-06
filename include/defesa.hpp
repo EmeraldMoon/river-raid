@@ -33,7 +33,7 @@ private:
     /* Para fins visuais */
     int tempoDano = 0;
 
-    void aplicaPrecisao(double *vx, double *vy, double *vz);
+    void aplicaPrecisao(double &vx, double &vy, double &vz);
 
 public:
 
@@ -48,7 +48,7 @@ public:
      *  Dispara um projétil em direção à nave e
      *  reinicia o tempo de recarga do inimigo.
      */
-    void dispara(Nave *nave);
+    void dispara(Nave &nave);
 
     /*
      *  Danifica o inimigo.

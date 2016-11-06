@@ -20,8 +20,8 @@ static Modelo modelo;
 void carregaInimigos()
 {
     /* Carrega modelo da nave */
-    leVertices("defesa.vert", &modelo);
-    carregaTextura("magma.ppm", false, &modelo);
+    leVertices("defesa.vert", modelo);
+    carregaTextura("magma.ppm", false, modelo);
 }
 
 /*------------------------------------------------------------------*/
@@ -42,15 +42,15 @@ Inimigo::Inimigo(double z) : Unidade(z)
 
 /*------------------------------------------------------------------*/
 
-void Inimigo::dispara(Nave *nave)
+void Inimigo::dispara(Nave &nave)
 {
     bool amigo = false;
 
     /* Calcula distância entre coordenadas de inimigo e nave.
        No caso do eixo z, considera-se a posição um pouco à frente. */
-    double dx =  nave->getX() - x;
-    double dy =  nave->getY() - y;
-    double dz = (nave->getZ() + nave->getRaio()) - z;
+    double dx =  nave.getX() - x;
+    double dy =  nave.getY() - y;
+    double dz = (nave.getZ() + nave.getRaio()) - z;
     double d = norma(dx, dy, dz);
 
     /* Gera vetor velocidade na referida direção */
@@ -60,17 +60,17 @@ void Inimigo::dispara(Nave *nave)
     double vz = k * dz;
 
     /* Aplica desvio de precisão */
-    aplicaPrecisao(&vx, &vy, &vz);
+    aplicaPrecisao(vx, vy, vz);
 
     /* Cria projétil e o insere na lista */
-    Projetil bullet(this, vx, vy, vz, amigo);
+    Projetil bullet(*this, vx, vy, vz, amigo);
     Projetil::lista.insere(bullet);
 
     /* Reinicia contagem até próximo tiro */
     espera = cooldown;
 }
 
-static void calculaAngulo(double *a, double *b, double desvio);
+static void calculaAngulo(double &a, double &b, double desvio);
 
 /*
  *  Aplica no vetor direção dois desvios em graus, um horizontal
@@ -80,7 +80,7 @@ static void calculaAngulo(double *a, double *b, double desvio);
  *  Enquanto a trajetória é alterada, o módulo da velocidade
  *  permanece constante.
  */
-void Inimigo::aplicaPrecisao(double *dx, double *dy, double *dz)
+void Inimigo::aplicaPrecisao(double &dx, double &dy, double &dz)
 {
     static constexpr double DESVIO_MAX = M_PI/8;
     double desvio = (1 - precisao) * DESVIO_MAX;
@@ -93,13 +93,13 @@ void Inimigo::aplicaPrecisao(double *dx, double *dy, double *dz)
  *  Recebe duas componentes, encontra seu ângulo em coordenadas 
  *  polares, modifica-o por meio de uma Normal e atualiza os valores.
  */
-static void calculaAngulo(double *d1, double *d2, double desvio)
+static void calculaAngulo(double &d1, double &d2, double desvio)
 {
-    double   d = hypot(*d1, *d2);
-    double ang = atan2(*d2, *d1);
+    double   d = hypot(d1, d2);
+    double ang = atan2(d2, d1);
     ang = normal(ang, desvio);
-    *d1 = d * cos(ang);
-    *d2 = d * sin(ang); 
+    d1 = d * cos(ang);
+    d2 = d * sin(ang); 
 }
 
 /*------------------------------------------------------------------*/
@@ -149,6 +149,6 @@ double Inimigo::getPrecisao()         { return precisao;          }
 
 void liberaInimigos()
 {
-    liberaTextura(&modelo);
-    liberaVertices(&modelo);
+    liberaTextura(modelo);
+    liberaVertices(modelo);
 }

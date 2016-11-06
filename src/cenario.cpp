@@ -38,16 +38,16 @@ void carregaCenario(bool godMode, bool _debug)
     carregaInimigos();
 
     /* Texturas do cenário */
-    carregaTextura("water.ppm", true, &modeloRio);
-    carregaTextura("brick.ppm", true, &modeloParede);
-    carregaTextura("space.ppm", true, &modeloFundo);
+    carregaTextura("water.ppm", true, modeloRio);
+    carregaTextura("brick.ppm", true, modeloParede);
+    carregaTextura("space.ppm", true, modeloFundo);
     
     debug = _debug;
 }
 
 /*------------------------------------------------------------------*/
 
-void controlaTempo(int unused)
+void controlaTempo(int aRespostaParaAVidaOUniversoETudoMais)
 {
     static const int INTERVALO = 1000/FPS;
     static int t0 = 0, tExtra = 0;
@@ -98,14 +98,14 @@ void atualizaCenario()
     keySpecialOperations();
 
     /* Ações relacionadas à nave */
-    Nave *nave = Nave::get();
-    nave->move();
-    nave->atualizaInvencibilidade();
+    Nave &nave = Nave::get();
+    nave.move();
+    nave.atualizaInvencibilidade();
 
     /* Loop para tratar de inimigos */
     for (Inimigo &foe : Inimigo::lista) {
-        if (nave->colidiuCom(&foe)) {
-            nave->danifica(foe.getDanoColisao());
+        if (nave.colidiuCom(foe)) {
+            nave.danifica(foe.getDanoColisao());
         }
         if (foe.reduzEspera() <= 0) foe.dispara(nave);
         if (foe.saiu()) Inimigo::lista.remove(foe);
@@ -118,18 +118,18 @@ void atualizaCenario()
 
         /* Verificação de colisão com nave */
         if (not bullet.isAmigo() and bullet.colidiuCom(nave)) {
-            nave->danifica(bullet.getDano());
+            nave.danifica(bullet.getDano());
             morto = true;
         }
         /* Verificação de colisão com algum inimigo */
         for (Inimigo &foe : Inimigo::lista) {
-            if (not bullet.colidiuCom(&foe)) continue;
+            if (not bullet.colidiuCom(foe)) continue;
             if (bullet.isAmigo()) {
                 foe.danifica(bullet.getDano());
-                nave->aumentaScore(foe.getPontosAcerto());
+                nave.aumentaScore(foe.getPontosAcerto());
                 if (foe.getHP() <= 0) {
                     Inimigo::lista.remove(foe);
-                    nave->aumentaScore(foe.getPontosDestruicao());
+                    nave.aumentaScore(foe.getPontosDestruicao());
                 }
             }
             morto = true;
@@ -138,8 +138,8 @@ void atualizaCenario()
     }
      /* Loop para tratar de itens */
     for (Item &item : Item::lista) {
-        if (nave->colidiuCom(&item)) {
-            nave->ativaItem(&item);
+        if (nave.colidiuCom(item)) {
+            nave.ativaItem(item);
             Item::lista.remove(item);
         }
         else if (item.saiu()) {
@@ -148,19 +148,19 @@ void atualizaCenario()
     }
     /* Gera inimigo ou item se contador chegar a zero */
     if (--contFoe <= 0) {
-        Inimigo foe(nave->getZ() + Z_DIST);
+        Inimigo foe(nave.getZ() + Z_DIST);
         Inimigo::lista.insere(foe);
         contFoe = TEMPO_INIMIGOS;
     }
     if (--contItem <= 0) {
-        Item item(nave->getZ() + Z_DIST);
+        Item item(nave.getZ() + Z_DIST);
         Item::lista.insere(item);
         contItem = TEMPO_ITEM;
     }
     if (debug) imprimeElementos();
 
     /* Se acabaram vidas, encerra o jogo */
-    if (nave->getVidas() <= 0) encerraJogo();
+    if (nave.getVidas() <= 0) encerraJogo();
 }
 
 /*
@@ -176,15 +176,15 @@ static void imprimeElementos()
         system("cls");
     #endif    
 
-    Nave *nave = Nave::get();
+    Nave &nave = Nave::get();
     puts("{Nave}");
-    printf("PONTUAÇÂO: %d\n", nave->getScore());
-    printf("VIDAS: %d\n", nave->getVidas());
-    printf("Energia: %-3d/%d\n", nave->getHP(), nave->getHPMax());
+    printf("PONTUAÇÂO: %d\n", nave.getScore());
+    printf("VIDAS: %d\n", nave.getVidas());
+    printf("Energia: %-3d/%d\n", nave.getHP(), nave.getHPMax());
     printf("Posição: (%.0f, %.0f, %.0f)\n", 
-           nave->getX(), nave->getY(), nave->getZ());
+           nave.getX(), nave.getY(), nave.getZ());
     printf("Ângulos: (%.0f°, %.0f°)\n",
-           180/M_PI * nave->getAngHoriz(), 180/M_PI * nave->getAngVert());
+           180/M_PI * nave.getAngHoriz(), 180/M_PI * nave.getAngVert());
     
     puts("\n{Inimigos}");
     puts("    ( x, y, z)          Recarga    Precisão    Energia ");
@@ -236,7 +236,7 @@ void desenhaCenario()
     for (Item &item : Item::lista) {
         item.desenha();
     }
-    Nave::get()->desenha();
+    Nave::get().desenha();
 
     /* Desativa opções para não prejudicar desenho de hud e etc */
     glDisable(GL_TEXTURE_2D);
@@ -249,7 +249,7 @@ void desenhaCenario()
  */
 static void desenhaRio()
 {
-    GLdouble z = Nave::get()->getZ()/768.0;  /* 512 + 256 */
+    GLdouble z = Nave::get().getZ()/768.0;  /* 512 + 256 */
 
     GLdouble coords[4][2] = {
         { 0.0, 4.0 + z }, { 4.0, 4.0 + z },
@@ -270,7 +270,7 @@ static void desenhaRio()
  */
 static void desenhaParede()
 {
-    GLdouble z = Nave::get()->getZ()/192.0;  /* 128 + 64 */
+    GLdouble z = Nave::get().getZ()/192.0;  /* 128 + 64 */
 
     GLdouble coords[4][2] = {
         {        z, 1.0 },
@@ -321,7 +321,7 @@ static void desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
                               GLdouble vertices[4][3])
 {
     glPushMatrix();
-    glTranslated(0.0, 0.0, Nave::get()->getZ() - DIST_CAMERA);
+    glTranslated(0.0, 0.0, Nave::get().getZ() - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, texturaId);
 
     glBegin(GL_QUADS); 
@@ -338,16 +338,16 @@ static void desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
 
 void encerraJogo()
 {
-    int score = Nave::get()->getScore();
+    int score = Nave::get().getScore();
 
     /* Libera elementos do jogo */
     liberaNave();
     liberaInimigos();
 
     /* Libera texturas do cenário */
-    liberaTextura(&modeloRio);
-    liberaTextura(&modeloParede);
-    liberaTextura(&modeloFundo);
+    liberaTextura(modeloRio);
+    liberaTextura(modeloParede);
+    liberaTextura(modeloFundo);
 
     /* Mostra score e dá adeus */
     printf("Score final: %d\n", score);

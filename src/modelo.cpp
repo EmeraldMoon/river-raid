@@ -12,11 +12,10 @@
  |   F U N Ç Õ E S   |
  *-------------------*----------------------------------------------*/
 
-void leVertices(std::string nomeArq, Modelo *modelo)
+void leVertices(std::string nomeArq, Modelo &modelo)
 {
     /* Caminho do arquivo de modelo */
-    std::string caminho =
-        std::string(MODEL_DIR) + std::string("/") + nomeArq;
+    std::string caminho = std::string(MODEL_DIR) + "/" + nomeArq;
 
     /* Abre o arquivo */
     std::ifstream arq(caminho);
@@ -30,23 +29,22 @@ void leVertices(std::string nomeArq, Modelo *modelo)
     arq.seekg(0);
 
     /* Lê todas as coordenadas */
-    modelo->coords = new GLdouble[3 * n];
+    modelo.coords = new GLdouble[3 * n];
     for (GLsizei i = 0; i < 3 * n; i++) {
-        arq >> modelo->coords[i];
+        arq >> modelo.coords[i];
     }
-    modelo->numVertices = n;
+    modelo.numVertices = n;
 }
 
 /*------------------------------------------------------------------*/
 
-static void ignoraComentario(std::ifstream *arq);
-static void erro(std::ifstream *arq, std::string nomeArq);
+static void ignoraComentario(std::ifstream &arq);
+static void erro(std::ifstream &arq, std::string nomeArq);
 
-void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo *modelo)
+void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo)
 {
     /* Caminho do arquivo de textura */
-    std::string caminho =
-        std::string(TEXTURE_DIR) + std::string("/") + nomeArq;
+    std::string caminho = std::string(TEXTURE_DIR) + "/" + nomeArq;
 
     /* Abre o arquivo */
     std::ifstream arq(caminho);
@@ -57,11 +55,11 @@ void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo *modelo)
     /* Faz verificação da chave mágica */
     std::string aux;
     std::getline(arq, aux);
-    if (aux != "P6") erro(&arq, caminho);
+    if (aux != "P6") erro(arq, caminho);
 
     /* Obtém largura e altura (ignore maxval) */
     GLsizei altura, largura;
-    ignoraComentario(&arq);
+    ignoraComentario(arq);
     arq >> altura >> largura;
     arq.ignore();
 
@@ -76,8 +74,8 @@ void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo *modelo)
     arq.read((char *) dados, n);
 
     /* Gera e guarda identificador de textura */
-    glGenTextures(1, &modelo->texturaId);
-    glBindTexture(GL_TEXTURE_2D, modelo->texturaId);
+    glGenTextures(1, &modelo.texturaId);
+    glBindTexture(GL_TEXTURE_2D, modelo.texturaId);
 
     /* Carrega os dados (pixels) da textura */
     if (mipmap) {
@@ -96,23 +94,23 @@ void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo *modelo)
 /*
  *  Pula comentários (iniciados com '#') na leitura do arquivo PPM.
  */
-static void ignoraComentario(std::ifstream *arq)
+static void ignoraComentario(std::ifstream &arq)
 {
     char c;
     for (;;) {
-        *arq >> std::skipws;
-        arq->get(c);
+        arq >> std::skipws;
+        arq.get(c);
         if (c != '#') break;
         std::string nada;
-        std::getline(*arq, nada);
+        std::getline(arq, nada);
     }
-    arq->unget();
+    arq.unget();
 }
 
 /*
  *  Fecha o programa quando a textura não é um arquivo PPM.
  */
-static void erro(std::ifstream *arq, std::string caminho)
+static void erro(std::ifstream &arq, std::string caminho)
 {
     fprintf(stderr, "carregaTextura(): "
             "%s arquivo com formato inválido.\n", caminho.c_str());
@@ -121,12 +119,12 @@ static void erro(std::ifstream *arq, std::string caminho)
 
 /*------------------------------------------------------------------*/
 
-void liberaVertices(Modelo *modelo)
+void liberaVertices(Modelo &modelo)
 {
-    delete[] modelo->coords;
+    delete[] modelo.coords;
 }
 
-void liberaTextura(Modelo *modelo)
+void liberaTextura(Modelo &modelo)
 {
-    glDeleteTextures(1, &modelo->texturaId);
+    glDeleteTextures(1, &modelo.texturaId);
 }

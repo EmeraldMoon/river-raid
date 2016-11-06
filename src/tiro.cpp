@@ -12,7 +12,7 @@
 
 Lista<Projetil> Projetil::lista;
 
-Projetil::Projetil(Unidade *uni, double vx, double vy, double vz,
+Projetil::Projetil(Unidade &uni, double vx, double vy, double vz,
                    bool amigo)
 {
     raio        = 3.0;
@@ -25,10 +25,10 @@ Projetil::Projetil(Unidade *uni, double vx, double vy, double vz,
 
     /* Posição inicial de projétil é exterior à unidade */
     double modulo = norma(vx, vy, vz);
-    double k = (uni->getRaio() + raio)/modulo;
-    x = uni->getX() + (k * vx);
-    y = uni->getY() + (k * vy);
-    z = uni->getZ() + (k * vz);
+    double k = (uni.getRaio() + raio)/modulo;
+    x = uni.getX() + (k * vx);
+    y = uni.getY() + (k * vy);
+    z = uni.getZ() + (k * vz);
 }
 
 /*------------------------------------------------------------------*/

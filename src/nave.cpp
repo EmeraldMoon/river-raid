@@ -23,9 +23,10 @@ static bool godMode;
  |   N A V E   |
  *-------------*----------------------------------------------------*/
 
-Nave *Nave::nave;
+/* Provisório? */
+Nave Nave::nave(false);
 
-Nave *Nave::get()
+Nave &Nave::get()
 {
     return nave;
 }
@@ -35,8 +36,8 @@ Nave *Nave::get()
 Nave::Nave(bool _godMode) : Unidade(0.0)
 {
     /* Carrega modelo da nave */
-    leVertices("nave.vert", &modelo);
-    carregaTextura("silver.ppm", false, &modelo);
+    leVertices("nave.vert", modelo);
+    carregaTextura("silver.ppm", false, modelo);
 
     raio     = 20.0;
     altura   = 40.0;
@@ -49,7 +50,7 @@ Nave::Nave(bool _godMode) : Unidade(0.0)
     recria(0.0, 3);
 
     /* Guarda nave no ponteiro do módulo */
-    nave = this;
+    nave = *this;
 }
 
 /*
@@ -59,8 +60,8 @@ Nave::Nave(bool _godMode) : Unidade(0.0)
 void Nave::recria(int z, int nVidas)
 {
     /* Coordenadas iniciais */
-    x       = 0.0;
-    y       = Y_MAX/2;
+    x = 0.0;
+    y = Y_MAX/2;
     this->z = z;
 
     /* Aponta para o centro */
@@ -146,7 +147,7 @@ void Nave::dispara()
     double vz = k * this->vz;
 
     /* Cria projétil e o insere na lista */
-    Projetil bullet(this, vx, vy, vz, amigo);
+    Projetil bullet(*this, vx, vy, vz, amigo);
     Projetil::lista.insere(bullet);
 
     /* Reinicia contagem até próximo tiro */
@@ -181,9 +182,9 @@ void Nave::danifica(int dano)
 
 /*------------------------------------------------------------------*/
 
-void Nave::ativaItem(Item *item)
+void Nave::ativaItem(Item &item)
 {
-    switch (item->getTipo()) {
+    switch (item.getTipo()) {
     case TipoItem::HP:
         hp = std::min(hp + getHPMax()/4, getHPMax());
         break;
@@ -259,6 +260,6 @@ void Nave::aumentaScore(int aumento) { score += aumento; }
 
 void liberaNave()
 {
-    liberaTextura(&modelo);
-    liberaVertices(&modelo);
+    liberaTextura(modelo);
+    liberaVertices(modelo);
 }

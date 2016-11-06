@@ -49,12 +49,12 @@ private:
 
 public:
     /* Guarda a única nave do jogo */
-    static Nave *nave;
+    static Nave nave;
 
     /*
      *  Devolve a única nave do jogo.
      */
-    static Nave *get();
+    static Nave &get();
 
     /*
      *  Cria uma nave, alocando memória e carregando modelo do OpenGL.
@@ -96,7 +96,7 @@ public:
     /*
      *  Ativa o efeito de determinado item na nave.
      */
-    void ativaItem(Item *item);
+    void ativaItem(Item &item);
 
     /*
      *  Desenha a representação visual da nave na tela.

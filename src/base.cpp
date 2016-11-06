@@ -65,25 +65,25 @@ Corpo::Corpo(double z)
  *  cálculos chatos (como verificar se esfera está contida
  *  em extremos do cilindro). Então, simplificamos.
  */
-bool Corpo::colidiuCom(Corpo *that)
+bool Corpo::colidiuCom(Corpo &corpo)
 {
-    double dx = x - that->getX();
-    double dy = y - that->getY();
-    double dz = z - that->getZ();
-    double somaRaios = raio + that->raio;
+    double dx = x - corpo.getX();
+    double dy = y - corpo.getY();
+    double dz = z - corpo.getZ();
+    double somaRaios = raio + corpo.raio;
 
     /* Evita cálculos desnecessários */
     if (dx >= somaRaios or dz >= somaRaios) return false;
 
     /* Distância vertical deve ser menor que soma das semi-alutras.
        Circunferências horizontais devem ser secantes. */
-    return (abs(dy) < (altura + that->altura)/2
+    return (abs(dy) < (altura + corpo.altura)/2
                 and hypot(dx, dz) < somaRaios);
 }
 
 bool Corpo::saiu()
 {
-    double naveZ = Nave::get()->getZ();
+    double naveZ = Nave::get().getZ();
 
     /* O corpo saiu por um dos limites da tela (x, y ou z)?
        Caso a respostas seja sim, então o corpo saiu do jogo. */

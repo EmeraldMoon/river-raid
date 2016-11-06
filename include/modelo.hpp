@@ -38,21 +38,21 @@ struct Modelo
  *  Recebe um nome de arquivo contendo vértices.
  *  Carrega os vértices do arquivo para serem usados no modelo.
  */
-void leVertices(std::string nomeArq, Modelo *modelo);
+void leVertices(std::string nomeArq, Modelo &modelo);
 
 /*
  *  Recebe um nome de arquivo em formato PPM.
  *  Carrega a textura deste arquivo para a memória.
  *  mipmap indica se será usado o recurso de mipmapping.
  */
-void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo *modelo);
+void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo);
 
 /*
  *  Libera memória alocada para os vértices do modelo.
  */
-void liberaVertices(Modelo *modelo);
+void liberaVertices(Modelo &modelo);
 
 /*
  *  Libera textura atrelada ao OpenGL.
  */
-void liberaTextura(Modelo *modelo);
+void liberaTextura(Modelo &modelo);

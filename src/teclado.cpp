@@ -59,8 +59,8 @@ void keySpecialUp(int key, int x, int y)
 void keyOperations()
 {
     if ((keyStates[TECLA_TIRO] or keyStates[TECLA_TIRO2])
-            and Nave::get()->reduzEspera() <= 0) {
-        Nave::get()->dispara();
+            and Nave::get().reduzEspera() <= 0) {
+        Nave::get().dispara();
     }
 }
 
@@ -72,8 +72,8 @@ void keySpecialOperations()
     int sentidoHoriz = keySpecialStates[GLUT_KEY_RIGHT] -
                        keySpecialStates[GLUT_KEY_LEFT];
 
-    Nave::get()->atualizaVertical(sentidoVert);
-    Nave::get()->atualizaHorizontal(sentidoHoriz);
+    Nave::get().atualizaVertical(sentidoVert);
+    Nave::get().atualizaHorizontal(sentidoHoriz);
 }
 
 /*------------------------------------------------------------------*/

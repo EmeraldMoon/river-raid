@@ -80,7 +80,7 @@ public:
      *  Verifica se ocorreu colisão entre dois corpos.
      *  Os corpos são considerados cilíndricos, para facilitar.
      */
-    bool colidiuCom(Corpo *corpo);
+    bool colidiuCom(Corpo &corpo);
 
     /*
      *  Verifica se o corpo saiu por um dos limites da tela.
