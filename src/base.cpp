@@ -41,6 +41,11 @@ void Lista<T>::remove(T &objeto)
     vec.erase(vec.begin() + pos);
 }
 
+/* Indica quais tipos o template de Lista pode assumir */
+template class Lista<Inimigo>;
+template class Lista<Projetil>;
+template class Lista<Item>;
+
 /*---------------*
  |   C O R P O   |
  *---------------*--------------------------------------------------*/
@@ -78,7 +83,7 @@ bool Corpo::colidiuCom(Corpo *that)
 
 bool Corpo::saiu()
 {
-    double naveZ = Nave::getNave()->getZ();
+    double naveZ = Nave::get()->getZ();
 
     /* O corpo saiu por um dos limites da tela (x, y ou z)?
        Caso a respostas seja sim, então o corpo saiu do jogo. */
@@ -99,12 +104,9 @@ double Corpo::getAltura() { return altura; }
 
 Unidade::Unidade(double z) : Corpo(z) { }
 
+int Unidade::getHPMax()    { return hpMax;    }
 int Unidade::getHP()       { return hp;       }
 int Unidade::getCooldown() { return cooldown; }
 int Unidade::getEspera()   { return espera;   }
 
 int Unidade::reduzEspera() { return --espera; }
-
-template class Lista<Inimigo>;
-template class Lista<Projetil>;
-template class Lista<Item>;

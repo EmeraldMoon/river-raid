@@ -3,7 +3,6 @@
 
 #include "item.hpp"
 #include "random.hpp"
-#include "cenario.hpp"
 #include "grafico.hpp"
 #include "cores.hpp"
 
@@ -15,17 +14,15 @@ Lista<Item> Item::lista;
 
 Item::Item(double z) : Corpo(z)
 {
-    /* Escolhe o tipo aleatoriamente */
-    TipoItem tipo;
-    int sorte = uniforme(0, 100);
-    if      (sorte  < 60)                       return;
-    else if (60 <= sorte and sorte < 85) tipo =     HP;
-    else if (86 <= sorte and sorte < 96) tipo = ESCUDO;
-    else if (96 <= sorte)                tipo =   VIDA;
-
-    raio   = ITEM_RAIO;
+    raio   = 20.0;
     altura = 2 * raio;
-    tipo   = tipo;
+
+    /* Escolhe o tipo aleatoriamente */
+    int sorte = uniforme(0, 100);
+    if      (sorte  < 50)                return;
+    else if (50 <= sorte and sorte < 80) tipo = TipoItem::HP;
+    else if (80 <= sorte and sorte < 95) tipo = TipoItem::ESCUDO;
+    else if (95 <= sorte)                tipo = TipoItem::VIDA;
 }
 
 /*------------------------------------------------------------------*/
@@ -43,17 +40,17 @@ void Item::desenha()
     glRotated(rotacao, 1.0, 1.0, 1.0);
 
     switch(tipo) {
-    case HP:
+    case TipoItem::HP:
         setColorAlpha(LIGHT_GREEN, 230);
-        glutSolidCube(ITEM_RAIO);
+        glutSolidCube(raio);
         break;
-    case VIDA:
+    case TipoItem::VIDA:
         setColorAlpha(GOLD, 130);
-        glutSolidCube(ITEM_RAIO);
+        glutSolidCube(raio);
         break;
-    case ESCUDO:
+    case TipoItem::ESCUDO:
         setColorAlpha(DARK_BLUE, 130);
-        glutWireSphere(ITEM_RAIO, SLICES, STACKS);
+        glutWireSphere(raio, SLICES, STACKS);
         break;
     }
     glEnable(GL_TEXTURE_2D);

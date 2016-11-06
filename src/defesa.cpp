@@ -30,18 +30,14 @@ Lista<Inimigo> Inimigo::lista;
 
 Inimigo::Inimigo(double z) : Unidade(z)
 {
-    /* Posicionamento do corpo */
-    raio   = FOE_RAIO;
+    /* Dimensões do corpo */
+    raio   = 40.0;
     altura = 2 * y;
 
     /* Atributos restantes */
-    hp               = FOE_HPMAX;
-    cooldown         = espera = uniforme(80, 105);
-    precisao         = uniforme(0.8, 1.0);
-    danoColisao      = DANO_COLISAO;
-    pontosAcerto     = PONTOS_ACERTO;
-    pontosDestruicao = PONTOS_DESTRUICAO;
-    tempoDano        = 0;
+    hpMax = hp = uniforme(50, 100);
+    cooldown = espera = uniforme(50, 100);
+    precisao = uniforme(0.5, 1.0);
 }
 
 /*------------------------------------------------------------------*/
@@ -58,7 +54,7 @@ void Inimigo::dispara(Nave *nave)
     double d = norma(dx, dy, dz);
 
     /* Gera vetor velocidade na referida direção */
-    double k = BALA_VEL/d;
+    double k = Projetil::VEL_PADRAO/d;
     double vx = k * dx;
     double vy = k * dy;
     double vz = k * dz;
@@ -86,6 +82,7 @@ static void calculaAngulo(double *a, double *b, double desvio);
  */
 void Inimigo::aplicaPrecisao(double *dx, double *dy, double *dz)
 {
+    static constexpr double DESVIO_MAX = M_PI/8;
     double desvio = (1 - precisao) * DESVIO_MAX;
 
     calculaAngulo(dx, dz, desvio);  /* desvio horizontal */
@@ -110,7 +107,7 @@ static void calculaAngulo(double *d1, double *d2, double desvio)
 void Inimigo::danifica(int dano)
 {
     hp -= dano;
-    tempoDano = FOE_TEMPO_DANO;
+    tempoDano = 30;
 }
 
 /*------------------------------------------------------------------*/
@@ -143,10 +140,10 @@ void Inimigo::desenha()
 
 /*------------------------------------------------------------------*/
 
-double Inimigo::getPrecisao()         { return precisao;         }
-int    Inimigo::getDanoColisao()      { return danoColisao;      }
-int    Inimigo::getPontosAcerto()     { return pontosAcerto;     }
-int    Inimigo::getPontosDestruicao() { return pontosDestruicao; }
+int    Inimigo::getDanoColisao()      { return DANO_COLISAO;      }
+int    Inimigo::getPontosAcerto()     { return PONTOS_ACERTO;     }
+int    Inimigo::getPontosDestruicao() { return PONTOS_DESTRUICAO; }
+double Inimigo::getPrecisao()         { return precisao;          }
 
 /*------------------------------------------------------------------*/
 

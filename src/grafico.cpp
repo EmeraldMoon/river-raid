@@ -80,7 +80,7 @@ void inicializaJogo(int argc, char *argv[])
     /* Carrega modelos e listas */
     carregaCenario(godMode, debug);
 
-    nave = Nave::getNave();
+    nave = Nave::get();
 
     /* Passa controle do resto do jogo ao OpenGL */
     glutMainLoop();
@@ -97,13 +97,6 @@ static void desenha()
     /* Faz a limpeza dos buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-
-    /* Configura a luz ambiente.
-       No modo 1º pessoa, tela fica vermelha após dano. */
-    GLfloat k = estaEmPrimeiraPessoa() *
-                (1.5 * nave->getInvencibilidade()/INVENCIVEL_VIDA);
-    GLfloat luzTela[4] = {1.0f, 1.0f - k, 1.0f - k, 1.0f};
-    glLightfv(LUZ_AMBIENTE, GL_AMBIENT, luzTela);
 
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */
@@ -210,7 +203,7 @@ static void exibeHud()
     glEnd();
 
     /* A lifebar em si */
-    double r = (double) nave->getHP()/NAVE_HPMAX;
+    double r = (double) nave->getHP()/Nave::get()->getHPMax();
     GLdouble vertexLifebar[4][3] = {
         {                               x, y - 2*raio - 2, z },
         {                               x, y - 2*raio + 1, z },

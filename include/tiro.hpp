@@ -15,15 +15,6 @@
 
 /*------------------------------------------------------------------*/
 
-#define BALA_VEL   9  /* módulo da velocidade */
-#define BALA_DANO 15
-#define BALA_RAIO  3
-
-/* Desvio-padrão de mira caso precisão == 0 */
-#define DESVIO_MAX (M_PI/4)
-
-/*------------------------------------------------------------------*/
-
 /*
  *  Representa um projétil causador de dano.
  */
@@ -34,12 +25,15 @@ private:
     double vx, vy, vz;
 
     /* Energia removida do elemento em caso de acerto */
-    int dano;
+    int dano = 15;
 
     /* Indica se tiro foi disparado pela nave */
     bool amigo;
 
 public:
+    /* Módulo de velocidade padrão de um projétil */
+    static constexpr double VEL_PADRAO = 9.0;
+
     static Lista<Projetil> lista;
 
     /*
@@ -74,5 +68,6 @@ public:
     double getVx();
     double getVy();
     double getVz();
+    int    getDano();
     bool   isAmigo();
 };

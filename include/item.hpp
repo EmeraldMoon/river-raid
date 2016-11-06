@@ -12,19 +12,10 @@
 
 /*------------------------------------------------------------------*/
 
-/* Tempo de espera até criar um item */
-#define TEMPO_ITEM 240
-
-/* Atributos padrão */
-#define ITEM_RAIO 20
-
-/*------------------------------------------------------------------*/
-
 /*
  *  Enumerador para tipos de item.
  */
-/*enum class TipoItem*/
-enum TipoItem
+enum class TipoItem
 {
     HP, VIDA, ESCUDO
 };
@@ -38,7 +29,7 @@ private:
     /* Indica tipo do item
        - HP aumenta barra de energia da nave
        - VIDA aumenta número de vidas
-       - ESCUDO gera escudo provisória que toma parte do dano.
+       - ESCUDO gera escudo provisório que toma parte do dano.
     */
     TipoItem tipo;
 

@@ -104,8 +104,9 @@ public:
 class Unidade : public Corpo
 {
 protected:
-    /* Se (hp <= 0), elemento é destruído */
-    int hp;
+    /* Quantidade máxima e atual de HP.
+       Se hp == 0, elemento é destruído. */
+    int hpMax, hp;
 
     /* Timesteps de espera entre um tiro e outro.
        cooldown é fixo, espera é decrementada de cooldown até 0. */
@@ -118,6 +119,7 @@ public:
     Unidade(double z);
 
     /* Getters */
+    int getHPMax();
     int getHP();
     int getCooldown();
     int getEspera();

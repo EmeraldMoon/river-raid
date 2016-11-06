@@ -23,6 +23,10 @@
 /* Variação negativa de vy dos projéteis por timestep */
 #define ACEL_GRAVIDADE 0.005
 
+/* Tempo entre aparecimento de inimigos e itens */
+#define TEMPO_INIMIGOS 100
+#define TEMPO_ITEM     200
+
 /*-------------------------*
  |   P R O T Ó T I P O S   |
  *-------------------------*----------------------------------------*/

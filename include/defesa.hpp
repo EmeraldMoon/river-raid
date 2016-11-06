@@ -14,45 +14,29 @@
 
 /*------------------------------------------------------------------*/
 
-/* Tempo de espera até criar um inimigo */
-#define TEMPO_INIMIGOS 120
-
-/* Atributos padrão */
-#define FOE_HPMAX     80
-#define FOE_RAIO      40
-#define DANO_COLISAO  20
-
-/* Pontuação */
-#define PONTOS_ACERTO      100
-#define PONTOS_DESTRUICAO 1000
-
-/* Tempo que um inimigo pisca após ser acertado */
-#define FOE_TEMPO_DANO 30
-
-/*------------------------------------------------------------------*/
-
 /*
  *  Representa um inimigo (elemento de defesa).
  */
 class Inimigo : public Unidade
 {
 private:
-    void aplicaPrecisao(double *vx, double *vy, double *vz);
+    /* Dano causado à nave ao colidir com inimigo */
+    static constexpr int DANO_COLISAO = 20;
+
+    /* Pontuação conferida ao jogador em caso de acerto e destruição */
+    static constexpr int PONTOS_ACERTO     = 100;
+    static constexpr int PONTOS_DESTRUICAO = 1000;
 
     /* Chance (esperada) de um projétil disparado acertar a nave */
     double precisao;
 
-    /* Dano causado à nave ao colidir com inimigo */
-    int danoColisao;
-
-    /* Pontuação conferida ao jogador em caso de acerto e destruição */
-    int pontosAcerto;
-    int pontosDestruicao;
-
     /* Para fins visuais */
-    int tempoDano;
+    int tempoDano = 0;
+
+    void aplicaPrecisao(double *vx, double *vy, double *vz);
 
 public:
+
     static Lista<Inimigo> lista;
 
     /*
@@ -77,10 +61,10 @@ public:
     void desenha();
 
     /* Getters */
-    double getPrecisao();
     int    getDanoColisao();
     int    getPontosAcerto();
     int    getPontosDestruicao();
+    double getPrecisao();
 };
 
 /*------------------------------------------------------------------*/

@@ -11,20 +11,8 @@
 
 /*------------------------------------------------------------------*/
 
-/* Atributos iniciais e/ou fixos */
-#define NAVE_VIDAS    3
-#define NAVE_VEL      4
-#define NAVE_HPMAX  100
-#define NAVE_COOL     6
-#define NAVE_RAIO    20
-#define NAVE_ALTURA  40
-
 /* Ângulo de inclinação máxima da nave */
 #define ANG_MAX (M_PI/6)
-
-/* Nº de timesteps de invencibilidade */
-#define INVENCIVEL_DANO 30  /* ao ser atingida */
-#define INVENCIVEL_VIDA 90  /* ao perder uma vida */
 
 /*------------------------------------------------------------------*/
 
@@ -34,8 +22,14 @@
 class Nave : public Unidade
 {
 private:
+    /* Timesteps de invencibilidade a cada vida nova */
+    static constexpr int INVENCIVEL_VIDA = 90;
+
+    /* Inclinações em relação ao eixo Oz */
+    double angHoriz, angVert;
+
     /* Componentes de velocidade da nave */
-    double vx, vy, vz;
+    double vx, vy, vz = 4.0;
 
     /* Número de chances do jogador. Se 0, "game over". */
     int vidas;
@@ -47,24 +41,20 @@ private:
     int escudo;
 
     /* Pontuação do jogador */
-    int score;
+    int score = 0;
 
     void recria(int z, int nVidas);
 
-    void atualizaDirecao(double *ang);
+    void atualizaDirecao(double &d, int sentido);
 
 public:
     /* Guarda a única nave do jogo */
     static Nave *nave;
 
-    /* Inclinações em relação ao eixo Oz */
-    /* TEM QUE SER PRIVADO!!! */
-    double angHoriz, angVert;
-
     /*
      *  Devolve a única nave do jogo.
      */
-    static Nave *getNave();
+    static Nave *get();
 
     /*
      *  Cria uma nave, alocando memória e carregando modelo do OpenGL.
@@ -76,9 +66,14 @@ public:
      *  Atualiza a posição da nave em relação ao timestep anterior.
      *  As componentes horizontal e vertical são proporcionais
      *  à velocidade escalar da nave ao longo do eixo Oz.
-     *  Também reduz tempo de invencibilidade.
      */
     void move();
+
+    /*
+     *  Dado um certo sentido, atualiza ângulo de inclinação.
+     */
+    void atualizaHorizontal(int sentido);
+    void atualizaVertical(int sentido);
 
     /*
      *  Decrementa invencibilidade até um mínimo de zero.
@@ -109,6 +104,8 @@ public:
     void desenha();
 
     /* Getters */
+    int getAngHoriz();
+    int getAngVert();
     int getVidas();
     int getInvencibilidade();
     int getScore();

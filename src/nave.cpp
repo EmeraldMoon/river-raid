@@ -1,4 +1,5 @@
-#include <cmath>  /* tan, abs */
+#include <cmath>      /* tan, abs */
+#include <algorithm>  /* min */
 #include <GL/freeglut.h>
 
 #include "nave.hpp"
@@ -24,9 +25,9 @@ static bool godMode;
 
 Nave *Nave::nave;
 
-Nave *Nave::getNave()
+Nave *Nave::get()
 {
-    return Nave::nave;
+    return nave;
 }
 
 /*------------------------------------------------------------------*/
@@ -37,17 +38,15 @@ Nave::Nave(bool _godMode) : Unidade(0.0)
     leVertices("nave.vert", &modelo);
     carregaTextura("silver.ppm", false, &modelo);
 
-    raio     = NAVE_RAIO;
-    altura   = NAVE_ALTURA;
-    vz       = NAVE_VEL;
-    cooldown = NAVE_COOL;
-    score    = 0;
+    raio     = 20.0;
+    altura   = 40.0;
+    cooldown = 8;
 
     /* Define variável do módulo */
     godMode = _godMode;
 
-    /* Começa em z == 0.0 */
-    recria(0.0, NAVE_VIDAS);
+    /* Começa em z == 0.0 com 3 vidas */
+    recria(0.0, 3);
 
     /* Guarda nave no ponteiro do módulo */
     nave = this;
@@ -60,8 +59,8 @@ Nave::Nave(bool _godMode) : Unidade(0.0)
 void Nave::recria(int z, int nVidas)
 {
     /* Coordenadas iniciais */
-    x = 0.0;
-    y = Y_MAX/2;
+    x       = 0.0;
+    y       = Y_MAX/2;
     this->z = z;
 
     /* Aponta para o centro */
@@ -69,7 +68,7 @@ void Nave::recria(int z, int nVidas)
     angVert  = 0.0;
 
     vidas           = nVidas;
-    hp              = NAVE_HPMAX;
+    hpMax = hp      = 100;
     espera          = 0;
     invencibilidade = INVENCIVEL_VIDA;
     escudo          = 0;
@@ -93,36 +92,42 @@ void Nave::move()
     else if (x < -X_MAX + raio  ) x = -X_MAX + raio;
     if      (y >  Y_MAX - altura) y =  Y_MAX - altura;
     else if (y <      0 + altura) y =      0 + altura;
-
-    /* Direção tende a voltar ao centro */
-    atualizaDirecao(&(angHoriz));
-    atualizaDirecao(&(angVert));
 }
 
-void Nave::atualizaInvencibilidade()
+void Nave::atualizaHorizontal(int sentido)
 {
-    if (invencibilidade > 0) invencibilidade--;
+    atualizaDirecao(angHoriz, sentido);
+}
+
+void Nave::atualizaVertical(int sentido)
+{
+    atualizaDirecao(angVert, sentido);
+}
+
+/*
+ *  Recebe um ângulo de inclinação da nave e atualiza seu valor
+ *  em d graus, respeitando o limite de ANG_MAX. Caso chegue a 0°, direção é mantida.
+ */
+void Nave::atualizaDirecao(double &ang, int sentido)
+{
+    /* Taxas de alteração de ângulo por timestep */
+    static constexpr double ANG_MANUAL = ANG_MAX/20;  /* pelo usuário */
+    static constexpr double ANG_AUTO   = ANG_MAX/60;  /* automática */
+
+    /* Atualiza ângulo, evitando ultrapassar o limite */
+    ang += ANG_MANUAL * sentido;
+    if (abs(ang) > ANG_MAX) ang = ANG_MAX * sentido;
+
+    /* Tende a voltar para o centro */
+    if      (ang > 0.0) ang -= ANG_AUTO;
+    else if (ang < 0.0) ang += ANG_AUTO;
 }
 
 /*------------------------------------------------------------------*/
 
-/*
- *  Recebe um ponteiro para um ângulo de inclinação da nave e diminui
- *  seu valor em módulo. Caso chegue a 0°, direção é mantida.
- */
-void Nave::atualizaDirecao(double *ang)
+void Nave::atualizaInvencibilidade()
 {
-    /* Taxa de alteração automática por timestep */
-    static const double ANG_AUTO = ANG_MAX/60;
-
-    if (*ang > 0.0) {
-        *ang -= ANG_AUTO;
-        if (*ang < 0.0) *ang = 0.0;
-    }
-    else if (*ang < 0.0) {
-        *ang += ANG_AUTO;
-        if (*ang > 0.0) *ang = 0.0;
-    }
+    if (invencibilidade > 0) invencibilidade--;
 }
 
 /*------------------------------------------------------------------*/
@@ -135,7 +140,7 @@ void Nave::dispara()
     double modulo = norma(vx, vy, vz);
 
     /* Componentes da velocidade da bala são proporcionais à nave */
-    double k = BALA_VEL/modulo;
+    double k = Projetil::VEL_PADRAO/modulo;
     double vx = k * this->vx;
     double vy = k * this->vy;
     double vz = k * this->vz;
@@ -152,6 +157,8 @@ void Nave::dispara()
 
 void Nave::danifica(int dano)
 {
+    static constexpr int INVENCIVEL_DANO = 30;
+
     /* Se invencível neste instante, não toma dano */
     if (invencibilidade > 0 or godMode) return;
 
@@ -177,15 +184,14 @@ void Nave::danifica(int dano)
 void Nave::ativaItem(Item *item)
 {
     switch (item->getTipo()) {
-    case HP:
-        hp += NAVE_HPMAX/6;
-        if (hp > NAVE_HPMAX) hp = NAVE_HPMAX;
+    case TipoItem::HP:
+        hp = std::min(hp + getHPMax()/4, getHPMax());
         break;
-    case VIDA:
+    case TipoItem::VIDA:
         vidas++;
         break;
-    case ESCUDO:
-        escudo = 2 * NAVE_HPMAX;
+    case TipoItem::ESCUDO:
+        escudo = 2 * getHPMax();
         break;
     }
 }
@@ -206,8 +212,8 @@ void Nave::desenha()
         glPushMatrix();
         glTranslated(x, y, z);
         glRotated(rotacao, 1.0, 1.0, 0.0);
-        setColorAlpha(DARK_BLUE, 255 * escudo/(2.0 * NAVE_HPMAX));
-        glutWireSphere(1.75 * NAVE_RAIO, SLICES, STACKS);
+        setColorAlpha(DARK_BLUE, 255 * escudo/(2.0 * getHPMax()));
+        glutWireSphere(1.75 * raio, SLICES, STACKS);
         glPopMatrix();
     }
     glPushMatrix();
@@ -219,14 +225,18 @@ void Nave::desenha()
 
     setColorAlpha(3 * naveCor, 3 * naveCor, 0, 3 * naveCor);
     if (estaEmPrimeiraPessoa()) {
+        /* No modo 1º pessoa, tela fica vermelha após dano. */
+        GLfloat k = 1.5 * invencibilidade/INVENCIVEL_VIDA;
+        GLfloat luzTela[3] = {1.0f, 1.0f - k, 1.0f - k};
+        glLightfv(LUZ_AMBIENTE, GL_AMBIENT, luzTela);
+
         /* Exibe uma mira na tela */
         glutWireCone(0.25, 2, 4, 0); 
     }
     else {
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, modelo.texturaId);
-        glScaled(2 * raio, altura,
-                 2 * raio);
+        glScaled(2 * raio, altura, 2 * raio);
 
         /* Desenha os vértices do arquivo */
         glVertexPointer(3, GL_DOUBLE, 0, modelo.coords);
@@ -237,6 +247,8 @@ void Nave::desenha()
 
 /*------------------------------------------------------------------*/
 
+int Nave::getAngHoriz()        { return angHoriz;        }
+int Nave::getAngVert()         { return angVert;         }
 int Nave::getVidas()           { return vidas;           }
 int Nave::getInvencibilidade() { return invencibilidade; }
 int Nave::getScore()           { return score;           }

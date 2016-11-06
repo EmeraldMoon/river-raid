@@ -59,28 +59,21 @@ void keySpecialUp(int key, int x, int y)
 void keyOperations()
 {
     if ((keyStates[TECLA_TIRO] or keyStates[TECLA_TIRO2])
-            and Nave::getNave()->reduzEspera() <= 0) {
-        Nave::getNave()->dispara();
+            and Nave::get()->reduzEspera() <= 0) {
+        Nave::get()->dispara();
     }
 }
 
 void keySpecialOperations()
 {
-    /* Taxa de alteração de ângulo por comando do usuário */
-    static constexpr double ANG_MANUAL = ANG_MAX/20;
+    /* Faz operação entre booleanos para encontrar sentidos */
+    int sentidoVert = keySpecialStates[GLUT_KEY_UP] -
+                      keySpecialStates[GLUT_KEY_DOWN];
+    int sentidoHoriz = keySpecialStates[GLUT_KEY_RIGHT] -
+                       keySpecialStates[GLUT_KEY_LEFT];
 
-    Nave *nave = Nave::getNave();
-
-    if      (keySpecialStates[GLUT_KEY_UP])    nave->angVert  += ANG_MANUAL;
-    else if (keySpecialStates[GLUT_KEY_DOWN])  nave->angVert  -= ANG_MANUAL;
-    if      (keySpecialStates[GLUT_KEY_LEFT])  nave->angHoriz -= ANG_MANUAL;
-    else if (keySpecialStates[GLUT_KEY_RIGHT]) nave->angHoriz += ANG_MANUAL;
-
-    /* Ângulos devem permanecer no intervalo [-ANG_MAX, ANG_MAX] */
-    if      (nave->angVert  >  ANG_MAX) nave->angVert  =  ANG_MAX;
-    else if (nave->angVert  < -ANG_MAX) nave->angVert  = -ANG_MAX;
-    if      (nave->angHoriz >  ANG_MAX) nave->angHoriz =  ANG_MAX;
-    else if (nave->angHoriz < -ANG_MAX) nave->angHoriz = -ANG_MAX;
+    Nave::get()->atualizaVertical(sentidoVert);
+    Nave::get()->atualizaHorizontal(sentidoHoriz);
 }
 
 /*------------------------------------------------------------------*/
