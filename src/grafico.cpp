@@ -1,6 +1,7 @@
 #include <cstdio>   /* sprintf */
 #include <cstring>  /* strcmp */
 #include <cmath>    /* ceil */
+#include <memory>
 
 #include "grafico.hpp"
 #include "nave.hpp"
@@ -16,8 +17,8 @@
 /* Tamanho da tela */
 static int largura, altura;
 
-/* Ponteiro para acessar a nave neste módulo */
-static Nave &nave = Nave::get();
+/* Ponteiro (infelizmente) para acessar neste módulo */
+static Nave *nave;
 
 /* Funções perpétuas usadas pelo OpenGL */
 static void desenha();
@@ -34,7 +35,7 @@ static void exibeFps();
 void inicializaJogo(int argc, char *argv[])
 {
     /* Tratamento de argumentos via linha de comando */
-    bool godMode = false, debug = false, noDepth = false;;
+    bool godMode = false, debug = false, noDepth = false;
     for (int i = 0; i < argc; i++) {
         if      (strcmp(argv[i], "-iddqd") == 0) godMode = true;
         else if (strcmp(argv[i], "-d"    ) == 0)   debug = true;
@@ -78,7 +79,9 @@ void inicializaJogo(int argc, char *argv[])
     glutSpecialUpFunc(keySpecialUp);
 
     /* Carrega modelos e listas */
-    carregaCenario(godMode, debug);
+    Cenario(godMode, debug);
+
+    nave = &Cenario::get().nave;
 
     /* Passa controle do resto do jogo ao OpenGL */
     glutMainLoop();
@@ -99,16 +102,16 @@ static void desenha()
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */
     if (estaEmPrimeiraPessoa()) {
-        gluLookAt(nave.getX(), nave.getY(), nave.getZ(),
-                  nave.getX(), nave.getY(), nave.getZ() + Z_DIST,
+        gluLookAt(nave->getX(), nave->getY(), nave->getZ(),
+                  nave->getX(), nave->getY(), nave->getZ() + Cenario::Z_DIST,
                   0.0, 1.0, 0.0);
     } else {
-        gluLookAt(0.0, Y_MAX/2.0, nave.getZ() - DIST_CAMERA,
-                  0.0, Y_MAX/2.0, nave.getZ() + Z_DIST,
+        gluLookAt(0.0, Cenario::Y_MAX/2.0, nave->getZ() - DIST_CAMERA,
+                  0.0, Cenario::Y_MAX/2.0, nave->getZ() + Cenario::Z_DIST,
                   0.0, 1.0, 0.0);
     }
     /* Desenha cenário e elementos de jogo */
-    desenhaCenario();
+    Cenario::get().desenha();
 
     /* Desenha elementos fixos da tela */
     if (exibindoFPS()) exibeFps();
@@ -142,7 +145,7 @@ static void remodela(int width, int height)
     glScaled(-1.0, 1.0, 1.0);
 
     /* (ângulo de visão, proporção de tela, distâncias min e max) */
-    gluPerspective(90.0, (GLdouble) largura/altura, 1.0, Z_DIST);
+    gluPerspective(90.0, (GLdouble) largura/altura, 1.0, Cenario::Z_DIST);
 
     /* Volta ao modo original */
     glMatrixMode(GL_MODELVIEW);
@@ -151,7 +154,7 @@ static void remodela(int width, int height)
 /*------------------------------------------------------------------*/
 
 /* Constante de mudança de câmera (não pergunte como isso funciona) */
-#define constCamera 1/(-Y_MAX/(31/16.0 * altura) + 1)
+#define constCamera 1/(-Cenario::Y_MAX/(31/16.0 * altura) + 1)
 
 static void projecaoInicio();
 static void projecaoFim();
@@ -163,15 +166,15 @@ static void projecaoFim();
 static void exibeHud()
 {
     GLdouble raio = largura/75.0;
-    GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave.getX());
-    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave.getY()
+    GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave->getX());
+    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->getY()
                                         : 0.85 * altura * constCamera;
-    GLdouble z = nave.getZ() - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
+    GLdouble z = nave->getZ() - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
 
     projecaoInicio();
 
     /* Desenha vidas extras da nave */
-    for (int i = 0; i < nave.getVidas(); i++) {
+    for (int i = 0; i < nave->getVidas(); i++) {
         glBegin(GL_TRIANGLE_FAN);
         setColor(CYAN);
         glVertex3d(x + i * 3*raio,        y, z);
@@ -201,7 +204,7 @@ static void exibeHud()
     glEnd();
 
     /* A lifebar em si */
-    double r = (double) nave.getHP()/Nave::get().getHPMax();
+    double r = (double) nave->getHP()/nave->getHPMax();
     GLdouble vertexLifebar[4][3] = {
         {                               x, y - 2*raio - 2, z },
         {                               x, y - 2*raio + 1, z },
@@ -220,7 +223,7 @@ static void exibeHud()
 
     /* Imprime pontuação (e, se for o caso, mensagem de pausa) */
     unsigned char str[32];
-    sprintf((char *) str, "Score: %d %s", nave.getScore(),
+    sprintf((char *) str, "Score: %d %s", nave->getScore(),
                                           estaPausado() ? "(pausa)" : "");
     setColor(WHITE);
     glRasterPos3d(x, y - 2*raio - 25, z);
@@ -237,10 +240,10 @@ static void exibeFps()
 {
     static int fps, cont = 20;
 
-    GLdouble x = 0.88 * largura + (estaEmPrimeiraPessoa() * nave.getX());
-    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave.getY()
+    GLdouble x = 0.88 * largura + (estaEmPrimeiraPessoa() * nave->getX());
+    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->getY()
                                         : 0.85 * altura * constCamera;
-    GLdouble z = nave.getZ() - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
+    GLdouble z = nave->getZ() - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
 
     /* FPS só é alterado na tela a cada tantos timesteps */
     cont += getDelayTempo() * FPS/1000.0;

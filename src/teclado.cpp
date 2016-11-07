@@ -36,7 +36,7 @@ void keyPressed(unsigned char key, int x, int y)
     if (keyStates[TECLA_CAMERA]) primeiraPessoa = not primeiraPessoa;
     if (keyStates[TECLA_FPS])          exibeFPS = not exibeFPS;
     if (keyStates[TECLA_PAUSA])         pausado = not pausado;
-    if (keyStates[TECLA_SAIDA]) encerraJogo();
+    if (keyStates[TECLA_SAIDA]) Cenario::get().encerraJogo();
 }
  
 void keyUp(unsigned char key, int x, int y)
@@ -58,22 +58,21 @@ void keySpecialUp(int key, int x, int y)
 
 void keyOperations()
 {
-    if ((keyStates[TECLA_TIRO] or keyStates[TECLA_TIRO2])
-            and Nave::get().reduzEspera() <= 0) {
-        Nave::get().dispara();
-    }
-}
+    static Nave &nave = Cenario::get().nave;
 
-void keySpecialOperations()
-{
+    if ((keyStates[TECLA_TIRO] or keyStates[TECLA_TIRO2])
+            and nave.reduzEspera() <= 0) {
+        nave.dispara();
+    }
     /* Faz operação entre booleanos para encontrar sentidos */
     int sentidoVert = keySpecialStates[GLUT_KEY_UP] -
                       keySpecialStates[GLUT_KEY_DOWN];
     int sentidoHoriz = keySpecialStates[GLUT_KEY_RIGHT] -
                        keySpecialStates[GLUT_KEY_LEFT];
 
-    Nave::get().atualizaVertical(sentidoVert);
-    Nave::get().atualizaHorizontal(sentidoHoriz);
+    /* Atualiza direção */
+    nave.atualizaVertical(sentidoVert);
+    nave.atualizaHorizontal(sentidoHoriz);
 }
 
 /*------------------------------------------------------------------*/

@@ -12,44 +12,16 @@
 #include "modelo.hpp"
 #include "grafico.hpp"
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
-
-/* Modelos do cenário */
-static Modelo modeloRio;
-static Modelo modeloParede;
-static Modelo modeloFundo;
+/*---------------*
+ |   T E M P O   |
+ *---------------*--------------------------------------------------*/
 
 /* Guarda intervalo entre chamadas de controlaTempo() */
 static int dt;
 
-/* Indica se serão impressas informações de debug */
-static bool debug = false;
-
-/*-------------------*
- |   F U N Ç Õ E S   |
- *-------------------*----------------------------------------------*/
-
-void carregaCenario(bool godMode, bool _debug)
-{
-    /* Carrega listas e modelos */
-    new Nave(godMode);
-    carregaInimigos();
-
-    /* Texturas do cenário */
-    carregaTextura("water.ppm", true, modeloRio);
-    carregaTextura("brick.ppm", true, modeloParede);
-    carregaTextura("space.ppm", true, modeloFundo);
-    
-    debug = _debug;
-}
-
-/*------------------------------------------------------------------*/
-
 void controlaTempo(int aRespostaParaAVidaOUniversoETudoMais)
 {
-    static const int INTERVALO = 1000/FPS;
+    static constexpr int INTERVALO = 1000/FPS;
     static int t0 = 0, tExtra = 0;
 
     /* Obtém tempo desde última atualização */
@@ -68,7 +40,7 @@ void controlaTempo(int aRespostaParaAVidaOUniversoETudoMais)
     /* Caso tempo acumulado chegue a um ou mais frames inteiros, 
        faz a interpolação deles entre o anterior e o próximo desenho. */
     for (;;) {
-        if (not estaPausado()) atualizaCenario();
+        if (not estaPausado()) Cenario::get().atualiza();
         if (tExtra < INTERVALO) break;
         tExtra -= INTERVALO;
     }
@@ -84,34 +56,63 @@ int getDelayTempo()
     return dt;
 }
 
+/*-------------------*
+ |   C E N A R I O   |
+ *-------------------*----------------------------------------------*/
+
+Cenario *Cenario::cenario;
+
+Cenario &Cenario::get()
+{
+    return *cenario;
+}
+
 /*------------------------------------------------------------------*/
 
-static void imprimeElementos();
-
-void atualizaCenario()
+Cenario::Cenario(bool godMode, bool debug) : nave(Nave(godMode))
 {
+    /* Carrega listas e modelos */
+    carregaInimigos();
+
+    /* Texturas do cenário */
+    carregaTextura("water.ppm", true, modeloRio);
+    carregaTextura("brick.ppm", true, modeloParede);
+    carregaTextura("space.ppm", true, modeloFundo);
+    
+    this->debug = debug;
+
+    /* Passa valor à variável do singleton */
+    cenario = this;
+}
+
+/*------------------------------------------------------------------*/
+
+void Cenario::atualiza()
+{
+    /* Tempo entre aparecimento de inimigos e itens */
+    static constexpr int TEMPO_INIMIGOS = 100;
+    static constexpr int TEMPO_ITEM     = 200;
+
     static int contFoe  = TEMPO_INIMIGOS;
     static int contItem = TEMPO_ITEM;
 
     /* Reconhecimento do teclado */
     keyOperations();
-    keySpecialOperations();
 
     /* Ações relacionadas à nave */
-    Nave &nave = Nave::get();
     nave.move();
     nave.atualizaInvencibilidade();
 
     /* Loop para tratar de inimigos */
-    for (Inimigo &foe : Inimigo::lista) {
+    for (Inimigo &foe : inimigos) {
         if (nave.colidiuCom(foe)) {
             nave.danifica(foe.getDanoColisao());
         }
         if (foe.reduzEspera() <= 0) foe.dispara(nave);
-        if (foe.saiu()) Inimigo::lista.remove(foe);
+        if (foe.saiu()) inimigos.remove(foe);
     }
     /* Loop para tratar de projéteis */
-    for (Projetil &bullet : Projetil::lista) {
+    for (Projetil &bullet : projeteis) {
         bullet.move();
         bool morto = false;
         if (bullet.saiu()) morto = true;
@@ -122,42 +123,42 @@ void atualizaCenario()
             morto = true;
         }
         /* Verificação de colisão com algum inimigo */
-        for (Inimigo &foe : Inimigo::lista) {
+        for (Inimigo &foe : inimigos) {
             if (not bullet.colidiuCom(foe)) continue;
             if (bullet.isAmigo()) {
                 foe.danifica(bullet.getDano());
                 nave.aumentaScore(foe.getPontosAcerto());
                 if (foe.getHP() <= 0) {
-                    Inimigo::lista.remove(foe);
+                    inimigos.remove(foe);
                     nave.aumentaScore(foe.getPontosDestruicao());
                 }
             }
             morto = true;
         }
-        if (morto) Projetil::lista.remove(bullet);
+        if (morto) projeteis.remove(bullet);
     }
      /* Loop para tratar de itens */
-    for (Item &item : Item::lista) {
+    for (Item &item : itens) {
         if (nave.colidiuCom(item)) {
             nave.ativaItem(item);
-            Item::lista.remove(item);
+            itens.remove(item);
         }
         else if (item.saiu()) {
-            Item::lista.remove(item);
+            itens.remove(item);
         }
     }
     /* Gera inimigo ou item se contador chegar a zero */
     if (--contFoe <= 0) {
         Inimigo foe(nave.getZ() + Z_DIST);
-        Inimigo::lista.insere(foe);
+        inimigos.insere(foe);
         contFoe = TEMPO_INIMIGOS;
     }
     if (--contItem <= 0) {
         Item item(nave.getZ() + Z_DIST);
-        Item::lista.insere(item);
+        itens.insere(item);
         contItem = TEMPO_ITEM;
     }
-    if (debug) imprimeElementos();
+    if (debug) imprime();
 
     /* Se acabaram vidas, encerra o jogo */
     if (nave.getVidas() <= 0) encerraJogo();
@@ -167,7 +168,7 @@ void atualizaCenario()
  *  Mostra informação a respeito dos elementos do jogo no
  *  timestep atual. Usada para depuração.
  */
-static void imprimeElementos()
+void Cenario::imprime()
 {
     /* Limpa a tela do terminal/prompt */
     #ifdef __linux__
@@ -176,7 +177,6 @@ static void imprimeElementos()
         system("cls");
     #endif    
 
-    Nave &nave = Nave::get();
     puts("{Nave}");
     printf("PONTUAÇÂO: %d\n", nave.getScore());
     printf("VIDAS: %d\n", nave.getVidas());
@@ -189,7 +189,7 @@ static void imprimeElementos()
     puts("\n{Inimigos}");
     puts("    ( x, y, z)          Recarga    Precisão    Energia ");
     puts("-------------------     -------    --------   ---------");
-    for (Inimigo &foe : Inimigo::lista) {
+    for (Inimigo &foe : inimigos) {
         printf(" (%4.0f, %3.0f, %4.0f)       "
                "%2d/%3d       %3.0f%%       %2d/%2d\n",
                foe.getX(), foe.getY(), foe.getZ(),
@@ -199,7 +199,7 @@ static void imprimeElementos()
     puts("\n{Projéteis}");
     puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
     puts("-------------------    --------------------     --------");
-    for (Projetil &bullet : Projetil::lista) {
+    for (Projetil &bullet : projeteis) {
         printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
                bullet.getX(),  bullet.getY(),  bullet.getZ(),
                bullet.getVx(), bullet.getVy(), bullet.getVz(),
@@ -209,13 +209,7 @@ static void imprimeElementos()
 
 /*------------------------------------------------------------------*/
 
-static void desenhaFundo();
-static void desenhaRio();
-static void desenhaParede();
-static void desenhaSuperficie(GLuint texture, GLdouble coords[4][2],
-                              GLdouble vertex[4][3]);
-
-void desenhaCenario()
+void Cenario::desenha()
 {
     /* Ativa opções para desenho de objetos */
     glEnable(GL_TEXTURE_2D);
@@ -227,16 +221,10 @@ void desenhaCenario()
     desenhaFundo();
     
     /* Desenha elementos dinâmicos do jogo */
-    for (Inimigo &foe : Inimigo::lista) {
-        foe.desenha();
-    }
-    for (Projetil &bullet : Projetil::lista) {
-        bullet.desenha();
-    }
-    for (Item &item : Item::lista) {
-        item.desenha();
-    }
-    Nave::get().desenha();
+    for (Inimigo  &foe    :  inimigos)    foe.desenha();
+    for (Projetil &bullet : projeteis) bullet.desenha();
+    for (Item     &item   :     itens)   item.desenha();
+    Cenario::get().nave.desenha();
 
     /* Desativa opções para não prejudicar desenho de hud e etc */
     glDisable(GL_TEXTURE_2D);
@@ -247,9 +235,9 @@ void desenhaCenario()
  *  Desenha o "chão" do cenário, o limite inferior do jogo.
  *  Simula uma sensação de movimento com o correr do rio.
  */
-static void desenhaRio()
+void Cenario::desenhaRio()
 {
-    GLdouble z = Nave::get().getZ()/768.0;  /* 512 + 256 */
+    GLdouble z = nave.getZ()/768.0;  /* 512 + 256 */
 
     GLdouble coords[4][2] = {
         { 0.0, 4.0 + z }, { 4.0, 4.0 + z },
@@ -268,9 +256,9 @@ static void desenhaRio()
  *  Desenha as paredes que limitam lateralmente o jogo, 
  *  atribuindo-lhes uma textura e também produzindo movimento.
  */
-static void desenhaParede()
+void Cenario::desenhaParede()
 {
-    GLdouble z = Nave::get().getZ()/192.0;  /* 128 + 64 */
+    GLdouble z = nave.getZ()/192.0;  /* 128 + 64 */
 
     GLdouble coords[4][2] = {
         {        z, 1.0 },
@@ -296,7 +284,7 @@ static void desenhaParede()
 /*
  *  Desenha o plano de fundo, atribuindo-lhe uma textura.
  */
-static void desenhaFundo()
+void Cenario::desenhaFundo()
 {
     GLdouble coords[4][2] = {
         { 0.0, 1.0 }, { 4.0, 1.0 },
@@ -317,11 +305,11 @@ static void desenhaFundo()
  *    - texturaId: inteiro representando a textura;
  *    - coords: coordenadas da textura.
  */
-static void desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
+void Cenario::desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
                               GLdouble vertices[4][3])
 {
     glPushMatrix();
-    glTranslated(0.0, 0.0, Nave::get().getZ() - DIST_CAMERA);
+    glTranslated(0.0, 0.0, nave.getZ() - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, texturaId);
 
     glBegin(GL_QUADS); 
@@ -336,10 +324,8 @@ static void desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
 
 /*------------------------------------------------------------------*/
 
-void encerraJogo()
+void Cenario::encerraJogo()
 {
-    int score = Nave::get().getScore();
-
     /* Libera elementos do jogo */
     liberaNave();
     liberaInimigos();
@@ -350,6 +336,6 @@ void encerraJogo()
     liberaTextura(modeloFundo);
 
     /* Mostra score e dá adeus */
-    printf("Score final: %d\n", score);
+    printf("Score final: %d\n", nave.getScore());
     exit(EXIT_SUCCESS);
 }

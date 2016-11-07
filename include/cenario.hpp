@@ -9,32 +9,14 @@
 
 #include <GL/freeglut.h>
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
+#include "base.hpp"
+#include "nave.hpp"
+#include "defesa.hpp"
+#include "tiro.hpp"
+#include "item.hpp"
+#include "modelo.hpp"
 
-/* Coordenadas máximas da área de jogo. */
-#define X_MAX 360
-#define Y_MAX 200
-
-/* Distância máxima visível */
-#define Z_DIST 3000
-
-/* Variação negativa de vy dos projéteis por timestep */
-#define ACEL_GRAVIDADE 0.005
-
-/* Tempo entre aparecimento de inimigos e itens */
-#define TEMPO_INIMIGOS 100
-#define TEMPO_ITEM     200
-
-/*-------------------------*
- |   P R O T Ó T I P O S   |
- *-------------------------*----------------------------------------*/
-
-/*
- *  Inicializa listas e carrega modelos e texturas para a memória.
- */
-void carregaCenario(bool godMode, bool debug);
+/*------------------------------------------------------------------*/
 
 /*
  *  Faz a chamada das funções de atualização e desenho, além de
@@ -53,22 +35,74 @@ void controlaTempo(int unused);
  */
 int getDelayTempo();
 
-/*
- *  Cuida direta ou indiretamente de tudo que compõe o cenário,
- *  sendo responsável por atualizar posições, tratar interações
- *  entre objetos e encerrar o jogo quando cabível.
- */
-void atualizaCenario();
+/*------------------------------------------------------------------*/
 
-/*
- *  Desenha todos os elementos do cenário, desde os meramente
- *  visuais (rio, paredes e fundo) até os objetos do jogo
- *  (nave, inimigos, tiros e itens).
- */
-void desenhaCenario();
+class Cenario
+{
+private:
+    /* Ponto de acesso à classe (singleton) */
+    static Cenario *cenario;
 
-/*
- *  Libera toda a memória alocada para as listas,
- *  texturas e vértices e encerra execução do jogo.
- */
-void encerraJogo();
+    /* Modelos do cenário */
+    Modelo modeloRio;
+    Modelo modeloParede;
+    Modelo modeloFundo;
+
+    /* Indica se serão impressas informações de debug */
+    bool debug;
+
+    void imprime();
+
+    void desenhaFundo();
+    void desenhaRio();
+    void desenhaParede();
+    void desenhaSuperficie(GLuint texture, GLdouble coords[4][2],
+                           GLdouble vertex[4][3]);
+
+public:
+    /* Coordenadas máximas da área de jogo. */
+    static constexpr double X_MAX = 360.0;
+    static constexpr double Y_MAX = 200.0;
+
+    /* Distância máxima visível */
+    static constexpr double Z_DIST = 3000.0;
+
+    /* Variação negativa de vy dos projéteis por timestep */
+    static constexpr double ACEL_GRAVIDADE = 0.01;
+
+    /* Elementos dinâmicos do jogo */
+    Nave nave;
+    Lista<Inimigo>  inimigos;
+    Lista<Projetil> projeteis;
+    Lista<Item>     itens;
+
+    /* 
+     *  Devolve única instância de classe.
+     */ 
+    static Cenario &get();
+
+    /*
+     *  Carrega modelos e texturas para a memória.
+     */
+    Cenario(bool godMode, bool debug);
+
+    /*
+     *  Cuida direta ou indiretamente de tudo que compõe o cenário,
+     *  sendo responsável por atualizar posições, tratar interações
+     *  entre objetos e encerrar o jogo quando cabível.
+     */
+    void atualiza();
+
+    /*
+     *  Desenha todos os elementos do cenário, desde os meramente
+     *  visuais (rio, paredes e fundo) até os objetos do jogo
+     *  (nave, inimigos, tiros e itens).
+     */
+    void desenha();
+
+    /*
+     *  Libera toda a memória alocada para as listas,
+     *  texturas e vértices e encerra execução do jogo.
+     */
+    void encerraJogo();
+};

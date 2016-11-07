@@ -21,11 +21,10 @@ void keySpecialPressed(int key, int x, int y);
 void keySpecialUp(int key, int x, int y);
 
 /*
- *  Funções usadas para teclas que necessitam ser verificadas
+ *  Função usada para ações que necessitam ser verificadas
  *  continuamente, como disparo e movimentação da nave.
  */
 void keyOperations();
-void keySpecialOperations();
 
 /*
  *  Devolvem condições auto-explicativas.

@@ -26,8 +26,6 @@ void carregaInimigos()
 
 /*------------------------------------------------------------------*/
 
-Lista<Inimigo> Inimigo::lista;
-
 Inimigo::Inimigo(double z) : Unidade(z)
 {
     /* Dimensões do corpo */
@@ -64,7 +62,7 @@ void Inimigo::dispara(Nave &nave)
 
     /* Cria projétil e o insere na lista */
     Projetil bullet(*this, vx, vy, vz, amigo);
-    Projetil::lista.insere(bullet);
+    Cenario::get().projeteis.insere(bullet);
 
     /* Reinicia contagem até próximo tiro */
     espera = cooldown;

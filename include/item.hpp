@@ -34,8 +34,6 @@ private:
     TipoItem tipo;
 
 public:
-    static Lista<Item> lista;
-
     /*
      *  Cria um item na distância z, de posição horizontal e
      *  tipo aleatórios. Cada tipo de item possui uma

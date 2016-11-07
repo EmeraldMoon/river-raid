@@ -34,8 +34,6 @@ public:
     /* Módulo de velocidade padrão de um projétil */
     static constexpr double VEL_PADRAO = 9.0;
 
-    static Lista<Projetil> lista;
-
     /*
      *  Constrói um projétil tomando como base uma unidade, um vetor
      *  velocidade (vx, vy, vz) e um booleano amigo indicando se foi

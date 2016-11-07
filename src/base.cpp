@@ -54,8 +54,8 @@ Corpo::Corpo() { }
 
 Corpo::Corpo(double z)
 {
-    x = X_MAX * uniforme(-0.88, 0.88);
-    y = uniforme(Y_MAX/8, Y_MAX/2);
+    x = Cenario::X_MAX * uniforme(-0.88, 0.88);
+    y = uniforme(Cenario::Y_MAX/8, Cenario::Y_MAX/2);
     this->z = z;
 }
 
@@ -83,13 +83,13 @@ bool Corpo::colidiuCom(Corpo &corpo)
 
 bool Corpo::saiu()
 {
-    double naveZ = Nave::get().getZ();
+    double naveZ = Cenario::get().nave.getZ();
 
     /* O corpo saiu por um dos limites da tela (x, y ou z)?
        Caso a respostas seja sim, então o corpo saiu do jogo. */
-    return (abs(x) > X_MAX)
+    return (abs(x) > Cenario::X_MAX)
         or (y < 0)
-        or (z < naveZ - DIST_CAMERA or z > naveZ + Z_DIST);
+        or (z < naveZ - DIST_CAMERA or z > naveZ + Cenario::Z_DIST);
 }
 
 double Corpo::getX()      { return x;      }

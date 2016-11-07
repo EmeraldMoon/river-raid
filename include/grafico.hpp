@@ -17,7 +17,7 @@
 #define LUZ_AMBIENTE GL_LIGHT0
 
 /* Dimensões da janela (widescreen por padrão) */
-#define JANELA_LARGURA 3 * X_MAX
+#define JANELA_LARGURA 3 * Cenario::X_MAX
 #define JANELA_ALTURA  JANELA_LARGURA/16.0 * 9
 
 /* Número de quadros desenhados por segundo */

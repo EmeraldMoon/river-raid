@@ -10,8 +10,6 @@
  |   P R O J E T I L   |
  *---------------------*--------------------------------------------*/
 
-Lista<Projetil> Projetil::lista;
-
 Projetil::Projetil(Unidade &uni, double vx, double vy, double vz,
                    bool amigo)
 {
@@ -36,7 +34,7 @@ Projetil::Projetil(Unidade &uni, double vx, double vy, double vz,
 void Projetil::move()
 {
     /* Efeito da gravidade */
-    vy -= ACEL_GRAVIDADE;
+    vy -= Cenario::ACEL_GRAVIDADE;
 
     x += vx;
     y += vy;

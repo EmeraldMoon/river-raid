@@ -16,24 +16,11 @@
 /* Modelo da nave */
 static Modelo modelo;
 
-/* Booleano que define invencibilidade perpétua */
-static bool godMode;
-
 /*-------------*
  |   N A V E   |
  *-------------*----------------------------------------------------*/
 
-/* Provisório? */
-Nave Nave::nave(false);
-
-Nave &Nave::get()
-{
-    return nave;
-}
-
-/*------------------------------------------------------------------*/
-
-Nave::Nave(bool _godMode) : Unidade(0.0)
+Nave::Nave(bool godMode) : Unidade(0.0)
 {
     /* Carrega modelo da nave */
     leVertices("nave.vert", modelo);
@@ -43,14 +30,11 @@ Nave::Nave(bool _godMode) : Unidade(0.0)
     altura   = 40.0;
     cooldown = 8;
 
-    /* Define variável do módulo */
-    godMode = _godMode;
-
     /* Começa em z == 0.0 com 3 vidas */
     recria(0.0, 3);
 
-    /* Guarda nave no ponteiro do módulo */
-    nave = *this;
+    /* Nobody can stop hell */
+    if (godMode) invencibilidade = -666;
 }
 
 /*
@@ -61,7 +45,7 @@ void Nave::recria(int z, int nVidas)
 {
     /* Coordenadas iniciais */
     x = 0.0;
-    y = Y_MAX/2;
+    y = Cenario::Y_MAX/2;
     this->z = z;
 
     /* Aponta para o centro */
@@ -89,9 +73,9 @@ void Nave::move()
     z += vz;
 
     /* Impede que nave ultrapasse os limites do cenário */
-    if      (x >  X_MAX - raio  ) x =  X_MAX - raio;
-    else if (x < -X_MAX + raio  ) x = -X_MAX + raio;
-    if      (y >  Y_MAX - altura) y =  Y_MAX - altura;
+    if      (x >  Cenario::X_MAX - raio  ) x =  Cenario::X_MAX - raio;
+    else if (x < -Cenario::X_MAX + raio  ) x = -Cenario::X_MAX + raio;
+    if      (y >  Cenario::Y_MAX - altura) y =  Cenario::Y_MAX - altura;
     else if (y <      0 + altura) y =      0 + altura;
 }
 
@@ -111,6 +95,9 @@ void Nave::atualizaVertical(int sentido)
  */
 void Nave::atualizaDirecao(double &ang, int sentido)
 {
+    /* Ângulo máximo de inclinação */
+    static constexpr double ANG_MAX = M_PI/6;
+
     /* Taxas de alteração de ângulo por timestep */
     static constexpr double ANG_MANUAL = ANG_MAX/20;  /* pelo usuário */
     static constexpr double ANG_AUTO   = ANG_MAX/60;  /* automática */
@@ -148,7 +135,7 @@ void Nave::dispara()
 
     /* Cria projétil e o insere na lista */
     Projetil bullet(*this, vx, vy, vz, amigo);
-    Projetil::lista.insere(bullet);
+    Cenario::get().projeteis.insere(bullet);
 
     /* Reinicia contagem até próximo tiro */
     espera = cooldown;
@@ -161,7 +148,7 @@ void Nave::danifica(int dano)
     static constexpr int INVENCIVEL_DANO = 30;
 
     /* Se invencível neste instante, não toma dano */
-    if (invencibilidade > 0 or godMode) return;
+    if (invencibilidade > 0 or invencibilidade == -666) return;
 
     if (escudo > 0) {
         hp     -=     dano/3;

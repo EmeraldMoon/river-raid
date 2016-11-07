@@ -10,8 +10,6 @@
  |   I T E M   |
  *-------------*----------------------------------------------------*/
 
-Lista<Item> Item::lista;
-
 Item::Item(double z) : Corpo(z)
 {
     raio   = 20.0;

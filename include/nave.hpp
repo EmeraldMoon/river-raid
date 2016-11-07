@@ -11,11 +11,6 @@
 
 /*------------------------------------------------------------------*/
 
-/* Ângulo de inclinação máxima da nave */
-#define ANG_MAX (M_PI/6)
-
-/*------------------------------------------------------------------*/
-
 /*
  *  Representa a nave do jogador.
  */
@@ -48,14 +43,6 @@ private:
     void atualizaDirecao(double &d, int sentido);
 
 public:
-    /* Guarda a única nave do jogo */
-    static Nave nave;
-
-    /*
-     *  Devolve a única nave do jogo.
-     */
-    static Nave &get();
-
     /*
      *  Cria uma nave, alocando memória e carregando modelo do OpenGL.
      *  Se godMode, então ela será eternamente invencível.

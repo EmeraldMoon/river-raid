@@ -36,9 +36,6 @@ private:
     void aplicaPrecisao(double &vx, double &vy, double &vz);
 
 public:
-
-    static Lista<Inimigo> lista;
-
     /*
      *  Cria um novo inimigo na pósição z do cenário.
      */

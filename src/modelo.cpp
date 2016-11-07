@@ -21,7 +21,7 @@ void leVertices(std::string nomeArq, Modelo &modelo)
     std::ifstream arq(caminho);
     if (arq.fail()) {
         perror("leVertices()");
-        encerraJogo();
+        Cenario::get().encerraJogo();
     }
     /* Obtém número de linhas do arquivo */
     GLsizei n = std::count(std::istreambuf_iterator<char>(arq),
@@ -50,7 +50,7 @@ void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo)
     std::ifstream arq(caminho);
     if (arq.fail()) {
         perror("carregaTextura()");
-        encerraJogo();
+        Cenario::get().encerraJogo();
     }
     /* Faz verificação da chave mágica */
     std::string aux;
@@ -114,7 +114,7 @@ static void erro(std::ifstream &arq, std::string caminho)
 {
     fprintf(stderr, "carregaTextura(): "
             "%s arquivo com formato inválido.\n", caminho.c_str());
-    encerraJogo();
+    Cenario::get().encerraJogo();
 }
 
 /*------------------------------------------------------------------*/
