@@ -10,9 +10,6 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#include <cstdlib>  /* srand */
-#include <ctime>    /* time */
-
 #include "grafico.hpp"
 
 /*----------------*
@@ -21,12 +18,6 @@
 
 int main(int argc, char *argv[])
 {
-    /* Inicializa gerador de números pseudoaleatórios */
-    srand(time(NULL));
-    
     /* OpenGL cuidará do resto */
     inicializaJogo(argc, argv);
-
-    /* Campanha: adote este return. Ele é inútil. */
-    return EXIT_SUCCESS;
 }

@@ -19,7 +19,7 @@ all: $(BINDIR)/$(BIN)
 
 $(BINDIR)/$(BIN): $(OBJ) | $(BINDIR)
 	$(CPPC) $^ $(LIBS) -o $@
-	@echo "\033[1m> Generating C++ binary \033[32m"$@"\033[0m."
+	@echo "\033[1m> Generating C++ binary \033[32m"$@"\033[0m"
 
 $(OBJ): | $(OBJDIR)
 
