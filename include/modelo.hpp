@@ -44,11 +44,6 @@ void leVertices(std::string nomeArq, Modelo &modelo);
 void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo);
 
 /*
- *  Libera memória alocada para os vértices do modelo.
- */
-void liberaVertices(Modelo &modelo);
-
-/*
  *  Libera textura atrelada ao OpenGL.
  */
 void liberaTextura(Modelo &modelo);

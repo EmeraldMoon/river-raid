@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <vector>
+#include <list>
 
 /*------------------------------------------------------------------*/
 
@@ -26,14 +26,14 @@ template<typename T>
 class Lista {
 private:
     /* Container que é a lista em si */
-    std::vector<T> vec;
+    std::list<T> list;
 
 public:
     /*
      *  Métodos iteradores, necessários para usar ranged for.
      */
-    typename std::vector<T>::iterator begin();
-    typename std::vector<T>::iterator end();
+    typename std::list<T>::iterator begin();
+    typename std::list<T>::iterator   end();
 
     /*
      *  Insere novo objeto na lista.
@@ -41,9 +41,10 @@ public:
     void insere(T &objeto);
 
     /*
-     *  Remove objeto da lista.
+     *  Remove objeto apontado atualmente pelo iterador 'it'.
+     *  Retrocede iterador ao item anterior ao excluído.
      */
-    void remove(T &objeto);
+    void remove(typename std::list<T>::iterator &it);
 };
 
 /*------------------------------------------------------------------*/

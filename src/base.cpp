@@ -1,5 +1,6 @@
-#include <cmath>      /* hypot */
-#include <algorithm>  /* find */
+#include <cmath>  /* hypot */
+#include <list>
+#include <algorithm>
 
 #include "base.hpp"
 #include "random.hpp"
@@ -15,33 +16,30 @@
  *---------------*--------------------------------------------------*/
 
 template<typename T>
-typename std::vector<T>::iterator Lista<T>::begin()
+typename std::list<T>::iterator Lista<T>::begin()
 {
-    return vec.begin();
+    return list.begin();
 }
 
 template<typename T>
-typename std::vector<T>::iterator Lista<T>::end()
+typename std::list<T>::iterator Lista<T>::end()
 {
-    return vec.end();
+    return list.end();
 }
 
 template<typename T>
 void Lista<T>::insere(T &objeto)
 {
-    vec.push_back(objeto);
+    list.push_back(objeto);
 }
 
 template<typename T>
-void Lista<T>::remove(T &objeto)
+void Lista<T>::remove(typename std::list<T>::iterator &it)
 {
-    /* Só é possível obter a posição deste jeito pois, por padrão,
-       std::vector guarda seus elementos contiguamente na memória. */
-    int pos = &objeto - &vec[0];
-    vec.erase(vec.begin() + pos);
+    it = --list.erase(it);
 }
 
-/* Indica quais tipos o template de Lista pode assumir */
+/* Indica quais classes o template de Lista pode assumir */
 template class Lista<Inimigo>;
 template class Lista<Projetil>;
 template class Lista<Item>;

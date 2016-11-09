@@ -104,17 +104,19 @@ void Cenario::atualiza()
     nave.atualizaInvencibilidade();
 
     /* Loop para tratar de inimigos */
-    for (auto &foe : inimigos) {
+    for (auto it = inimigos.begin(); it != inimigos.end(); it++) {
+        auto &foe = *it;
         if (nave.colidiuCom(foe)) {
             nave.danifica(foe.getDanoColisao());
         }
         if (foe.reduzEspera() <= 0) foe.dispara(nave);
-        if (foe.saiu()) inimigos.remove(foe);
+        if (foe.saiu()) inimigos.remove(it);
     }
     /* Loop para tratar de projéteis */
-    for (auto &bullet : projeteis) {
-        bullet.move();
+    for (auto it = projeteis.begin(); it != projeteis.end(); it++) {
+        auto &bullet = *it;
         bool morto = false;
+        bullet.move();
         if (bullet.saiu()) morto = true;
 
         /* Verificação de colisão com nave */
@@ -123,28 +125,30 @@ void Cenario::atualiza()
             morto = true;
         }
         /* Verificação de colisão com algum inimigo */
-        for (auto &foe : inimigos) {
+        for (auto it = inimigos.begin(); it != inimigos.end(); it++) {
+            auto &foe = *it;
             if (not bullet.colidiuCom(foe)) continue;
             if (bullet.isAmigo()) {
                 foe.danifica(bullet.getDano());
                 nave.aumentaScore(foe.getPontosAcerto());
                 if (foe.getHP() <= 0) {
-                    inimigos.remove(foe);
+                    inimigos.remove(it);
                     nave.aumentaScore(foe.getPontosDestruicao());
                 }
             }
             morto = true;
         }
-        if (morto) projeteis.remove(bullet);
+        if (morto) projeteis.remove(it);
     }
      /* Loop para tratar de itens */
-    for (auto &item : itens) {
+    for (auto it = itens.begin(); it != itens.end(); it++) {
+        auto &item = *it;
         if (nave.colidiuCom(item)) {
             nave.ativaItem(item);
-            itens.remove(item);
+            itens.remove(it);
         }
         else if (item.saiu()) {
-            itens.remove(item);
+            itens.remove(it);
         }
     }
     /* Gera inimigo ou item se contador chegar a zero */
@@ -221,9 +225,9 @@ void Cenario::desenha()
     desenhaFundo();
     
     /* Desenha elementos dinâmicos do jogo */
-    for (Inimigo  &foe    :  inimigos)    foe.desenha();
-    for (Projetil &bullet : projeteis) bullet.desenha();
-    for (Item     &item   :     itens)   item.desenha();
+    for (auto &foe    :  inimigos)    foe.desenha();
+    for (auto &bullet : projeteis) bullet.desenha();
+    for (auto &item   :     itens)   item.desenha();
     Cenario::get().nave.desenha();
 
     /* Desativa opções para não prejudicar desenho de hud e etc */
@@ -275,7 +279,7 @@ void Cenario::desenhaParede()
     desenhaSuperficie(modeloParede.texturaId, coords, vertex);
 
     /* Troca o sinal das coordenadas x, para desenhar a outra parede */
-    for (int i = 0; i < 4; i++) {
+    for (GLsizei i = 0; i < 4; i++) {
         vertex[i][0] *= -1;
     }
     desenhaSuperficie(modeloParede.texturaId, coords, vertex);
@@ -306,14 +310,14 @@ void Cenario::desenhaFundo()
  *    - coords: coordenadas da textura.
  */
 void Cenario::desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
-                              GLdouble vertices[4][3])
+                                GLdouble vertices[4][3])
 {
     glPushMatrix();
     glTranslated(0.0, 0.0, nave.getZ() - DIST_CAMERA);
     glBindTexture(GL_TEXTURE_2D, texturaId);
 
     glBegin(GL_QUADS); 
-    for (int i = 0; i < 4; i++) {
+    for (GLsizei i = 0; i < 4; i++) {
         glTexCoord2dv(coords[i]);
         glVertex3dv(vertices[i]);
     } 
