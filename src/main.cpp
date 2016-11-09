@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------*
  |                                                                  |
  |  Módulo principal do projeto.                                    |
- |  Inicializa o programa e chama o loop do glut.                   |
+ |  Tão vazio quanto o significado de nossa existência.             |
  |                                                                  |
  |  Uso: ./bin/River [-iddqd] [-d]                                  |
  |      -iddqd: ativa godMode, nave fica invencível;                |
@@ -18,6 +18,6 @@
 
 int main(int argc, char *argv[])
 {
-    /* OpenGL cuidará do resto */
+    /* OpenGL e inicialização */
     inicializaJogo(argc, argv);
 }

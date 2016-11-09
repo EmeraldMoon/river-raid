@@ -1,11 +1,11 @@
-#include <cstdio>     /* perror */
+#include <array>
 #include <string>
 #include <fstream>    /* ifstream */
 #include <algorithm>  /* count */
+#include <iostream>
 #include <GL/freeglut.h>
 
 #include "modelo.hpp"
-#include "base.hpp"
 #include "cenario.hpp"
 
 /*-------------------*
@@ -18,9 +18,10 @@ void leVertices(std::string nomeArq, Modelo &modelo)
     std::string caminho = std::string(MODEL_DIR) + "/" + nomeArq;
 
     /* Abre o arquivo */
-    std::ifstream arq(caminho);
-    if (arq.fail()) {
-        perror("leVertices()");
+    std::ifstream arq;
+    try { arq.open(caminho); }
+    catch (...) {
+        std::cerr << "Erro ao abrir arquivo " << caminho << "\n";
         Cenario::get().encerraJogo();
     }
     /* Obtém número de linhas do arquivo */
@@ -29,17 +30,14 @@ void leVertices(std::string nomeArq, Modelo &modelo)
     arq.seekg(0);
 
     /* Lê todas as coordenadas */
-    modelo.coords = new GLdouble[3 * n];
-    for (GLsizei i = 0; i < 3 * n; i++) {
-        arq >> modelo.coords[i];
-    }
-    modelo.numVertices = n;
+    modelo.coords.resize(3 * n);
+    for (auto &coord : modelo.coords) arq >> coord;
 }
 
 /*------------------------------------------------------------------*/
 
 static void ignoraComentario(std::ifstream &arq);
-static void erro(std::ifstream &arq, std::string nomeArq);
+static void erro(std::ifstream &arq, std::string &nomeArq);
 
 void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo)
 {
@@ -47,9 +45,10 @@ void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo)
     std::string caminho = std::string(TEXTURE_DIR) + "/" + nomeArq;
 
     /* Abre o arquivo */
-    std::ifstream arq(caminho);
-    if (arq.fail()) {
-        perror("carregaTextura()");
+    std::ifstream arq;
+    try { arq.open(caminho); }
+    catch (...) {
+        std::cerr << "Erro ao abrir arquivo " << caminho << "\n";
         Cenario::get().encerraJogo();
     }
     /* Faz verificação da chave mágica */
@@ -61,17 +60,11 @@ void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo)
     GLsizei altura, largura;
     ignoraComentario(arq);
     arq >> altura >> largura;
-    arq.ignore();
-
-    /* Obtém nº de bytes no restante do arquivo */
-    long pos = arq.tellg();
-    arq.seekg(0, std::ios_base::end);
-    GLsizei n = arq.tellg() - pos;
-    arq.seekg(pos + 1, std::ios_base::beg);
+    arq.ignore(2);
 
     /* Lê dados para uma string */
-    GLubyte *dados = new GLubyte[n];
-    arq.read((char *) dados, n);
+    std::vector<GLubyte> dados(3 * largura * altura);
+    for (auto &dado : dados) dado = arq.get();
 
     /* Gera e guarda identificador de textura */
     glGenTextures(1, &modelo.texturaId);
@@ -82,13 +75,12 @@ void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                         GL_LINEAR_MIPMAP_LINEAR);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, largura, altura,
-                          GL_RGB, GL_UNSIGNED_BYTE, dados);
+                          GL_RGB, GL_UNSIGNED_BYTE, dados.data());
     } else {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, largura, altura,
-                     0, GL_RGB, GL_UNSIGNED_BYTE, dados);
+                     0, GL_RGB, GL_UNSIGNED_BYTE, dados.data());
     }
-    delete[] dados;
 }
 
 /*
@@ -110,7 +102,7 @@ static void ignoraComentario(std::ifstream &arq)
 /*
  *  Fecha o programa quando a textura não é um arquivo PPM.
  */
-static void erro(std::ifstream &arq, std::string caminho)
+static void erro(std::ifstream &arq, std::string &caminho)
 {
     fprintf(stderr, "carregaTextura(): "
             "%s arquivo com formato inválido.\n", caminho.c_str());
@@ -118,11 +110,6 @@ static void erro(std::ifstream &arq, std::string caminho)
 }
 
 /*------------------------------------------------------------------*/
-
-void liberaVertices(Modelo &modelo)
-{
-    delete[] modelo.coords;
-}
 
 void liberaTextura(Modelo &modelo)
 {

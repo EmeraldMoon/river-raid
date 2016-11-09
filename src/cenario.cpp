@@ -104,7 +104,7 @@ void Cenario::atualiza()
     nave.atualizaInvencibilidade();
 
     /* Loop para tratar de inimigos */
-    for (Inimigo &foe : inimigos) {
+    for (auto &foe : inimigos) {
         if (nave.colidiuCom(foe)) {
             nave.danifica(foe.getDanoColisao());
         }
@@ -112,7 +112,7 @@ void Cenario::atualiza()
         if (foe.saiu()) inimigos.remove(foe);
     }
     /* Loop para tratar de projéteis */
-    for (Projetil &bullet : projeteis) {
+    for (auto &bullet : projeteis) {
         bullet.move();
         bool morto = false;
         if (bullet.saiu()) morto = true;
@@ -123,7 +123,7 @@ void Cenario::atualiza()
             morto = true;
         }
         /* Verificação de colisão com algum inimigo */
-        for (Inimigo &foe : inimigos) {
+        for (auto &foe : inimigos) {
             if (not bullet.colidiuCom(foe)) continue;
             if (bullet.isAmigo()) {
                 foe.danifica(bullet.getDano());
@@ -138,7 +138,7 @@ void Cenario::atualiza()
         if (morto) projeteis.remove(bullet);
     }
      /* Loop para tratar de itens */
-    for (Item &item : itens) {
+    for (auto &item : itens) {
         if (nave.colidiuCom(item)) {
             nave.ativaItem(item);
             itens.remove(item);
@@ -189,7 +189,7 @@ void Cenario::imprime()
     puts("\n{Inimigos}");
     puts("    ( x, y, z)          Recarga    Precisão    Energia ");
     puts("-------------------     -------    --------   ---------");
-    for (Inimigo &foe : inimigos) {
+    for (auto &foe : inimigos) {
         printf(" (%4.0f, %3.0f, %4.0f)       "
                "%2d/%3d       %3.0f%%       %2d/%2d\n",
                foe.getX(), foe.getY(), foe.getZ(),
@@ -199,7 +199,7 @@ void Cenario::imprime()
     puts("\n{Projéteis}");
     puts("     ( x, y, z)            [ vx, vy, vz]         Amigo? ");
     puts("-------------------    --------------------     --------");
-    for (Projetil &bullet : projeteis) {
+    for (auto &bullet : projeteis) {
         printf(" (%4.0f, %3.0f, %4.0f)      [%4.1f, %4.1f, %5.1f]        %s\n",
                bullet.getX(),  bullet.getY(),  bullet.getZ(),
                bullet.getVx(), bullet.getVy(), bullet.getVz(),

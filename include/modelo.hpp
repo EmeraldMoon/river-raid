@@ -7,11 +7,10 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <GL/freeglut.h>
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
+/*------------------------------------------------------------------*/
 
 /* Diretórios para modelos e texturas */
 #define   MODEL_DIR   "model"
@@ -22,17 +21,14 @@
  */
 struct Modelo
 {
-    /* Vetor de coordenadas de vértices e número deles */
-    GLdouble *coords;
-    GLsizei numVertices;
-
     /* Identificador de textura */
     GLuint texturaId;
+
+    /* Vetor de coordenadas de vértices */
+    std::vector<GLdouble> coords;
 };
 
-/*-------------------------*
- |   P R O T Ó T I P O S   |
- *-------------------------*----------------------------------------*/
+/*------------------------------------------------------------------*/
 
 /*
  *  Recebe um nome de arquivo contendo vértices.

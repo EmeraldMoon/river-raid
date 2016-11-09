@@ -33,9 +33,9 @@ Inimigo::Inimigo(double z) : Unidade(z)
     altura = 2 * y;
 
     /* Atributos restantes */
-    hpMax = hp = uniforme(50, 100);
+    hpMax    = hp     = uniforme(50, 100);
     cooldown = espera = uniforme(50, 100);
-    precisao = uniforme(0.5, 1.0);
+    precisao          = uniforme(0.5, 1.0);
 }
 
 /*------------------------------------------------------------------*/
@@ -128,8 +128,8 @@ void Inimigo::desenha()
     glScaled(16 * raio, altura, 16 * raio);
 
     /* Desenha modelo baseado em vértices e normais */
-    glVertexPointer(3, GL_DOUBLE, 0, modelo.coords);
-    glDrawArrays(GL_TRIANGLES, 0, modelo.numVertices);
+    glVertexPointer(3, GL_DOUBLE, 0, modelo.coords.data());
+    glDrawArrays(GL_TRIANGLES,    0, modelo.coords.size()/3);
 
     glDisable(GL_TEXTURE_GEN_S);
     glDisable(GL_TEXTURE_GEN_T);
@@ -148,5 +148,4 @@ double Inimigo::getPrecisao()         { return precisao;          }
 void liberaInimigos()
 {
     liberaTextura(modelo);
-    liberaVertices(modelo);
 }

@@ -227,8 +227,8 @@ void Nave::desenha()
         glScaled(2 * raio, altura, 2 * raio);
 
         /* Desenha os vértices do arquivo */
-        glVertexPointer(3, GL_DOUBLE, 0, modelo.coords);
-        glDrawArrays(GL_TRIANGLES, 0, modelo.numVertices);
+        glVertexPointer(3, GL_DOUBLE, 0, modelo.coords.data());
+        glDrawArrays(GL_TRIANGLES,    0, modelo.coords.size()/3);
     }
     glPopMatrix();
 }
@@ -248,5 +248,4 @@ void Nave::aumentaScore(int aumento) { score += aumento; }
 void liberaNave()
 {
     liberaTextura(modelo);
-    liberaVertices(modelo);
 }
