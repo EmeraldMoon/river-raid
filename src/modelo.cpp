@@ -9,40 +9,20 @@
 #include "cenario.hpp"
 
 /*-------------------*
- |   F U N Ç Õ E S   |
+ |   T E X T U R A   |
  *-------------------*----------------------------------------------*/
 
-void leVertices(std::string nomeArq, Modelo &modelo)
-{
-    /* Caminho do arquivo de modelo */
-    std::string caminho = std::string(MODEL_DIR) + "/" + nomeArq;
-
-    /* Abre o arquivo */
-    std::ifstream arq;
-    try { arq.open(caminho); }
-    catch (...) {
-        std::cerr << "Erro ao abrir arquivo " << caminho << "\n";
-        Cenario::get().encerraJogo();
-    }
-    /* Obtém número de linhas do arquivo */
-    GLsizei n = std::count(std::istreambuf_iterator<char>(arq),
-                           std::istreambuf_iterator<char>(), '\n');
-    arq.seekg(0);
-
-    /* Lê todas as coordenadas */
-    modelo.coords.resize(3 * n);
-    for (auto &coord : modelo.coords) arq >> coord;
-}
+constexpr char Textura::DIR[];
 
 /*------------------------------------------------------------------*/
 
 static void ignoraComentario(std::ifstream &arq);
 static void erro(std::ifstream &arq, std::string &nomeArq);
 
-void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo)
+Textura::Textura(std::string nomeArq, GLboolean mipmap)
 {
     /* Caminho do arquivo de textura */
-    std::string caminho = std::string(TEXTURE_DIR) + "/" + nomeArq;
+    std::string caminho = std::string(DIR) + "/" + nomeArq;
 
     /* Abre o arquivo */
     std::ifstream arq;
@@ -67,8 +47,8 @@ void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo)
     for (auto &dado : dados) dado = arq.get();
 
     /* Gera e guarda identificador de textura */
-    glGenTextures(1, &modelo.texturaId);
-    glBindTexture(GL_TEXTURE_2D, modelo.texturaId);
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
 
     /* Carrega os dados (pixels) da textura */
     if (mipmap) {
@@ -111,7 +91,38 @@ static void erro(std::ifstream &arq, std::string &caminho)
 
 /*------------------------------------------------------------------*/
 
-void liberaTextura(Modelo &modelo)
+void Textura::ativa() const
 {
-    glDeleteTextures(1, &modelo.texturaId);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, id);
+}
+
+/*-----------------*
+ |   M O D E L O   |
+ *-----------------*------------------------------------------------*/
+
+constexpr char Modelo::DIR[];
+
+/*------------------------------------------------------------------*/
+
+Modelo::Modelo(std::string nomeArq)
+{
+    /* Caminho do arquivo de modelo */
+    std::string caminho = std::string(DIR) + "/" + nomeArq;
+
+    /* Abre o arquivo */
+    std::ifstream arq;
+    try { arq.open(caminho); }
+    catch (...) {
+        std::cerr << "Erro ao abrir arquivo " << caminho << "\n";
+        Cenario::get().encerraJogo();
+    }
+    /* Obtém número de linhas do arquivo */
+    GLsizei n = std::count(std::istreambuf_iterator<char>(arq),
+                           std::istreambuf_iterator<char>(), '\n');
+    arq.seekg(0);
+
+    /* Lê todas as coordenadas */
+    coords.resize(3 * n);
+    for (auto &coord : coords) arq >> coord;
 }

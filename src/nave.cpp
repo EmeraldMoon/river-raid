@@ -11,21 +11,25 @@
 #include "grafico.hpp"
 #include "cores.hpp"
 
-/*------------------------------------------------------------------*/
-
-/* Modelo da nave */
-static Modelo modelo;
-
 /*-------------*
  |   N A V E   |
  *-------------*----------------------------------------------------*/
 
+const Modelo Nave::modelo = Modelo("nave.vert");
+
+Textura &Nave::getTextura()
+{
+    /* Este é um truque para atrasar a inicialização do membro
+       estático. Caso contrário, gerar-se-iam texturas antes da
+       criação do contexto de janela, resultando no problema de id == 0. */
+    static Textura textura("silver.ppm", false);
+    return textura;
+}
+
+/*------------------------------------------------------------------*/
+
 Nave::Nave(bool godMode) : Unidade(0.0)
 {
-    /* Carrega modelo da nave */
-    leVertices("nave.vert", modelo);
-    carregaTextura("silver.ppm", false, modelo);
-
     raio     = 20.0;
     altura   = 40.0;
     cooldown = 8;
@@ -222,8 +226,7 @@ void Nave::desenha()
         glutWireCone(0.25, 2, 4, 0); 
     }
     else {
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, modelo.texturaId);
+        getTextura().ativa();
         glScaled(2 * raio, altura, 2 * raio);
 
         /* Desenha os vértices do arquivo */
@@ -242,10 +245,3 @@ int Nave::getInvencibilidade() { return invencibilidade; }
 int Nave::getScore()           { return score;           }
 
 void Nave::aumentaScore(int aumento) { score += aumento; }
-
-/*------------------------------------------------------------------*/
-
-void liberaNave()
-{
-    liberaTextura(modelo);
-}
