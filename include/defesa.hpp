@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "base.hpp"
+#include "modelo.hpp"
 #include "nave.hpp"
 
 /*------------------------------------------------------------------*/
@@ -33,9 +34,14 @@ private:
     /* Para fins visuais */
     int tempoDano = 0;
 
+    static Textura &getTextura();
+
     void aplicaPrecisao(double &vx, double &vy, double &vz);
 
 public:
+    /* Modelo comum dos inimigos */
+    static const Modelo modelo;
+
     /*
      *  Cria um novo inimigo na pósição z do cenário.
      */
@@ -71,8 +77,3 @@ public:
  *  Cria lista de inimigos.
  */
 void carregaInimigos();
-
-/*
- *  Libera memória alocada para os inimigos.
- */
-void liberaInimigos();

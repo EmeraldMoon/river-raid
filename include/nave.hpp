@@ -7,6 +7,7 @@
 #pragma once
 
 #include "base.hpp"
+#include "modelo.hpp"
 #include "item.hpp"
 
 /*------------------------------------------------------------------*/
@@ -38,11 +39,16 @@ private:
     /* Pontuação do jogador */
     int score = 0;
 
+    static Textura &getTextura();
+
     void recria(int z, int nVidas);
 
     void atualizaDirecao(double &d, int sentido);
 
 public:
+    /* Modelo da nave */
+    static const Modelo modelo;
+
     /*
      *  Cria uma nave, alocando memória e carregando modelo do OpenGL.
      *  Se godMode, então ela será eternamente invencível.
@@ -100,10 +106,3 @@ public:
     /* Setters */
     void aumentaScore(int aumento);
 };
-
-/*------------------------------------------------------------------*/
-
-/*
- *  Libera memória alocada para a nave.
- */
-void liberaNave();

@@ -56,6 +56,32 @@ int getDelayTempo()
     return dt;
 }
 
+/*-------------------------*
+ |   S U P E R F I C I E   |
+ *-------------------------*----------------------------------------*/
+
+Superficie::Superficie(std::string nomeTextura)
+    : textura(Textura(nomeTextura, true))
+{
+    /* -- To be continued --> */
+}
+
+void Superficie::desenha(GLdouble coords[4][2], GLdouble vertices[4][3])
+{
+    glPushMatrix();
+    glTranslated(0.0, 0.0, Cenario::get().nave.getZ() - DIST_CAMERA);
+    textura.ativa();
+
+    glBegin(GL_QUADS); 
+    for (GLsizei i = 0; i < 4; i++) {
+        glTexCoord2dv(coords[i]);
+        glVertex3dv(vertices[i]);
+    } 
+    glEnd();
+
+    glPopMatrix();
+}
+
 /*-------------------*
  |   C E N A R I O   |
  *-------------------*----------------------------------------------*/
@@ -69,16 +95,10 @@ Cenario &Cenario::get()
 
 /*------------------------------------------------------------------*/
 
-Cenario::Cenario(bool godMode, bool debug) : nave(Nave(godMode))
+Cenario::Cenario(bool godMode, bool debug) :
+    rio("water.ppm"), parede("brick.ppm"), fundo("space.ppm"),
+    nave(Nave(godMode))
 {
-    /* Carrega listas e modelos */
-    carregaInimigos();
-
-    /* Texturas do cenário */
-    carregaTextura("water.ppm", true, modeloRio);
-    carregaTextura("brick.ppm", true, modeloParede);
-    carregaTextura("space.ppm", true, modeloFundo);
-    
     this->debug = debug;
 
     /* Passa valor à variável do singleton */
@@ -168,6 +188,107 @@ void Cenario::atualiza()
     if (nave.getVidas() <= 0) encerraJogo();
 }
 
+/*------------------------------------------------------------------*/
+
+void Cenario::desenha()
+{
+    /* Ativa buffer de profundidade para desenho de objetos */
+    glEnable(GL_DEPTH_TEST);
+
+    /* Desenha elementos estáticos do cenário */
+    desenhaRio();
+    desenhaParede();
+    desenhaFundo();
+    
+    /* Desenha elementos dinâmicos do jogo */
+    nave.desenha();
+    for (auto &foe    :  inimigos)    foe.desenha();
+    for (auto &bullet : projeteis) bullet.desenha();
+    for (auto &item   :     itens)   item.desenha();
+
+    /* Desativa opção para não prejudicar desenho de hud e etc */
+    glDisable(GL_DEPTH_TEST);
+}
+
+/*
+ *  Desenha o "chão" do cenário, o limite inferior do jogo.
+ *  Simula uma sensação de movimento com o correr do rio.
+ */
+void Cenario::desenhaRio()
+{
+    GLdouble z = nave.getZ()/768.0;  /* 512 + 256 */
+
+    GLdouble coords[4][2] = {
+        { 0.0, 4.0 + z }, { 4.0, 4.0 + z },
+        { 4.0,     + z }, { 0.0,     + z }
+    };
+    GLdouble vertex[4][3] = {
+        { -X_MAX, 0.0, DIST_CAMERA + Z_DIST },
+        {  X_MAX, 0.0, DIST_CAMERA + Z_DIST },
+        {  X_MAX, 0.0,                  0.0 },
+        { -X_MAX, 0.0,                  0.0 }
+    };
+    rio.desenha(coords, vertex);
+}
+
+/*
+ *  Desenha as paredes que limitam lateralmente o jogo, 
+ *  atribuindo-lhes uma textura e também produzindo movimento.
+ */
+void Cenario::desenhaParede()
+{
+    GLdouble z = nave.getZ()/192.0;  /* 128 + 64 */
+
+    GLdouble coords[4][2] = {
+        {        z, 1.0 },
+        { 16.0 + z, 1.0 },
+        { 16.0 + z, 0.0 },
+        {        z, 0.0 }
+    };
+    GLdouble vertex[4][3] = {
+        { -X_MAX, Y_MAX, 0.0 },
+        { -X_MAX, Y_MAX, DIST_CAMERA + Z_DIST },
+        { -X_MAX,   0.0, DIST_CAMERA + Z_DIST },
+        { -X_MAX,   0.0, 0.0 }
+    };
+    parede.desenha(coords, vertex);
+
+    /* Troca o sinal das coordenadas x, para desenhar a outra parede */
+    for (GLsizei i = 0; i < 4; i++) {
+        vertex[i][0] *= -1;
+    }
+    parede.desenha(coords, vertex);
+}
+
+/*
+ *  Desenha o plano de fundo, atribuindo-lhe uma textura.
+ */
+void Cenario::desenhaFundo()
+{
+    GLdouble coords[4][2] = {
+        { 0.0, 1.0 }, { 4.0, 1.0 },
+        { 4.0, 0.0 }, { 0.0, 0.0 }
+    };
+    GLdouble vertex[4][3] = {
+        { -35 * X_MAX, 20 * Y_MAX, 0.0 },
+        {  35 * X_MAX, 20 * Y_MAX, 0.0 },
+        {  35 * X_MAX,        0.0, 0.0 },
+        { -35 * X_MAX,        0.0, 0.0 }
+    };
+    fundo.desenha(coords, vertex);
+}
+
+/*------------------------------------------------------------------*/
+
+void Cenario::encerraJogo()
+{
+    /* Mostra score e dá adeus */
+    printf("Score final: %d\n", nave.getScore());
+    exit(EXIT_SUCCESS);
+}
+
+/*------------------------------------------------------------------*/
+
 /*
  *  Mostra informação a respeito dos elementos do jogo no
  *  timestep atual. Usada para depuração.
@@ -211,135 +332,3 @@ void Cenario::imprime()
     }
 }
 
-/*------------------------------------------------------------------*/
-
-void Cenario::desenha()
-{
-    /* Ativa opções para desenho de objetos */
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_DEPTH_TEST);
-
-    /* Desenha elementos estáticos do cenário */
-    desenhaRio();
-    desenhaParede();
-    desenhaFundo();
-    
-    /* Desenha elementos dinâmicos do jogo */
-    for (auto &foe    :  inimigos)    foe.desenha();
-    for (auto &bullet : projeteis) bullet.desenha();
-    for (auto &item   :     itens)   item.desenha();
-    Cenario::get().nave.desenha();
-
-    /* Desativa opções para não prejudicar desenho de hud e etc */
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_DEPTH_TEST);
-}
-
-/*
- *  Desenha o "chão" do cenário, o limite inferior do jogo.
- *  Simula uma sensação de movimento com o correr do rio.
- */
-void Cenario::desenhaRio()
-{
-    GLdouble z = nave.getZ()/768.0;  /* 512 + 256 */
-
-    GLdouble coords[4][2] = {
-        { 0.0, 4.0 + z }, { 4.0, 4.0 + z },
-        { 4.0,     + z }, { 0.0,     + z }
-    };
-    GLdouble vertex[4][3] = {
-        { -X_MAX, 0.0, DIST_CAMERA + Z_DIST },
-        {  X_MAX, 0.0, DIST_CAMERA + Z_DIST },
-        {  X_MAX, 0.0,                  0.0 },
-        { -X_MAX, 0.0,                  0.0 }
-    };
-    desenhaSuperficie(modeloRio.texturaId, coords, vertex);
-}
-
-/*
- *  Desenha as paredes que limitam lateralmente o jogo, 
- *  atribuindo-lhes uma textura e também produzindo movimento.
- */
-void Cenario::desenhaParede()
-{
-    GLdouble z = nave.getZ()/192.0;  /* 128 + 64 */
-
-    GLdouble coords[4][2] = {
-        {        z, 1.0 },
-        { 16.0 + z, 1.0 },
-        { 16.0 + z, 0.0 },
-        {        z, 0.0 }
-    };
-    GLdouble vertex[4][3] = {
-        { -X_MAX, Y_MAX, 0.0 },
-        { -X_MAX, Y_MAX, DIST_CAMERA + Z_DIST },
-        { -X_MAX,   0.0, DIST_CAMERA + Z_DIST },
-        { -X_MAX,   0.0, 0.0 }
-    };
-    desenhaSuperficie(modeloParede.texturaId, coords, vertex);
-
-    /* Troca o sinal das coordenadas x, para desenhar a outra parede */
-    for (GLsizei i = 0; i < 4; i++) {
-        vertex[i][0] *= -1;
-    }
-    desenhaSuperficie(modeloParede.texturaId, coords, vertex);
-}
-
-/*
- *  Desenha o plano de fundo, atribuindo-lhe uma textura.
- */
-void Cenario::desenhaFundo()
-{
-    GLdouble coords[4][2] = {
-        { 0.0, 1.0 }, { 4.0, 1.0 },
-        { 4.0, 0.0 }, { 0.0, 0.0 }
-    };
-    GLdouble vertex[4][3] = {
-        { -35 * X_MAX, 20 * Y_MAX, 0.0 },
-        {  35 * X_MAX, 20 * Y_MAX, 0.0 },
-        {  35 * X_MAX,        0.0, 0.0 },
-        { -35 * X_MAX,        0.0, 0.0 }
-    };
-    desenhaSuperficie(modeloFundo.texturaId, coords, vertex);
-}
-
-/*
- *  Faz o desenho de uma superfície quadrilateral na tela.
- *    - vertices: indica os vértices da superfície;
- *    - texturaId: inteiro representando a textura;
- *    - coords: coordenadas da textura.
- */
-void Cenario::desenhaSuperficie(GLuint texturaId, GLdouble coords[4][2],
-                                GLdouble vertices[4][3])
-{
-    glPushMatrix();
-    glTranslated(0.0, 0.0, nave.getZ() - DIST_CAMERA);
-    glBindTexture(GL_TEXTURE_2D, texturaId);
-
-    glBegin(GL_QUADS); 
-    for (GLsizei i = 0; i < 4; i++) {
-        glTexCoord2dv(coords[i]);
-        glVertex3dv(vertices[i]);
-    } 
-    glEnd();
-
-    glPopMatrix();
-}
-
-/*------------------------------------------------------------------*/
-
-void Cenario::encerraJogo()
-{
-    /* Libera elementos do jogo */
-    liberaNave();
-    liberaInimigos();
-
-    /* Libera texturas do cenário */
-    liberaTextura(modeloRio);
-    liberaTextura(modeloParede);
-    liberaTextura(modeloFundo);
-
-    /* Mostra score e dá adeus */
-    printf("Score final: %d\n", nave.getScore());
-    exit(EXIT_SUCCESS);
-}

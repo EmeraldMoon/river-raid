@@ -37,27 +37,47 @@ int getDelayTempo();
 
 /*------------------------------------------------------------------*/
 
+class Superficie
+{
+private:
+    /* Textura da superfície */
+    Textura textura;
+
+public:
+    /*
+     *  Cria uma superfície com textura contida em determinado arquivo.
+     */
+    Superficie(std::string nomeTextura);
+
+    /*
+     *  Faz o desenho da superfície quadrilateral na tela.
+     *    - coords: coordenadas da textura.
+     *    - vertices: indica os vértices da superfície;
+     */
+    void desenha(GLdouble coords[4][2], GLdouble vertex[4][3]);
+};
+
+/*------------------------------------------------------------------*/
+
 class Cenario
 {
 private:
     /* Ponto de acesso à classe (singleton) */
     static Cenario *cenario;
 
-    /* Modelos do cenário */
-    Modelo modeloRio;
-    Modelo modeloParede;
-    Modelo modeloFundo;
+    /* Superfícies texturizadas do cenário */
+    Superficie rio;
+    Superficie parede;
+    Superficie fundo;
 
     /* Indica se serão impressas informações de debug */
     bool debug;
 
-    void imprime();
-
     void desenhaFundo();
     void desenhaRio();
     void desenhaParede();
-    void desenhaSuperficie(GLuint texture, GLdouble coords[4][2],
-                           GLdouble vertex[4][3]);
+
+    void imprime();
 
 public:
     /* Coordenadas máximas da área de jogo. */

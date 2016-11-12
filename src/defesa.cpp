@@ -8,20 +8,16 @@
 #include "modelo.hpp"
 #include "cores.hpp"
 
-/*------------------------------------------------------------------*/
-
-/* Modelo da nave */
-static Modelo modelo;
-
 /*-------------------*
  |   I N I M I G O   |
  *-------------------*----------------------------------------------*/
 
-void carregaInimigos()
+const Modelo  Inimigo::modelo  = Modelo("defesa.vert");
+
+Textura &Inimigo::getTextura()
 {
-    /* Carrega modelo da nave */
-    leVertices("defesa.vert", modelo);
-    carregaTextura("magma.ppm", false, modelo);
+    static Textura textura("magma.ppm", false);
+    return textura;
 }
 
 /*------------------------------------------------------------------*/
@@ -120,8 +116,7 @@ void Inimigo::desenha()
 
     /* Aplica cor e textura */
     setColor(WHITE);
-    glBindTexture(GL_TEXTURE_2D,
-                  (tempoDano == 0) ? modelo.texturaId : 0);
+    if (tempoDano == 0) getTextura().ativa();
 
     /* Posiciona e dimensiona inimigo */
     glTranslated(x, 0.0, z);
@@ -142,10 +137,3 @@ int    Inimigo::getDanoColisao()      { return DANO_COLISAO;      }
 int    Inimigo::getPontosAcerto()     { return PONTOS_ACERTO;     }
 int    Inimigo::getPontosDestruicao() { return PONTOS_DESTRUICAO; }
 double Inimigo::getPrecisao()         { return precisao;          }
-
-/*------------------------------------------------------------------*/
-
-void liberaInimigos()
-{
-    liberaTextura(modelo);
-}

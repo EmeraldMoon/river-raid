@@ -12,38 +12,46 @@
 
 /*------------------------------------------------------------------*/
 
-/* Diretórios para modelos e texturas */
-#define   MODEL_DIR   "model"
-#define TEXTURE_DIR "texture"
-
 /*
  *  Modelo de um objeto desenhável do jogo.
  */
-struct Modelo
+class Modelo
 {
-    /* Identificador de textura */
-    GLuint texturaId;
+private:
+    /* Diretório onde texturas estão localizadas */
+    static constexpr char DIR[] = "model";
 
+public:
     /* Vetor de coordenadas de vértices */
     std::vector<GLdouble> coords;
+
+    /*
+     *  Lê coordenadas de um arquivo de vértices.
+     */
+    Modelo(std::string nomeArq);
 };
 
 /*------------------------------------------------------------------*/
 
-/*
- *  Recebe um nome de arquivo contendo vértices.
- *  Carrega os vértices do arquivo para serem usados no modelo.
- */
-void leVertices(std::string nomeArq, Modelo &modelo);
+class Textura
+{
+private:
+    /* Diretório onde texturas estão localizadas */
+    static constexpr char DIR[] = "texture";
 
-/*
- *  Recebe um nome de arquivo em formato PPM.
- *  Carrega a textura deste arquivo para a memória.
- *  mipmap indica se será usado o recurso de mipmapping.
- */
-void carregaTextura(std::string nomeArq, GLboolean mipmap, Modelo &modelo);
+    /* Identificador de textura */
+    GLuint id;
 
-/*
- *  Libera textura atrelada ao OpenGL.
- */
-void liberaTextura(Modelo &modelo);
+public:
+    /*
+     *  Recebe um nome de arquivo em formato PPM.
+     *  Carrega a textura deste arquivo para a memória.
+     *  mipmap indica se será usado o recurso de mipmapping.
+     */
+    Textura(std::string nomeArq, GLboolean mipmap);
+
+    /*
+     *  Ativa textura para ser desenhada em determinado objeto.
+     */
+    void ativa() const;
+};

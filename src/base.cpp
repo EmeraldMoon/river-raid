@@ -1,6 +1,5 @@
 #include <cmath>  /* hypot */
 #include <list>
-#include <algorithm>
 
 #include "base.hpp"
 #include "random.hpp"
@@ -96,9 +95,9 @@ double Corpo::getZ()      { return z;      }
 double Corpo::getRaio()   { return raio;   }
 double Corpo::getAltura() { return altura; }
 
-/*------------------*
- |   U N I D A D E  |
- *------------------*-----------------------------------------------*/
+/*-------------------*
+ |   U N I D A D E   |
+ *-------------------*----------------------------------------------*/
 
 Unidade::Unidade(double z) : Corpo(z) { }
 

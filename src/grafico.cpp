@@ -65,7 +65,7 @@ void inicializaJogo(int argc, char *argv[])
        (só aceita valores float, infelizmente). */
     const GLfloat cor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     glEnable(GL_FOG);
-    glFogf(GL_FOG_DENSITY, 0.0008f);
+    glFogf(GL_FOG_DENSITY, 0.0001f);
     glFogfv(GL_FOG_COLOR, cor);
 
     /* Funções perpétuas de desenho */
@@ -78,10 +78,10 @@ void inicializaJogo(int argc, char *argv[])
     glutSpecialFunc(keySpecialPressed);
     glutSpecialUpFunc(keySpecialUp);
 
-    /* Carrega modelos e listas */
-    Cenario(godMode, debug);
+    /* static evita que instância seja destruída */
+    static Cenario cenario(godMode, debug);
 
-    nave = &Cenario::get().nave;
+    nave = &cenario.nave;
 
     /* Passa controle do resto do jogo ao OpenGL */
     glutMainLoop();
@@ -206,8 +206,8 @@ static void exibeHud()
     /* A lifebar em si */
     double r = (double) nave->getHP()/nave->getHPMax();
     GLdouble vertexLifebar[4][3] = {
-        {                               x, y - 2*raio - 2, z },
-        {                               x, y - 2*raio + 1, z },
+        {                   x, y - 2*raio - 2, z },
+        {                   x, y - 2*raio + 1, z },
         { x + 0.2*largura * r, y - 2*raio + 1, z },
         { x + 0.2*largura * r, y - 2*raio - 2, z }
     };
