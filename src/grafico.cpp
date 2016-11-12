@@ -2,6 +2,9 @@
 #include <cstring>  /* strcmp */
 #include <cmath>    /* ceil */
 #include <memory>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <GL/freeglut.h>
 
 #include "grafico.hpp"
 #include "nave.hpp"
@@ -21,7 +24,7 @@ static int largura, altura;
 static Nave *nave;
 
 /* Funções perpétuas usadas pelo OpenGL */
-static void desenha();
+static void desenha(sf::Window &janela);
 static void remodela(int width, int height);
 
 /* Funções de desenhos fixos na tela */
@@ -38,17 +41,15 @@ void inicializaJogo(int argc, char *argv[])
     bool godMode = false, debug = false, noDepth = false;
     for (int i = 0; i < argc; i++) {
         if      (strcmp(argv[i], "-iddqd") == 0) godMode = true;
-        else if (strcmp(argv[i], "-d"    ) == 0)   debug = true;
-        else if (strcmp(argv[i], "-l"    ) == 0) noDepth = true;
+        else if (strcmp(argv[i],     "-d") == 0)   debug = true;
+        else if (strcmp(argv[i],     "-l") == 0) noDepth = true;
     }    
-    /* Inicializa glut. */
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | (noDepth ? 0 : GLUT_DEPTH));
-
     /* Desenha e centraliza janela de jogo */
-    glutInitWindowSize(glutGet(GLUT_SCREEN_WIDTH),
-                       glutGet(GLUT_SCREEN_HEIGHT));
-    glutCreateWindow("River Raid");
+    sf::ContextSettings settings;
+    settings.depthBits = 24;
+    sf::Window janela(sf::VideoMode(1280, 720),
+                      *(new sf::String("River Raid")));
+    janela.setFramerateLimit(60);
 
     /* Ativa efeitos de transparência */
     glEnable(GL_BLEND); 
@@ -69,22 +70,31 @@ void inicializaJogo(int argc, char *argv[])
     glFogfv(GL_FOG_COLOR, cor);
 
     /* Funções perpétuas de desenho */
-    glutDisplayFunc(desenha);
-    glutReshapeFunc(remodela);
+    // glutDisplayFunc(desenha);
+    // glutReshapeFunc(remodela);
 
     /* Funções de callback do teclado */
-    glutKeyboardFunc(keyPressed);
-    glutKeyboardUpFunc(keyUp);
-    glutSpecialFunc(keySpecialPressed);
-    glutSpecialUpFunc(keySpecialUp);
+    // glutKeyboardFunc(keyPressed);
+    // glutKeyboardUpFunc(keyUp);
+    // glutSpecialFunc(keySpecialPressed);
+    // glutSpecialUpFunc(keySpecialUp);
 
     /* static evita que instância seja destruída */
     static Cenario cenario(godMode, debug);
 
     nave = &cenario.nave;
 
+    // glewExperimental = GL_TRUE;
+    // glewInit();
+
+    /*GLuint vertexBuffer;
+    glGenBuffers(1, &vertexBuffer);*/
+
     /* Passa controle do resto do jogo ao OpenGL */
-    glutMainLoop();
+
+    remodela(1280, 720);
+    for (;;)desenha(janela);
+    
 }
 
 /*------------------------------------------------------------------*/
@@ -93,7 +103,7 @@ void inicializaJogo(int argc, char *argv[])
  *  Loop principal da parte visual. Cuida do posicionamento da câmera,
  *  controle dos buffers e chamada de funções de atualização.
  */
-static void desenha()
+static void desenha(sf::Window &janela)
 {
     /* Faz a limpeza dos buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -114,14 +124,13 @@ static void desenha()
     Cenario::get().desenha();
 
     /* Desenha elementos fixos da tela */
-    if (exibindoFPS()) exibeFps();
-    exibeHud();
+    // if (exibindoFPS()) exibeFps();
+    // exibeHud();
 
-    /* Troca os buffers e pinta a tela */
-    glutSwapBuffers();
+    janela.display();
 
     /* Passa para o proceesamento não gráfico */
-    controlaTempo(0);
+    Cenario::get().atualiza();
 }
 
 /*------------------------------------------------------------------*/
