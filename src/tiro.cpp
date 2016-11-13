@@ -1,4 +1,4 @@
-#include <cmath>  /* abs, sin, cos, atan2 */
+#include <SFML/Graphics.hpp>
 
 #include "tiro.hpp"
 #include "base.hpp"
@@ -54,7 +54,7 @@ void Projetil::desenha()
   
     /* Desenha esfera na posição (x, y, z) */
     glTranslated(x, y, z);
-    glutSolidSphere(raio, SLICES, STACKS);
+    gluSphere(gluNewQuadric(), raio, SLICES, STACKS);
 
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();

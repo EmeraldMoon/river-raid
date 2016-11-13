@@ -1,5 +1,4 @@
-#include <cmath>  /* sqrt */
-#include <vector>
+#include <SFML/Graphics.hpp>
 
 #include "item.hpp"
 #include "random.hpp"
@@ -40,15 +39,15 @@ void Item::desenha()
     switch(tipo) {
     case TipoItem::HP:
         setColorAlpha(LIGHT_GREEN, 230);
-        glutSolidCube(raio);
+        gluDisk(gluNewQuadric(), 0, raio, SLICES, STACKS);
         break;
     case TipoItem::VIDA:
         setColorAlpha(GOLD, 130);
-        glutSolidCube(raio);
+        gluDisk(gluNewQuadric(), 0, raio, SLICES, STACKS);
         break;
     case TipoItem::ESCUDO:
         setColorAlpha(DARK_BLUE, 130);
-        glutWireSphere(raio, SLICES, STACKS);
+        gluSphere(gluNewQuadric(), raio, SLICES, STACKS);
         break;
     }
     glEnable(GL_TEXTURE_2D);

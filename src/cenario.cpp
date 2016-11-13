@@ -193,7 +193,7 @@ void Cenario::atualiza()
 void Cenario::desenha()
 {
     /* Ativa buffer de profundidade para desenho de objetos */
-    // glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 
     /* Desenha elementos estáticos do cenário */
     desenhaRio();
@@ -203,8 +203,8 @@ void Cenario::desenha()
     /* Desenha elementos dinâmicos do jogo */
     nave.desenha();
     for (auto &foe    :  inimigos)    foe.desenha();
-    // for (auto &bullet : projeteis) bullet.desenha();
-    // for (auto &item   :     itens)   item.desenha();
+    for (auto &bullet : projeteis) bullet.desenha();
+    for (auto &item   :     itens)   item.desenha();
 
     /* Desativa opção para não prejudicar desenho de hud e etc */
     glDisable(GL_DEPTH_TEST);

@@ -223,7 +223,7 @@ void Nave::desenha()
         glLightfv(LUZ_AMBIENTE, GL_AMBIENT, luzTela);
 
         /* Exibe uma mira na tela */
-        glutWireCone(0.25, 2, 4, 0); 
+        // glutWireCone(0.25, 2, 4, 0); 
     }
     else {
         getTextura().ativa();

@@ -2,9 +2,7 @@
 #include <cstring>  /* strcmp */
 #include <cmath>    /* ceil */
 #include <memory>
-#include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include <GL/freeglut.h>
 
 #include "grafico.hpp"
 #include "nave.hpp"
@@ -47,7 +45,7 @@ void inicializaJogo(int argc, char *argv[])
     /* Desenha e centraliza janela de jogo */
     sf::ContextSettings settings;
     settings.depthBits = 24;
-    sf::Window janela(sf::VideoMode(1280, 720),
+    sf::RenderWindow janela(sf::VideoMode(1280, 720),
                       *(new sf::String("River Raid")));
     janela.setFramerateLimit(60);
 
@@ -69,16 +67,6 @@ void inicializaJogo(int argc, char *argv[])
     glFogf(GL_FOG_DENSITY, 0.0001f);
     glFogfv(GL_FOG_COLOR, cor);
 
-    /* Funções perpétuas de desenho */
-    // glutDisplayFunc(desenha);
-    // glutReshapeFunc(remodela);
-
-    /* Funções de callback do teclado */
-    // glutKeyboardFunc(keyPressed);
-    // glutKeyboardUpFunc(keyUp);
-    // glutSpecialFunc(keySpecialPressed);
-    // glutSpecialUpFunc(keySpecialUp);
-
     /* static evita que instância seja destruída */
     static Cenario cenario(godMode, debug);
 
@@ -87,11 +75,7 @@ void inicializaJogo(int argc, char *argv[])
     // glewExperimental = GL_TRUE;
     // glewInit();
 
-    /*GLuint vertexBuffer;
-    glGenBuffers(1, &vertexBuffer);*/
-
     /* Passa controle do resto do jogo ao OpenGL */
-
     remodela(1280, 720);
     for (;;)desenha(janela);
     
@@ -231,12 +215,14 @@ static void exibeHud()
     glEnd();
 
     /* Imprime pontuação (e, se for o caso, mensagem de pausa) */
-    unsigned char str[32];
-    sprintf((char *) str, "Score: %d %s", nave->getScore(),
-                                          estaPausado() ? "(pausa)" : "");
+    sf::String str = "Score: " + nave->getScore();
+    if (estaPausado()) str += " (pausa)";
     setColor(WHITE);
     glRasterPos3d(x, y - 2*raio - 25, z);
-    glutBitmapString(GLUT_BITMAP_HELVETICA_18, str);
+
+    sf::Font fonte;
+    fonte.loadFromFile("DejaVuSans.ttf");
+    // sf::Text(str, fonte, 18);
 
     projecaoFim();
 }
@@ -266,10 +252,12 @@ static void exibeFps()
     glRasterPos3d(x, y, z);
 
     /* Imprime fps na tela */
-    unsigned char mostrador[16];
-    sprintf((char *) mostrador, "%2d fps", (fps > 60) ? 60 : fps);
+    sf::String mostrador = (fps > 60 ? 60 : fps) + " fps";
     setColor(YELLOW);
-    glutBitmapString(GLUT_BITMAP_HELVETICA_18, mostrador);
+    
+    sf::Font fonte;
+    fonte.loadFromFile("DejaVuSans.ttf");
+    // sf::Text(mostrador, fonte, 18);
 
     projecaoFim();
 }
