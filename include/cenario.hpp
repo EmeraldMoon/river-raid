@@ -109,9 +109,9 @@ public:
     /*
      *  Cuida direta ou indiretamente de tudo que compõe o cenário,
      *  sendo responsável por atualizar posições, tratar interações
-     *  entre objetos e encerrar o jogo quando cabível.
+     *  entre objetos e etc. Devolve 'false' se jogo estiver encerrado.
      */
-    void atualiza();
+    bool atualiza();
 
     /*
      *  Desenha todos os elementos do cenário, desde os meramente
@@ -119,10 +119,4 @@ public:
      *  (nave, inimigos, tiros e itens).
      */
     void desenha();
-
-    /*
-     *  Libera toda a memória alocada para as listas,
-     *  texturas e vértices e encerra execução do jogo.
-     */
-    void encerraJogo();
 };

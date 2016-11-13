@@ -7,19 +7,13 @@
 
 #pragma once
 
-#include <GL/freeglut.h>
+#include <GL/glu.h>
+#include <SFML/Graphics.hpp>
 
 /*------------------------------------------------------------------*/
 
 /* Tipo de luz a ser usada */
 #define LUZ_AMBIENTE GL_LIGHT0
-
-/* Dimensões da janela (widescreen por padrão) */
-#define JANELA_LARGURA 3 * Cenario::X_MAX
-#define JANELA_ALTURA  JANELA_LARGURA/16.0 * 9
-
-/* Número de quadros desenhados por segundo */
-#define FPS 60
 
 /* Distância da câmera à nave */
 #define DIST_CAMERA 250
@@ -30,8 +24,26 @@
 
 /*------------------------------------------------------------------*/
 
-/*
- *  Inicializa elementos do jogo e passa o comando do restante
- *  do programa ao OpenGL.
- */
-void inicializaJogo(int argc, char *argv[]);
+class Jogo
+{
+private:
+    /* Janela gerenciada pelo SFML. RenderWindow é uma subclasse de
+       Window que permite desenhar projeções fixas na tela. */
+    sf::RenderWindow janela;
+
+    int largura, altura;
+
+    void loop();
+    void desenha();
+    void remodela(int largura, int altura);
+
+    void exibeHud();
+    void exibeFps();
+
+public:
+    /*
+     *  Trata argumentos da linha de comando, inicializa elementos
+     *  do jogo e passa para o loop de eventos.
+     */
+    Jogo(int argc, char *argv[]);
+};

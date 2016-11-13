@@ -3,7 +3,7 @@
 #include "tiro.hpp"
 #include "base.hpp"
 #include "cenario.hpp"
-#include "grafico.hpp"
+#include "jogo.hpp"
 #include "cores.hpp"
 
 /*---------------------*

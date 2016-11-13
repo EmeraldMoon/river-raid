@@ -6,11 +6,14 @@
 
 #pragma once
 
+#include <SFML/Window.hpp>
+
 /*------------------------------------------------------------------*/
 
 /*
  *  Faz a verificação de ações de teclas.
  */
+void keyPressOperations(sf::Keyboard::Key tecla);
 void keyOperations();
 
 /*

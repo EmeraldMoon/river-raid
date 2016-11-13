@@ -2,7 +2,7 @@
 
 #include "item.hpp"
 #include "random.hpp"
-#include "grafico.hpp"
+#include "jogo.hpp"
 #include "cores.hpp"
 
 /*-------------*

@@ -4,7 +4,7 @@
 #include "random.hpp"
 #include "tiro.hpp"
 #include "cenario.hpp"
-#include "grafico.hpp"
+#include "jogo.hpp"
 #include "modelo.hpp"
 #include "cores.hpp"
 

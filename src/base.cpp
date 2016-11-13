@@ -8,7 +8,7 @@
 #include "tiro.hpp"
 #include "item.hpp"
 #include "cenario.hpp"
-#include "grafico.hpp"
+#include "jogo.hpp"
 
 /*---------------*
  |   L I S T A   |

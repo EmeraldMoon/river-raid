@@ -27,13 +27,17 @@ static bool        pausado = false;
 
 #define tecla(x) sf::Keyboard::isKeyPressed(sf::Keyboard::x)
 
-void keyOperations()
+void keyPressOperations(sf::Keyboard::Key xxx)
 {
+    /* Ajeitar isso */
     if (tecla(TECLA_CAMERA)) primeiraPessoa = not primeiraPessoa;
     if (tecla(TECLA_FPS))          exibeFPS = not exibeFPS;
     if (tecla(TECLA_PAUSA))         pausado = not pausado;
-    if (tecla(TECLA_SAIDA)) Cenario::get().encerraJogo();
+    if (tecla(TECLA_SAIDA)) return;
+}
 
+void keyOperations()
+{
     static Nave &nave = Cenario::get().nave;
 
     if ((tecla(TECLA_TIRO) or tecla(TECLA_TIRO2))

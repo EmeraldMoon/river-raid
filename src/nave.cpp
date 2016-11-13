@@ -8,7 +8,7 @@
 #include "cenario.hpp"
 #include "teclado.hpp"
 #include "modelo.hpp"
-#include "grafico.hpp"
+#include "jogo.hpp"
 #include "cores.hpp"
 
 /*-------------*
@@ -205,7 +205,7 @@ void Nave::desenha()
         glTranslated(x, y, z);
         glRotated(rotacao, 1.0, 1.0, 0.0);
         setColorAlpha(DARK_BLUE, 255 * escudo/(2.0 * getHPMax()));
-        glutWireSphere(1.75 * raio, SLICES, STACKS);
+        // glutWireSphere(1.75 * raio, SLICES, STACKS);
         glPopMatrix();
     }
     glPushMatrix();

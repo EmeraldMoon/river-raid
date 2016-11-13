@@ -10,7 +10,7 @@
  |                                                                  |
  *------------------------------------------------------------------*/
 
-#include "grafico.hpp"
+#include "jogo.hpp"
 
 /*----------------*
  |   M  A  I  N   |
@@ -18,6 +18,5 @@
 
 int main(int argc, char *argv[])
 {
-    /* OpenGL e inicialização */
-    inicializaJogo(argc, argv);
+    Jogo(argc, argv);
 }

@@ -29,7 +29,7 @@ Textura::Textura(std::string nomeArq, GLboolean mipmap)
     try { arq.open(caminho); }
     catch (...) {
         std::cerr << "Erro ao abrir arquivo " << caminho << "\n";
-        Cenario::get().encerraJogo();
+        return;
     }
     /* Faz verificação da chave mágica */
     std::string aux;
@@ -86,7 +86,7 @@ static void erro(std::ifstream &arq, std::string &caminho)
 {
     fprintf(stderr, "carregaTextura(): "
             "%s arquivo com formato inválido.\n", caminho.c_str());
-    Cenario::get().encerraJogo();
+    return;
 }
 
 /*------------------------------------------------------------------*/
@@ -115,7 +115,7 @@ Modelo::Modelo(std::string nomeArq)
     try { arq.open(caminho); }
     catch (...) {
         std::cerr << "Erro ao abrir arquivo " << caminho << "\n";
-        Cenario::get().encerraJogo();
+        return;
     }
     /* Obtém número de linhas do arquivo */
     GLsizei n = std::count(std::istreambuf_iterator<char>(arq),

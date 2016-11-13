@@ -1,52 +1,37 @@
 #include <cstdio>   /* sprintf */
-#include <cstring>  /* strcmp */
 #include <cmath>    /* ceil */
+#include <string>
 #include <memory>
 #include <SFML/Graphics.hpp>
 
-#include "grafico.hpp"
+#include "jogo.hpp"
 #include "nave.hpp"
 #include "cenario.hpp"
 #include "teclado.hpp"
 #include "modelo.hpp"
 #include "cores.hpp"
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
-
-/* Tamanho da tela */
-static int largura, altura;
+/*------------------------------------------------------------------*/
 
 /* Ponteiro (infelizmente) para acessar neste módulo */
 static Nave *nave;
 
-/* Funções perpétuas usadas pelo OpenGL */
-static void desenha(sf::Window &janela);
-static void remodela(int width, int height);
+/*-------------*
+ |   J O G O   |
+ *-------------*----------------------------------------------------*/
 
-/* Funções de desenhos fixos na tela */
-static void exibeHud();
-static void exibeFps();
-
-/*-------------------*
- |   F U N Ç Õ E S   |
- *-------------------*----------------------------------------------*/
-
-void inicializaJogo(int argc, char *argv[])
+Jogo::Jogo(int argc, char *argv[])
 {
     /* Tratamento de argumentos via linha de comando */
     bool godMode = false, debug = false, noDepth = false;
     for (int i = 0; i < argc; i++) {
-        if      (strcmp(argv[i], "-iddqd") == 0) godMode = true;
-        else if (strcmp(argv[i],     "-d") == 0)   debug = true;
-        else if (strcmp(argv[i],     "-l") == 0) noDepth = true;
+        std::string arg = argv[i];
+        if      (arg == "-iddqd") godMode = true;
+        else if (arg ==     "-d")   debug = true;
+        else if (arg ==     "-l") noDepth = true;
     }    
-    /* Desenha e centraliza janela de jogo */
-    sf::ContextSettings settings;
-    settings.depthBits = 24;
-    sf::RenderWindow janela(sf::VideoMode(1280, 720),
-                      *(new sf::String("River Raid")));
+    /* Cria janela de jogo */
+    janela.create(sf::VideoMode(1280, 720), "River Raid");
     janela.setFramerateLimit(60);
 
     /* Ativa efeitos de transparência */
@@ -76,18 +61,49 @@ void inicializaJogo(int argc, char *argv[])
     // glewInit();
 
     /* Passa controle do resto do jogo ao OpenGL */
-    remodela(1280, 720);
-    for (;;)desenha(janela);
-    
+    loop();    
 }
 
 /*------------------------------------------------------------------*/
+
+void Jogo::loop()
+{
+    while (janela.isOpen()) {
+
+        desenha();
+
+        /* Teclas de efeito contínuo */
+        keyOperations();
+
+        /* Trata possíveis eventos do SFML */
+        sf::Event evento;
+        while (janela.pollEvent(evento)) {
+            switch (evento.type) {
+            case sf::Event::Closed:
+                /* Fechamento da janela (Alt+F4, etc) */
+                janela.close();
+                break;
+            case sf::Event::KeyPressed:
+                /* Pressionamento não contínuo de tecla */
+                keyPressOperations(evento.key.code);
+                break;
+            case sf::Event::Resized:
+                /* Redimensionamento da janela */
+                remodela(evento.size.width, evento.size.height);
+                break;
+            default: break;
+            }
+        }
+        /* Atualiza jogo e elementos do cenário */
+        if (not Cenario::get().atualiza()) janela.close();
+    }
+}
 
 /*
  *  Loop principal da parte visual. Cuida do posicionamento da câmera,
  *  controle dos buffers e chamada de funções de atualização.
  */
-static void desenha(sf::Window &janela)
+void Jogo::desenha()
 {
     /* Faz a limpeza dos buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -108,13 +124,10 @@ static void desenha(sf::Window &janela)
     Cenario::get().desenha();
 
     /* Desenha elementos fixos da tela */
-    // if (exibindoFPS()) exibeFps();
-    // exibeHud();
+    if (exibindoFPS()) exibeFps();
+    exibeHud();
 
     janela.display();
-
-    /* Passa para o proceesamento não gráfico */
-    Cenario::get().atualiza();
 }
 
 /*------------------------------------------------------------------*/
@@ -123,12 +136,8 @@ static void desenha(sf::Window &janela)
  *  Redesenha a área de jogo quando (e enquanto)
  *  janela for redimensionada.
  */
-static void remodela(int width, int height)
+void Jogo::remodela(int largura, int altura)
 {
-    /* Variáveis de módulo */
-    largura = width;
-    altura  = height;
-
     /* Define tamanho do retângulo de visão */
     glViewport(0, 0, largura, altura);
 
@@ -142,6 +151,10 @@ static void remodela(int width, int height)
 
     /* Volta ao modo original */
     glMatrixMode(GL_MODELVIEW);
+
+    /* Variáveis de módulo */
+    this->largura = largura;
+    this->altura  = altura;
 }
 
 /*------------------------------------------------------------------*/
@@ -156,7 +169,7 @@ static void projecaoFim();
  *  Mostra na tela os indicadores básicos do jogo:
  *  energia, vidas restantes e pontuação.
  */
-static void exibeHud()
+void Jogo::exibeHud()
 {
     GLdouble raio = largura/75.0;
     GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave->getX());
@@ -231,7 +244,7 @@ static void exibeHud()
  *  Exibe o número de quadros por segundo que o jogo está
  *  desenhando no momento, caso a opção esteja ativada.
  */
-static void exibeFps()
+void Jogo::exibeFps()
 {
     static int fps, cont = 20;
 
@@ -241,7 +254,7 @@ static void exibeFps()
     GLdouble z = nave->getZ() - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
 
     /* FPS só é alterado na tela a cada tantos timesteps */
-    cont += getDelayTempo() * FPS/1000.0;
+    cont += getDelayTempo() * 10/1000.0;
     if (cont >= 20) {
         fps = 1000.0/(getDelayTempo() - 1);
         cont = cont % 20;
@@ -273,7 +286,7 @@ static void projecaoInicio()
     glLoadIdentity();
 
     /* Ajusta ao tamanho da tela */ 
-    gluOrtho2D(0.0, largura, 0.0, altura);
+    gluOrtho2D(0.0, 666, 0.0, 666);
 
     /* x cresce para a direita, y cresce para cima */
     glScaled(-1.0, 1.0, 1.0); 

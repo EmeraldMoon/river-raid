@@ -10,7 +10,7 @@
 #include "item.hpp"
 #include "teclado.hpp"
 #include "modelo.hpp"
-#include "grafico.hpp"
+#include "jogo.hpp"
 
 /*---------------*
  |   T E M P O   |
@@ -21,7 +21,7 @@ static int dt;
 
 void controlaTempo(int aRespostaParaAVidaOUniversoETudoMais)
 {
-    static constexpr int INTERVALO = 1000/FPS;
+    static constexpr int INTERVALO = 1000/60;
     static int t0 = 0, tExtra = 0;
 
     /* Obtém tempo desde última atualização */
@@ -107,7 +107,7 @@ Cenario::Cenario(bool godMode, bool debug) :
 
 /*------------------------------------------------------------------*/
 
-void Cenario::atualiza()
+bool Cenario::atualiza()
 {
     /* Tempo entre aparecimento de inimigos e itens */
     static constexpr int TEMPO_INIMIGOS = 100;
@@ -185,7 +185,7 @@ void Cenario::atualiza()
     if (debug) imprime();
 
     /* Se acabaram vidas, encerra o jogo */
-    if (nave.getVidas() <= 0) encerraJogo();
+    return nave.getVidas() > 0;
 }
 
 /*------------------------------------------------------------------*/
@@ -276,15 +276,6 @@ void Cenario::desenhaFundo()
         { -35 * X_MAX,        0.0, 0.0 }
     };
     fundo.desenha(coords, vertex);
-}
-
-/*------------------------------------------------------------------*/
-
-void Cenario::encerraJogo()
-{
-    /* Mostra score e dá adeus */
-    printf("Score final: %d\n", nave.getScore());
-    exit(EXIT_SUCCESS);
 }
 
 /*------------------------------------------------------------------*/
