@@ -29,38 +29,42 @@ Jogo::Jogo(int argc, char *argv[])
         if      (arg == "-iddqd") godMode = true;
         else if (arg ==     "-d")   debug = true;
         else if (arg ==     "-l") noDepth = true;
-    }    
+    }
+    /* Configurações gráficas padrões */
+    sf::ContextSettings settings;
+    settings.depthBits = noDepth ? 0 : 24;
+    settings.antialiasingLevel = 8;
+    settings.majorVersion = 4;
+
     /* Cria janela de jogo */
-    janela.create(sf::VideoMode(1280, 720), "River Raid");
+    janela.create(sf::VideoMode(1280, 720), "River Raid",
+                  sf::Style::Default, settings);
     janela.setFramerateLimit(60);
+    janela.setVerticalSyncEnabled(true);
 
     /* Ativa efeitos de transparência */
     glEnable(GL_BLEND); 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    /* Ativa efeitos de luz */
-    glEnable(LUZ_AMBIENTE);
-    glEnable(GL_COLOR_MATERIAL);
 
     /* Permite desenhar modelos de vértices */
     glEnableClientState(GL_VERTEX_ARRAY);
 
     /* Nevoeiro sobre o cenário
        (só aceita valores float, infelizmente). */
-    const GLfloat cor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+    /*const GLfloat cor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     glEnable(GL_FOG);
     glFogf(GL_FOG_DENSITY, 0.0001f);
-    glFogfv(GL_FOG_COLOR, cor);
+    glFogfv(GL_FOG_COLOR, cor);*/
 
     /* static evita que instância seja destruída */
     static Cenario cenario(godMode, debug);
 
     nave = &cenario.nave;
 
-    // glewExperimental = GL_TRUE;
-    // glewInit();
+    /* Carrega fonte do arquivo */
+    fonte.loadFromFile("zorque.ttf");
 
-    /* Passa controle do resto do jogo ao OpenGL */
+    /* Passa controle do resto do jogo ao SFML */
     loop();    
 }
 
@@ -97,6 +101,7 @@ void Jogo::loop()
         /* Atualiza jogo e elementos do cenário */
         if (not Cenario::get().atualiza()) janela.close();
     }
+    printf("Score final: %d\n", nave->getScore());
 }
 
 /*
@@ -105,8 +110,8 @@ void Jogo::loop()
  */
 void Jogo::desenha()
 {
-    /* Faz a limpeza dos buffers */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    /* Faz a limpeza dos buffers e carrega matriz identidade */
+    janela.clear();
     glLoadIdentity();
 
     /* Configura a posição da câmera.
@@ -123,9 +128,12 @@ void Jogo::desenha()
     /* Desenha cenário e elementos de jogo */
     Cenario::get().desenha();
 
-    /* Desenha elementos fixos da tela */
+    /* Desenha elementos fixos da interface da tela.
+       pushGLStates pode ser meio custoso... observar. */
+    janela.pushGLStates();
     if (exibindoFPS()) exibeFps();
     exibeHud();
+    janela.popGLStates();;
 
     janela.display();
 }
@@ -151,93 +159,48 @@ void Jogo::remodela(int largura, int altura)
 
     /* Volta ao modo original */
     glMatrixMode(GL_MODELVIEW);
-
-    /* Variáveis de módulo */
-    this->largura = largura;
-    this->altura  = altura;
 }
 
 /*------------------------------------------------------------------*/
 
-/* Constante de mudança de câmera (não pergunte como isso funciona) */
-#define constCamera 1/(-Cenario::Y_MAX/(31/16.0 * altura) + 1)
-
-static void projecaoInicio();
-static void projecaoFim();
-
 /*
  *  Mostra na tela os indicadores básicos do jogo:
- *  energia, vidas restantes e pontuação.
+ *  vidas restantes, HP e pontuação.
  */
 void Jogo::exibeHud()
 {
-    GLdouble raio = largura/75.0;
-    GLdouble x = 0.1 * largura + (estaEmPrimeiraPessoa() * nave->getX());
-    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->getY()
-                                        : 0.85 * altura * constCamera;
-    GLdouble z = nave->getZ() - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
-
-    projecaoInicio();
+    float x = 0.10 * janela.getSize().x;
+    float y = 0.15 * janela.getSize().y;
 
     /* Desenha vidas extras da nave */
+    static sf::CircleShape losango(20.0, 4);
     for (int i = 0; i < nave->getVidas(); i++) {
-        glBegin(GL_TRIANGLE_FAN);
-        setColor(CYAN);
-        glVertex3d(x + i * 3*raio,        y, z);
-        setColor(WHITE);
-        glVertex3d(x + i * 3*raio, y + raio, z);
-        glVertex3d(x + raio * (1 + 3*i),  y, z);
-        setColor(CYAN);
-        glVertex3d(x + i * 3*raio, y - raio, z);
-        glVertex3d(x - raio * (1 - 3*i),  y, z);
-        setColor(WHITE);
-        glVertex3d(x + i * 3*raio, y + raio, z);
-        glEnd();
+        double deltaX = 2.5 * losango.getRadius();
+        losango.setPosition(x + (i * deltaX), y);
+        janela.draw(losango); 
     }
-    /* Caixa da lifebar */
-    GLdouble vertexLifebox[4][3] = {
-        {               x - 1, y - 2*raio - 3, z },
-        {               x - 1, y - 2*raio + 2, z },
-        { x + 0.2*largura + 1, y - 2*raio + 2, z },
-        { x + 0.2*largura + 1, y - 2*raio - 3, z }
-    };
-    /* Desenha a cabixa */
-    setColor(DARK_BLUE);
-    glBegin(GL_QUADS); 
-    for (int i = 0; i < 4; i++) {
-        glVertex3dv(vertexLifebox[i]);
-    }
-    glEnd();
+    /* Desenha caixa da lifebar */
+    y += 3.0 * losango.getRadius();
+    static sf::RectangleShape caixa({200.0, 10.0});
+    caixa.setPosition(x, y);
+    caixa.setFillColor(sf::Color::Blue);
+    janela.draw(caixa);
 
-    /* A lifebar em si */
-    double r = (double) nave->getHP()/nave->getHPMax();
-    GLdouble vertexLifebar[4][3] = {
-        {                   x, y - 2*raio - 2, z },
-        {                   x, y - 2*raio + 1, z },
-        { x + 0.2*largura * r, y - 2*raio + 1, z },
-        { x + 0.2*largura * r, y - 2*raio - 2, z }
-    };
-    /* Cor varia dependendo da energia da nave */
-    glColor3d(1 - r, r, 0.0);
-
-    /* Desenha a lifebar */
-    glBegin(GL_QUADS);
-    for (int i = 0; i < 4; i++) {
-        glVertex3dv(vertexLifebar[i]);
-    }
-    glEnd();
+    /* Desenha lifebar com parcial do HP */
+    float k = (float) nave->getHP() / nave->getHPMax();
+    sf::RectangleShape lifebar({k * caixa.getSize().x,
+                                    caixa.getSize().y});
+    lifebar.setPosition(x, y);
+    lifebar.setFillColor(k > 0.25 ? sf::Color::Green : sf::Color::Red);
+    janela.draw(lifebar);
 
     /* Imprime pontuação (e, se for o caso, mensagem de pausa) */
-    sf::String str = "Score: " + nave->getScore();
+    y += 2.5 * lifebar.getSize().y;
+    sf::String str = "Score: " + std::to_string(nave->getScore());
     if (estaPausado()) str += " (pausa)";
-    setColor(WHITE);
-    glRasterPos3d(x, y - 2*raio - 25, z);
-
-    sf::Font fonte;
-    fonte.loadFromFile("DejaVuSans.ttf");
-    // sf::Text(str, fonte, 18);
-
-    projecaoFim();
+    sf::Text texto(str, fonte, 20);
+    texto.setPosition(x, y);
+    janela.draw(texto);
 }
 
 /*
@@ -246,60 +209,19 @@ void Jogo::exibeHud()
  */
 void Jogo::exibeFps()
 {
-    static int fps, cont = 20;
-
-    GLdouble x = 0.88 * largura + (estaEmPrimeiraPessoa() * nave->getX());
-    GLdouble y = estaEmPrimeiraPessoa() ? 0.85 * altura + nave->getY()
-                                        : 0.85 * altura * constCamera;
-    GLdouble z = nave->getZ() - ((not estaEmPrimeiraPessoa()) * DIST_CAMERA);
+    float x = 0.80 * janela.getSize().x;
+    float y = 0.15 * janela.getSize().y;
 
     /* FPS só é alterado na tela a cada tantos timesteps */
+    static int fps, cont = 20;
     cont += getDelayTempo() * 10/1000.0;
     if (cont >= 20) {
         fps = 1000.0/(getDelayTempo() - 1);
         cont = cont % 20;
     }
-    projecaoInicio();
-
-    /* Posiciona projeção */
-    glRasterPos3d(x, y, z);
-
     /* Imprime fps na tela */
-    sf::String mostrador = (fps > 60 ? 60 : fps) + " fps";
-    setColor(YELLOW);
-    
-    sf::Font fonte;
-    fonte.loadFromFile("DejaVuSans.ttf");
-    // sf::Text(mostrador, fonte, 18);
-
-    projecaoFim();
-}
-
-/*
- *  Prepara o OpenGL para desenhar objetos em 2D que
- *  ficarão fixos à tela através da matriz de projeção.
- */
-static void projecaoInicio()
-{
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-
-    /* Ajusta ao tamanho da tela */ 
-    gluOrtho2D(0.0, 666, 0.0, 666);
-
-    /* x cresce para a direita, y cresce para cima */
-    glScaled(-1.0, 1.0, 1.0); 
-
-    glMatrixMode(GL_MODELVIEW);
-}
-
-/*
- *  Finaliza os desenhos de projeções em 2D pelo openGL.
- */
-static void projecaoFim()
-{
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
+    sf::String mostrador = std::to_string(fps > 60 ? 60 : fps) + " fps";
+    sf::Text texto(mostrador, fonte, 20);
+    texto.setPosition({x, y});
+    janela.draw(texto);
 }

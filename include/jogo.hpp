@@ -31,7 +31,8 @@ private:
        Window que permite desenhar projeções fixas na tela. */
     sf::RenderWindow janela;
 
-    int largura, altura;
+    /* Guarda fonte usada para texto */
+    sf::Font fonte;
 
     void loop();
     void desenha();

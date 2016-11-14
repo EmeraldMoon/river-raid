@@ -1,6 +1,6 @@
-CPPC   = g++
+CPPC   = g++-4.9
 CFLAGS = -Wall -Wextra -pedantic -Wno-unused-result -Wno-unused-parameter -std=c++14 -g
-LIBS   = -lm -lGL -lGLU -lglut -lsfml-window -lsfml-system -lsfml-graphics
+LIBS   = -lm -lGL -lGLU -lglut -lsfml-graphics -lsfml-window -lsfml-system
 BINDIR = bin
 SRCDIR = src
 INCDIR = include

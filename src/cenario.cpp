@@ -201,10 +201,10 @@ void Cenario::desenha()
     desenhaFundo();
     
     /* Desenha elementos dinâmicos do jogo */
-    nave.desenha();
     for (auto &foe    :  inimigos)    foe.desenha();
     for (auto &bullet : projeteis) bullet.desenha();
     for (auto &item   :     itens)   item.desenha();
+    nave.desenha();
 
     /* Desativa opção para não prejudicar desenho de hud e etc */
     glDisable(GL_DEPTH_TEST);
