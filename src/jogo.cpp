@@ -7,7 +7,6 @@
 #include "jogo.hpp"
 #include "nave.hpp"
 #include "cenario.hpp"
-#include "teclado.hpp"
 #include "modelo.hpp"
 #include "cores.hpp"
 
@@ -37,10 +36,10 @@ Jogo::Jogo(int argc, char *argv[])
     settings.majorVersion = 4;
 
     /* Cria janela de jogo */
-    janela.create(sf::VideoMode(1280, 720), "River Raid",
+    janela.create(sf::VideoMode::getDesktopMode(), "River Raid",
                   sf::Style::Default, settings);
-    janela.setFramerateLimit(60);
     janela.setVerticalSyncEnabled(true);
+    janela.setKeyRepeatEnabled(false);
 
     /* Ativa efeitos de transparência */
     glEnable(GL_BLEND); 
@@ -93,12 +92,17 @@ void Jogo::loop()
                 break;
             case sf::Event::Resized:
                 /* Redimensionamento da janela */
-                remodela(evento.size.width, evento.size.height);
+                remodela();
+                break;
+            case sf::Event::LostFocus:
+                /* Pausa jogo ao alternar para outra janela */
+                pausado = true;
                 break;
             default: break;
             }
         }
         /* Atualiza jogo e elementos do cenário */
+        if (pausado) continue;
         if (not Cenario::get().atualiza()) janela.close();
     }
     printf("Score final: %d\n", nave->getScore());
@@ -116,7 +120,7 @@ void Jogo::desenha()
 
     /* Configura a posição da câmera.
        (ponto de visão, ponto de fuga, vertical da câmera) */
-    if (estaEmPrimeiraPessoa()) {
+    if (primeiraPessoa) {
         gluLookAt(nave->getX(), nave->getY(), nave->getZ(),
                   nave->getX(), nave->getY(), nave->getZ() + Cenario::Z_DIST,
                   0.0, 1.0, 0.0);
@@ -131,10 +135,10 @@ void Jogo::desenha()
     /* Desenha elementos fixos da interface da tela.
        pushGLStates pode ser meio custoso... observar. */
     janela.pushGLStates();
-    if (exibindoFPS()) exibeFps();
     exibeHud();
-    janela.popGLStates();;
-
+    if (exibindoFPS) exibeFps();
+    janela.popGLStates();
+    
     janela.display();
 }
 
@@ -144,8 +148,11 @@ void Jogo::desenha()
  *  Redesenha a área de jogo quando (e enquanto)
  *  janela for redimensionada.
  */
-void Jogo::remodela(int largura, int altura)
+void Jogo::remodela()
 {
+    unsigned int largura = janela.getSize().x;
+    unsigned int altura  = janela.getSize().y;
+
     /* Define tamanho do retângulo de visão */
     glViewport(0, 0, largura, altura);
 
@@ -155,7 +162,7 @@ void Jogo::remodela(int largura, int altura)
     glScaled(-1.0, 1.0, 1.0);
 
     /* (ângulo de visão, proporção de tela, distâncias min e max) */
-    gluPerspective(90.0, (GLdouble) largura/altura, 1.0, Cenario::Z_DIST);
+    gluPerspective(90.0, (double) largura/altura, 1.0, Cenario::Z_DIST);
 
     /* Volta ao modo original */
     glMatrixMode(GL_MODELVIEW);
@@ -197,7 +204,7 @@ void Jogo::exibeHud()
     /* Imprime pontuação (e, se for o caso, mensagem de pausa) */
     y += 2.5 * lifebar.getSize().y;
     sf::String str = "Score: " + std::to_string(nave->getScore());
-    if (estaPausado()) str += " (pausa)";
+    if (pausado) str += " (pausa)";
     sf::Text texto(str, fonte, 20);
     texto.setPosition(x, y);
     janela.draw(texto);

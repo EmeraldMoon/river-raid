@@ -8,107 +8,14 @@
 #include "modelo.hpp"
 #include "cenario.hpp"
 
-/*-------------------*
- |   T E X T U R A   |
- *-------------------*----------------------------------------------*/
-
-constexpr char Textura::DIR[];
-
-/*------------------------------------------------------------------*/
-
-static void ignoraComentario(std::ifstream &arq);
-static void erro(std::ifstream &arq, std::string &nomeArq);
-
-Textura::Textura(std::string nomeArq, GLboolean mipmap)
-{
-    /* Caminho do arquivo de textura */
-    std::string caminho = std::string(DIR) + "/" + nomeArq;
-
-    /* Abre o arquivo */
-    std::ifstream arq;
-    try { arq.open(caminho); }
-    catch (...) {
-        std::cerr << "Erro ao abrir arquivo " << caminho << "\n";
-        return;
-    }
-    /* Faz verificação da chave mágica */
-    std::string aux;
-    std::getline(arq, aux);
-    if (aux != "P6") erro(arq, caminho);
-
-    /* Obtém largura e altura (ignore maxval) */
-    GLsizei altura, largura;
-    ignoraComentario(arq);
-    arq >> altura >> largura;
-    arq.ignore(2);
-
-    /* Lê dados para uma string */
-    std::vector<GLubyte> dados(3 * largura * altura);
-    for (auto &dado : dados) dado = arq.get();
-
-    /* Gera e guarda identificador de textura */
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-
-    /* Carrega os dados (pixels) da textura */
-    if (mipmap) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                        GL_LINEAR_MIPMAP_LINEAR);
-        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, largura, altura,
-                          GL_RGB, GL_UNSIGNED_BYTE, dados.data());
-    } else {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, largura, altura,
-                     0, GL_RGB, GL_UNSIGNED_BYTE, dados.data());
-    }
-}
-
-/*
- *  Pula comentários (iniciados com '#') na leitura do arquivo PPM.
- */
-static void ignoraComentario(std::ifstream &arq)
-{
-    char c;
-    for (;;) {
-        arq >> std::skipws;
-        arq.get(c);
-        if (c != '#') break;
-        std::string nada;
-        std::getline(arq, nada);
-    }
-    arq.unget();
-}
-
-/*
- *  Fecha o programa quando a textura não é um arquivo PPM.
- */
-static void erro(std::ifstream &arq, std::string &caminho)
-{
-    fprintf(stderr, "carregaTextura(): "
-            "%s arquivo com formato inválido.\n", caminho.c_str());
-    return;
-}
-
-/*------------------------------------------------------------------*/
-
-void Textura::ativa() const
-{
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, id);
-}
-
 /*-----------------*
  |   M O D E L O   |
  *-----------------*------------------------------------------------*/
 
-constexpr char Modelo::DIR[];
-
-/*------------------------------------------------------------------*/
-
 Modelo::Modelo(std::string nomeArq)
 {
     /* Caminho do arquivo de modelo */
-    std::string caminho = std::string(DIR) + "/" + nomeArq;
+    std::string caminho = "model" + ("/" + nomeArq);
 
     /* Abre o arquivo */
     std::ifstream arq;
@@ -125,4 +32,28 @@ Modelo::Modelo(std::string nomeArq)
     /* Lê todas as coordenadas */
     coords.resize(3 * n);
     for (auto &coord : coords) arq >> coord;
+}
+
+/*-------------------*
+ |   T E X T U R A   |
+ *-------------------*----------------------------------------------*/
+
+Textura::Textura(std::string nomeArq, bool mipmap)
+{
+    /* Caminho do arquivo de textura */
+    std::string caminho = "texture" + ("/" + nomeArq);
+
+    /* Carrega textura do arquivo */
+    if (!texture.loadFromFile(caminho)) {
+        std::cerr << "ERRO: Não foi possível ler textura em "
+                  << caminho << "\n";
+    }
+    if (mipmap) texture.generateMipmap();
+    texture.setSmooth(true);
+}
+
+void Textura::ativa()
+{
+    glEnable(GL_TEXTURE_2D);
+    sf::Texture::bind(&texture);
 }

@@ -6,7 +6,6 @@
 #include "tiro.hpp"
 #include "item.hpp"
 #include "cenario.hpp"
-#include "teclado.hpp"
 #include "modelo.hpp"
 #include "jogo.hpp"
 #include "cores.hpp"
@@ -22,7 +21,7 @@ Textura &Nave::getTextura()
     /* Este é um truque para atrasar a inicialização do membro
        estático. Caso contrário, gerar-se-iam texturas antes da
        criação do contexto de janela, resultando no problema de id == 0. */
-    static Textura textura("silver.ppm", false);
+    static Textura textura("silver.png", false);
     return textura;
 }
 
@@ -216,7 +215,7 @@ void Nave::desenha()
     glRotated(-angVert  * 180.0/M_PI, 1.0, 0.0, 0.0);
 
     setColorAlpha(3 * naveCor, 3 * naveCor, 0, 3 * naveCor);
-    if (estaEmPrimeiraPessoa()) {
+    if (false) {
         /* No modo 1º pessoa, tela fica vermelha após dano. */
         GLfloat k = 1.5 * invencibilidade/INVENCIVEL_VIDA;
         GLfloat luzTela[3] = {1.0f, 1.0f - k, 1.0f - k};

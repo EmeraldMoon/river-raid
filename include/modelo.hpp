@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include <GL/freeglut.h>
+#include <SFML/Graphics.hpp>
 
 /*------------------------------------------------------------------*/
 
@@ -17,13 +17,9 @@
  */
 class Modelo
 {
-private:
-    /* Diretório onde texturas estão localizadas */
-    static constexpr char DIR[] = "model";
-
 public:
     /* Vetor de coordenadas de vértices */
-    std::vector<GLdouble> coords;
+    std::vector<double> coords;
 
     /*
      *  Lê coordenadas de um arquivo de vértices.
@@ -33,25 +29,25 @@ public:
 
 /*------------------------------------------------------------------*/
 
+/*
+ *  Textura a ser aplicada em objetos do jogo.
+ */
 class Textura
 {
 private:
-    /* Diretório onde texturas estão localizadas */
-    static constexpr char DIR[] = "texture";
-
-    /* Identificador de textura */
-    GLuint id;
+    /* Objeto de textura do SFML */
+    sf::Texture texture;
 
 public:
     /*
-     *  Recebe um nome de arquivo em formato PPM.
+     *  Recebe um nome de arquivo de imagem.
      *  Carrega a textura deste arquivo para a memória.
      *  mipmap indica se será usado o recurso de mipmapping.
      */
-    Textura(std::string nomeArq, GLboolean mipmap);
+    Textura(std::string nomeArq, bool mipmap);
 
     /*
      *  Ativa textura para ser desenhada em determinado objeto.
      */
-    void ativa() const;
+    void ativa();
 };

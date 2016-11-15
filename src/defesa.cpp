@@ -16,7 +16,7 @@ const Modelo  Inimigo::modelo  = Modelo("defesa.vert");
 
 Textura &Inimigo::getTextura()
 {
-    static Textura textura("magma.ppm", false);
+    static Textura textura("magma.png", false);
     return textura;
 }
 

@@ -8,13 +8,10 @@
 #include "defesa.hpp"
 #include "tiro.hpp"
 #include "item.hpp"
-#include "teclado.hpp"
 #include "modelo.hpp"
 #include "jogo.hpp"
 
-/*---------------*
- |   T E M P O   |
- *---------------*--------------------------------------------------*/
+/*------------------------------------------------------------------*/
 
 /* Guarda intervalo entre chamadas de controlaTempo() */
 static int dt;
@@ -40,7 +37,7 @@ void controlaTempo(int aRespostaParaAVidaOUniversoETudoMais)
     /* Caso tempo acumulado chegue a um ou mais frames inteiros, 
        faz a interpolação deles entre o anterior e o próximo desenho. */
     for (;;) {
-        if (not estaPausado()) Cenario::get().atualiza();
+        Cenario::get().atualiza();
         if (tExtra < INTERVALO) break;
         tExtra -= INTERVALO;
     }
@@ -96,7 +93,7 @@ Cenario &Cenario::get()
 /*------------------------------------------------------------------*/
 
 Cenario::Cenario(bool godMode, bool debug) :
-    rio("water.ppm"), parede("brick.ppm"), fundo("space.ppm"),
+    rio("water.png"), parede("brick.png"), fundo("space.png"),
     nave(Nave(godMode))
 {
     this->debug = debug;
@@ -115,9 +112,6 @@ bool Cenario::atualiza()
 
     static int contFoe  = TEMPO_INIMIGOS;
     static int contItem = TEMPO_ITEM;
-
-    /* Reconhecimento do teclado */
-    keyOperations();
 
     /* Ações relacionadas à nave */
     nave.move();

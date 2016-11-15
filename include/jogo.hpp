@@ -34,10 +34,18 @@ private:
     /* Guarda fonte usada para texto */
     sf::Font fonte;
 
-    void loop();
-    void desenha();
-    void remodela(int largura, int altura);
+    /* Booleanos auto-explicativos */
+    bool primeiraPessoa = false;
+    bool exibindoFPS    = false;
+    bool pausado        = false;
 
+    void loop();
+
+    void keyPressOperations(sf::Keyboard::Key tecla);
+    void keyOperations();
+
+    void desenha();
+    void remodela();
     void exibeHud();
     void exibeFps();
 

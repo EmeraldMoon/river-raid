@@ -1,12 +1,9 @@
-#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 
-#include "teclado.hpp"
-#include "nave.hpp"
+#include "jogo.hpp"
 #include "cenario.hpp"
 
-/*-------------------------*
- |   D E F I N I Ç Õ E S   |
- *-------------------------*----------------------------------------*/
+/*------------------------------------------------------------------*/
 
 /* Constantes para teclas */
 #define TECLA_TIRO   Space
@@ -16,45 +13,38 @@
 #define TECLA_FPS    F
 #define TECLA_SAIDA  Escape
 
-/* Variáveis booleanas indicadoras */
-static bool primeiraPessoa = false;
-static bool       exibeFPS = false;
-static bool        pausado = false;
+#define   key(tecla) sf::Keyboard::tecla
+#define press(tecla) sf::Keyboard::isKeyPressed(key(tecla))
 
 /*-------------------*
- |   F U N Ç Õ E S   |
+ |   T E C L A D O   |
  *-------------------*----------------------------------------------*/
 
-#define tecla(x) sf::Keyboard::isKeyPressed(sf::Keyboard::x)
-
-void keyPressOperations(sf::Keyboard::Key xxx)
+void Jogo::keyPressOperations(sf::Keyboard::Key tecla)
 {
     /* Ajeitar isso */
-    if (tecla(TECLA_CAMERA)) primeiraPessoa = not primeiraPessoa;
-    if (tecla(TECLA_FPS))          exibeFPS = not exibeFPS;
-    if (tecla(TECLA_PAUSA))         pausado = not pausado;
-    if (tecla(TECLA_SAIDA)) return;
+    switch (tecla) {
+    case key(TECLA_CAMERA): primeiraPessoa = not primeiraPessoa; break;
+    case key(TECLA_FPS):       exibindoFPS = not exibindoFPS;    break;
+    case key(TECLA_PAUSA):         pausado = not pausado;        break;
+    case key(TECLA_SAIDA): janela.close(); break;
+    default: break;
+    }
 }
 
-void keyOperations()
+void Jogo::keyOperations()
 {
     static Nave &nave = Cenario::get().nave;
 
-    if ((tecla(TECLA_TIRO) or tecla(TECLA_TIRO2))
+    if ((press(TECLA_TIRO) or press(TECLA_TIRO2))
             and nave.reduzEspera() <= 0) {
         nave.dispara();
     }
     /* Faz operação entre booleanos para encontrar sentidos */
-    int sentidoVert  = tecla(Up)    - tecla(Down);
-    int sentidoHoriz = tecla(Right) - tecla(Left);
+    int sentidoVert  = press(Up)    - press(Down);
+    int sentidoHoriz = press(Right) - press(Left);
 
     /* Atualiza direção */
     nave.atualizaVertical(sentidoVert);
     nave.atualizaHorizontal(sentidoHoriz);
 }
-
-/*------------------------------------------------------------------*/
-
-bool estaEmPrimeiraPessoa() { return primeiraPessoa; }
-bool estaPausado()          { return pausado;        }
-bool exibindoFPS()          { return exibeFPS;       }
